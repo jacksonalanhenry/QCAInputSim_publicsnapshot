@@ -38,7 +38,7 @@ classdef ThreeDotCell < QCACell
         end
         
         
-        function Potential_on_dot1 = getPotential( self, neighbor )
+        function pot = getPotential( self, neighbor )
             %get the polarization due to driver. 
             
            
@@ -48,17 +48,43 @@ classdef ThreeDotCell < QCACell
             neighborDotPos = getDotPosition(neighbor);
             selfDotPos = getDotPosition(self);
             
+            %r is now a 3x3 matrix holding q1->q1;q2->q2;q3->q3 which is
+            %not exactly correct.
             r = selfDotPos - neighborDotPos;
             
             neighbor_q1 = (qe/2)*(neighbor.Polarization+1)*neighbor.Activation;
             neighbor_q2 = 1 - neighbor.Activation;
             neighbor_q3 = (qe/2)*(1-neighbor.Polarization)*neighbor.Activation;
             
-            Potential_on_dot1 = (1/4*pi*epsilon_0)*( neighbor_q1*r(1,:) + neighbor_q1*r(2,:) + neighbor_q1*r(3,:) );
-            Potential_on_dot2 = (1/4*pi*epsilon_0)*( neighbor_q2*r(1,:) + neighbor_q2*r(2,:) + neighbor_q2*r(3,:) );
-            Potential_on_dot3 = (1/4*pi*epsilon_0)*( neighbor_q3*r(1,:) + neighbor_q3*r(2,:) + neighbor_q3*r(3,:) );
-
+            %SELFDOT1
+            %r from selfdot1 to neighbor dot1
+            r11=selfDotPos(1,:)-neighborDotPos(1,:);
+            %r from selfdot1 to neighbor dot2
+            r12=selfDotPos(1,:)-neighborDotPos(2,:);
+            %r from selfdot1 to neighbor dot3
+            r13=selfDotPos(1,:)-neighborDotPos(3,:);
             
+            %SELFDOT2
+            %r from selfdot1 to neighbor dot1
+            r21=selfDotPos(2,:)-neighborDotPos(1,:);
+            %r from selfdot1 to neighbor dot2
+            r22=selfDotPos(2,:)-neighborDotPos(2,:);
+            %r from selfdot1 to neighbor dot3
+            r23=selfDotPos(2,:)-neighborDotPos(3,:);
+            
+            %SELFDOT3
+            %r from selfdot1 to neighbor dot1
+            r31=selfDotPos(3,:)-neighborDotPos(1,:);
+            %r from selfdot1 to neighbor dot2
+            r32=selfDotPos(3,:)-neighborDotPos(2,:);
+            %r from selfdot1 to neighbor dot3
+            r33=selfDotPos(3,:)-neighborDotPos(3,:);
+            
+            Potential_on_dot1 = (1/4*pi*epsilon_0)*( neighbor_q1*r11 + neighbor_q1*r12 + neighbor_q1*r13 );
+            Potential_on_dot2 = (1/4*pi*epsilon_0)*( neighbor_q2*r21 + neighbor_q2*r22 + neighbor_q2*r23 );
+            Potential_on_dot3 = (1/4*pi*epsilon_0)*( neighbor_q3*r31 + neighbor_q3*r32 + neighbor_q3*r33 );
+
+            pot = [Potential_on_dot1; Potential_on_dot2; Potential_on_dot3;];
             
         end
         
