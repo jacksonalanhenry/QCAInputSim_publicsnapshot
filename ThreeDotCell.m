@@ -44,6 +44,7 @@ classdef ThreeDotCell < QCACell
            
             epsilon_0 = 8.854E-12; % [C/(V*m)]
             qe = 1; % [eV]
+
             
             neighborDotPos = getDotPosition(neighbor);
             selfDotPos = getDotPosition(self);
@@ -58,27 +59,26 @@ classdef ThreeDotCell < QCACell
             
             %SELFDOT1
             %r from selfdot1 to neighbor dot1
-            r11=selfDotPos(1,:)-neighborDotPos(1,:);
+            r11=sqrt(sum((selfDotPos(1,:)-neighborDotPos(1,:)).^2));
             %r from selfdot1 to neighbor dot2
-            r12=selfDotPos(1,:)-neighborDotPos(2,:);
+            r12=sqrt(sum((selfDotPos(1,:)-neighborDotPos(2,:)).^2));
             %r from selfdot1 to neighbor dot3
-            r13=selfDotPos(1,:)-neighborDotPos(3,:);
+            r13=sqrt(sum((selfDotPos(1,:)-neighborDotPos(3,:)).^2));
             
             %SELFDOT2
-            %r from selfdot1 to neighbor dot1
-            r21=selfDotPos(2,:)-neighborDotPos(1,:);
+            r21=sqrt(sum((selfDotPos(2,:)-neighborDotPos(1,:)).^2));
             %r from selfdot1 to neighbor dot2
-            r22=selfDotPos(2,:)-neighborDotPos(2,:);
+            r22=sqrt(sum((selfDotPos(2,:)-neighborDotPos(2,:)).^2));
             %r from selfdot1 to neighbor dot3
-            r23=selfDotPos(2,:)-neighborDotPos(3,:);
+            r23=sqrt(sum((selfDotPos(2,:)-neighborDotPos(3,:)).^2));
             
             %SELFDOT3
             %r from selfdot1 to neighbor dot1
-            r31=selfDotPos(3,:)-neighborDotPos(1,:);
+            r31=sqrt(sum((selfDotPos(3,:)-neighborDotPos(1,:)).^2));
             %r from selfdot1 to neighbor dot2
-            r32=selfDotPos(3,:)-neighborDotPos(2,:);
+            r32=sqrt(sum((selfDotPos(3,:)-neighborDotPos(2,:)).^2));
             %r from selfdot1 to neighbor dot3
-            r33=selfDotPos(3,:)-neighborDotPos(3,:);
+            r33=sqrt(sum((selfDotPos(3,:)-neighborDotPos(3,:)).^2));
             
             Potential_on_dot1 = (1/4*pi*epsilon_0)*( neighbor_q1*r11 + neighbor_q1*r12 + neighbor_q1*r13 );
             Potential_on_dot2 = (1/4*pi*epsilon_0)*( neighbor_q2*r21 + neighbor_q2*r22 + neighbor_q2*r23 );
