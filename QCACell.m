@@ -29,8 +29,15 @@ classdef QCACell
                 case 0
                     
                 case 1 % Q = QCACell( [x,y,z] )
-                    obj.CenterPosition = varargin{1};
-                    %obj.Type = varargin{2}
+                    if( isnumeric(varargin{1}) )
+                       if(size(varargin{1}) == [1, 3]) 
+                        obj.CenterPosition = varargin{1};
+                       else
+                            error('Incorrect data input size.')
+                       end
+                    else
+                       error('Incorrect data input type.')
+                    end
 
                 otherwise
                     error('Invalid number of inputs for QCACell');

@@ -49,9 +49,6 @@ classdef ThreeDotCell < QCACell
             neighborDotPos = getDotPosition(neighbor);
             selfDotPos = getDotPosition(self);
             
-            %r is now a 3x3 matrix holding q1->q1;q2->q2;q3->q3 which is
-            %not exactly correct.
-            r = selfDotPos - neighborDotPos;
             
             neighbor_q1 = (qe/2)*(neighbor.Polarization+1)*neighbor.Activation;
             neighbor_q2 = 1 - neighbor.Activation;
@@ -59,30 +56,30 @@ classdef ThreeDotCell < QCACell
             
             %SELFDOT1
             %r from selfdot1 to neighbor dot1
-            r11=sqrt(sum((selfDotPos(1,:)-neighborDotPos(1,:)).^2));
+            r11 = norm(selfDotPos(1,:)-neighborDotPos(1,:),3);
             %r from selfdot1 to neighbor dot2
-            r12=sqrt(sum((selfDotPos(1,:)-neighborDotPos(2,:)).^2));
+            r12 = norm(selfDotPos(1,:)-neighborDotPos(2,:),3);
             %r from selfdot1 to neighbor dot3
-            r13=sqrt(sum((selfDotPos(1,:)-neighborDotPos(3,:)).^2));
+            r13 = norm(selfDotPos(1,:)-neighborDotPos(3,:),3);
             
             %SELFDOT2
-            r21=sqrt(sum((selfDotPos(2,:)-neighborDotPos(1,:)).^2));
+            r21 = norm(selfDotPos(2,:)-neighborDotPos(1,:),3);
             %r from selfdot1 to neighbor dot2
-            r22=sqrt(sum((selfDotPos(2,:)-neighborDotPos(2,:)).^2));
+            r22 = norm(selfDotPos(2,:)-neighborDotPos(2,:),3);
             %r from selfdot1 to neighbor dot3
-            r23=sqrt(sum((selfDotPos(2,:)-neighborDotPos(3,:)).^2));
+            r23 = norm(selfDotPos(2,:)-neighborDotPos(3,:),3);
             
             %SELFDOT3
             %r from selfdot1 to neighbor dot1
-            r31=sqrt(sum((selfDotPos(3,:)-neighborDotPos(1,:)).^2));
+            r31 = norm(selfDotPos(3,:)-neighborDotPos(1,:),3);
             %r from selfdot1 to neighbor dot2
-            r32=sqrt(sum((selfDotPos(3,:)-neighborDotPos(2,:)).^2));
+            r32= norm(selfDotPos(3,:)-neighborDotPos(2,:),3);
             %r from selfdot1 to neighbor dot3
-            r33=sqrt(sum((selfDotPos(3,:)-neighborDotPos(3,:)).^2));
+            r33 = norm(selfDotPos(3,:)-neighborDotPos(3,:),3);
             
-            Potential_on_dot1 = (1/4*pi*epsilon_0)*( neighbor_q1*r11 + neighbor_q1*r12 + neighbor_q1*r13 );
-            Potential_on_dot2 = (1/4*pi*epsilon_0)*( neighbor_q2*r21 + neighbor_q2*r22 + neighbor_q2*r23 );
-            Potential_on_dot3 = (1/4*pi*epsilon_0)*( neighbor_q3*r31 + neighbor_q3*r32 + neighbor_q3*r33 );
+            Potential_on_dot1 = (1/(4*pi*epsilon_0))*( neighbor_q1*r11 + neighbor_q1*r12 + neighbor_q1*r13 );
+            Potential_on_dot2 = (1/(4*pi*epsilon_0))*( neighbor_q2*r21 + neighbor_q2*r22 + neighbor_q2*r23 );
+            Potential_on_dot3 = (1/(4*pi*epsilon_0))*( neighbor_q3*r31 + neighbor_q3*r32 + neighbor_q3*r33 );
 
             pot = [Potential_on_dot1; Potential_on_dot2; Potential_on_dot3;];
             
