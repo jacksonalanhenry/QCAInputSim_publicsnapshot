@@ -43,6 +43,9 @@ classdef ThreeDotCell < QCACell
             
            
             epsilon_0 = 8.854E-12; % [C/(V*m)]
+            
+            qeV2J = 1.60217662E-19;% J
+            
             qe = 1; % [eV]
 
             
@@ -77,9 +80,9 @@ classdef ThreeDotCell < QCACell
             %r from selfdot1 to neighbor dot3
             r33 = norm(selfDotPos(3,:)-neighborDotPos(3,:),3);
             
-            Potential_on_dot1 = (1/(4*pi*epsilon_0))*( neighbor_q1*r11 + neighbor_q1*r12 + neighbor_q1*r13 );
-            Potential_on_dot2 = (1/(4*pi*epsilon_0))*( neighbor_q2*r21 + neighbor_q2*r22 + neighbor_q2*r23 );
-            Potential_on_dot3 = (1/(4*pi*epsilon_0))*( neighbor_q3*r31 + neighbor_q3*r32 + neighbor_q3*r33 );
+            Potential_on_dot1 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q1*r11 + neighbor_q1*r12 + neighbor_q1*r13 );
+            Potential_on_dot2 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q2*r21 + neighbor_q2*r22 + neighbor_q2*r23 );
+            Potential_on_dot3 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q3*r31 + neighbor_q3*r32 + neighbor_q3*r33 );
 
             pot = [Potential_on_dot1; Potential_on_dot2; Potential_on_dot3;];
             

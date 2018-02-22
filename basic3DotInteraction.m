@@ -4,9 +4,14 @@
 
 %% Constants
 
-qe = 1.602E-19; % C
+epsilon_0 = 8.854E-12; % [C/(V*m)]     
+qeV2J = 1.602E-19; % [J]
+qe = 1; %[eV]
 
 %% Parameters
+a = 10; %[nm]
+
+k = 1/(4*pi* epsilon_0*qeV2J*a);
 
 
 %%
@@ -28,5 +33,9 @@ Driver.Polarization = 1;
 PotentialDriver1 = getPotential(node1,Driver);
 
 
+%test P=1 and P=-1 and check for opposite equality for verify kink energy
+A = 1;
+P = -1;
+DeltaV = (1-1/sqrt(2))*k*qe*A*P
 
 
