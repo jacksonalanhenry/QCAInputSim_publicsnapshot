@@ -33,7 +33,7 @@ Driver.Polarization = 1;
 PotentialDriver1 = getPotential(node1,Driver);
 
 
-%test P=1 and P=-1 and check for opposite equality for verify kink energy
+%test P=1 and P=-1 and check for opposite equality to verify kink energy
 A = 1;
 P = -1;
 DeltaV = (1-1/sqrt(2))*k*qe*A*P
