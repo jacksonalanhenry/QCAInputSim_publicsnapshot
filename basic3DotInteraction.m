@@ -35,7 +35,17 @@ PotentialDriver1 = getPotential(node1,Driver);
 
 %test P=1 and P=-1 and check for opposite equality to verify kink energy
 A = 1;
-P = -1;
-DeltaV = (1-1/sqrt(2))*k*qe*A*P
+P = 1;
+DeltaV = (1-1/sqrt(2))*k*qe*A*P;
+
+testCell = ThreeDotCell();
+testCell.Type = 'Driver';
+testCell.Polarization = -1;
+testCell.Activation = 1;
+
+
+point = [0,0.3,0.3];
+testCell.Potential(point)
+
 
 

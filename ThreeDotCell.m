@@ -38,7 +38,7 @@ classdef ThreeDotCell < QCACell
         end
         
         
-        function pot = getPotential( self, neighbor )
+        function pot = getPotential( obj, neighbor )
             %get the polarization due to driver. 
             
            
@@ -50,7 +50,7 @@ classdef ThreeDotCell < QCACell
 
             
             neighborDotPos = getDotPosition(neighbor);
-            selfDotPos = getDotPosition(self);
+            selfDotPos = getDotPosition(obj);
             
             
             neighbor_q1 = (qe/2)*(1-neighbor.Polarization)*neighbor.Activation;
@@ -88,16 +88,16 @@ classdef ThreeDotCell < QCACell
             
         end
         
-        function pot = Potential(self, obsvPoint )
+        function pot = Potential(obj, obsvPoint )
             qe=1;
             epsilon_0 = 8.854E-12; % [C/(V*m)]
             qeC2e = -1.60217662E-19;% J
             
-            selfDotPos = getDotPosition(self);
+            selfDotPos = getDotPosition(obj);
             numberofDots = size(selfDotPos, 1);
             
             
-            charge = qe*self.Activation*[(1/2)*(1-self.Polarization);-1;(1/2)*(self.Polarization+1)]; %[eV]
+            charge = qe*obj.Activation*[(1/2)*(1-obj.Polarization);-1;(1/2)*(obj.Polarization+1)]; %[eV]
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
