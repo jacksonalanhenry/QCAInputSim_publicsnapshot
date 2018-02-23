@@ -13,7 +13,7 @@ classdef ThreeDotCell < QCACell
     methods
         function obj = ThreeDotCell( varargin )
             
-            DotPosition = 0.5*[1,0,1; ...
+            DotPosition = 0.5*[0,1,1; ...
                                0,0,0; ...
                                0,-1,1; ]; %Dot relative position in Characteristic Lengths
             
@@ -53,9 +53,9 @@ classdef ThreeDotCell < QCACell
             selfDotPos = getDotPosition(self);
             
             
-            neighbor_q1 = (qe/2)*(neighbor.Polarization+1)*neighbor.Activation;
+            neighbor_q1 = (qe/2)*(1-neighbor.Polarization)*neighbor.Activation;
             neighbor_q2 = 1 - neighbor.Activation;
-            neighbor_q3 = (qe/2)*(1-neighbor.Polarization)*neighbor.Activation;
+            neighbor_q3 = (qe/2)*(neighbor.Polarization+1)*neighbor.Activation;
             
             %SELFDOT1
             %r from selfdot1 to neighbor dot1
@@ -80,11 +80,28 @@ classdef ThreeDotCell < QCACell
             %r from selfdot1 to neighbor dot3
             r33 = norm(selfDotPos(3,:)-neighborDotPos(3,:),3);
             
-            Potential_on_dot1 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q1*r11 + neighbor_q1*r12 + neighbor_q1*r13 );
-            Potential_on_dot2 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q2*r21 + neighbor_q2*r22 + neighbor_q2*r23 );
-            Potential_on_dot3 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q3*r31 + neighbor_q3*r32 + neighbor_q3*r33 );
+            Potential_on_dot1 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q1/r11 + neighbor_q1/r12 + neighbor_q1/r13 );
+            Potential_on_dot2 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q2/r21 + neighbor_q2/r22 + neighbor_q2/r23 );
+            Potential_on_dot3 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q3/r31 + neighbor_q3/r32 + neighbor_q3/r33 );
 
             pot = [Potential_on_dot1; Potential_on_dot2; Potential_on_dot3;];
+            
+        end
+        
+        function pot = Potential(self, obsvPoint )
+            qe=1;
+            epsilon_0 = 8.854E-12; % [C/(V*m)]
+            qeC2e = -1.60217662E-19;% J
+            
+            selfDotPos = getDotPosition(self);
+            numberofDots = size(selfDotPos, 1);
+            
+            
+            charge = qe*self.Activation*[(1/2)*(1-self.Polarization);-1;(1/2)*(self.Polarization+1)]; %[eV]
+            
+            displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
+            distance = sqrt( sum(displacementVector.^2, 2) );
+            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9)); 
             
         end
         
