@@ -89,6 +89,7 @@ classdef ThreeDotCell < QCACell
         end
         
         function pot = Potential(obj, obsvPoint )
+            %returns the potential at a given observation point.
             qe=1;
             epsilon_0 = 8.854E-12; % [C/(V*m)]
             qeC2e = -1.60217662E-19;% J
@@ -102,6 +103,49 @@ classdef ThreeDotCell < QCACell
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
             pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9)); 
+            
+        end
+        
+        function V_neighbors = neighborPotential(obj, obj2) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
+            %returns the potential of a neighborCell
+            
+            %find out who the neighbors are (decide between giving this func the list of all neighbors or having this func figure that out. for now just 1 neighbor)
+            %possible option of asking the QCACircuit obj.
+            
+            %find the potential at each dot then. self1 + self2 + self3.
+            
+            objDotPosition = obj.getDotPosition();
+            V_neighbors = zeros(size(objDotPosition,1),1);
+            
+            for x = 1:length(objDotPosition)
+                V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:) );
+            end
+
+            
+            
+        end
+        
+        function delta = cellDetuning(obj)
+            driver = ThreeDotCell();
+            driver.Polarization = -1;
+            
+            E1 = (-1)*obj.neighborPotential(driver);
+            
+            driver.Polarization = 1;
+            
+            E0 = (-1)*obj.neighborPotential(driver);
+            
+            delta = E1-E0;
+            
+        end
+        
+        function hamiltonian = getHamiltonian(obj)
+            
+            hamiltonian = eye(size(obj.getDotPosition,1))*cellDetuning(obj);
+            
+            gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];
+            
+            hamiltonian = hamiltonian + gammaMatrix;
             
         end
         

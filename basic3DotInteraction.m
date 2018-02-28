@@ -10,6 +10,7 @@ qe = 1; %[eV]
 
 %% Parameters
 a = 10; %[nm]
+gamma = 10;
 
 k = 1/(4*pi* epsilon_0*qeV2J*a);
 
@@ -45,7 +46,17 @@ testCell.Activation = 1;
 
 
 point = [0,0.3,0.3];
-testCell.Potential(point)
+testCell.Potential(point);
+
+
+
+
+%testing getHamiltonian.
+[V, EE] = eig(node1.getHamiltonian())
+psi = V(1,:) %ground state
+
+%modify gamma, pdrv, adrv and see if everything is correct.
+
 
 
 

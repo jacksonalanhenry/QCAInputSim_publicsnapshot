@@ -14,6 +14,8 @@ classdef QCACell
                          %      relative to cell center
         CharacteristicLength = 1; % [nm]
         
+        Gamma = 0.01; % [eV]
+        
         %Electric Field
         
     end
@@ -64,7 +66,7 @@ classdef QCACell
             % R = Q.getDotPosition returns the absolute coordinates of the
             % dots of cell Q
             % 
-            % If Q has n dots, then Ris a n-by-3 matrix, with the kth row
+            % If Q has n dots, then R is a n-by-3 matrix, with the kth row
             % representing the xyz-triple for th kth dot
             
             %number of rows in obj.DotPosition
