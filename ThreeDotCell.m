@@ -149,6 +149,17 @@ classdef ThreeDotCell < QCACell
             
         end
         
+        function obj = tempDraw(obj, varargin)
+            targetAxes = [];
+            a= obj.CharacteristicLength;
+            r= obj.CenterPosition;
+            x=a*.25*[-1,1,1,-1] + r(1);
+            y=a*.625*[1,1,-1,-1] + r(2);
+            %r(3) would be in the z direction
+            
+            patch(x,y,'r');
+        end
+        
     end
     
 end
