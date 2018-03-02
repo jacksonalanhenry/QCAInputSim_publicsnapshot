@@ -74,8 +74,8 @@ classdef ThreeDotCell < QCACell
             
         end
         
-        function delta = cellDetuning(obj) %Kink Energy right now
-            driver = ThreeDotCell();
+        function delta = cellDetuning(obj, obj2) % get detuning due to 1 neighbor
+            driver = obj2;
             driver.Polarization = -1;
             
             E1 = (-1)*obj.neighborPotential(driver);
@@ -88,7 +88,12 @@ classdef ThreeDotCell < QCACell
             
         end
             
-        function hamiltonian = getHamiltonian(obj)
+        function hamiltonian = GetHamiltonian(obj, neighborList) %add small neighborlist functionality
+            
+            %step through the neighbor list and accumulate neighbor
+            %potentials
+            %do V_neighbor through whole neighbor list.
+            %to get true delta accululate delta for everything around it.
             
             hamiltonian = eye(size(obj.getDotPosition,1))*cellDetuning(obj);
             
@@ -122,4 +127,12 @@ classdef ThreeDotCell < QCACell
     end
     
 end
+
+% make a neighbor list.
+%QCACiruit: assign neighbors (based on center-center distance)
+    %testing just assign neightbors
+% QCACell
+    %NeighborList [unique cell ID's]
+    
+
 
