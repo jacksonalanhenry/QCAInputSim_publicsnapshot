@@ -39,7 +39,6 @@ classdef ThreeDotCell < QCACell
         
         
         function pot = Potential(obj, obsvPoint )
-            %returns the potential at a given observation point.
             qe=1;
             epsilon_0 = 8.854E-12; % [C/(V*m)]
             qeC2e = -1.60217662E-19;% J
@@ -55,7 +54,7 @@ classdef ThreeDotCell < QCACell
             pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9)); 
             
         end
-        
+
         function V_neighbors = neighborPotential(obj, obj2) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
             %returns the potential of a neighborCell
             
@@ -88,7 +87,7 @@ classdef ThreeDotCell < QCACell
             delta = E1-E0;
             
         end
-        
+            
         function hamiltonian = getHamiltonian(obj)
             
             hamiltonian = eye(size(obj.getDotPosition,1))*cellDetuning(obj);
@@ -119,7 +118,7 @@ classdef ThreeDotCell < QCACell
             end
             
         end
-        
+              
     end
     
 end
