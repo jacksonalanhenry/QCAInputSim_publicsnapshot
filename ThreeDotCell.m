@@ -157,7 +157,7 @@ classdef ThreeDotCell < QCACell
             y=a*.625*[1,1,-1,-1] + r(2);
             %r(3) would be in the z direction
             
-            patch(x,y,'r');5126585551
+            patch(x,y,'r');
             
             if length(varargin)==1
                 targetAxes = varargin{1};

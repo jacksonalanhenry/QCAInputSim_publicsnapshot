@@ -27,7 +27,8 @@ classdef TEMPQCACircuitClass
             end
             k=length(obj.Device);
             for cellIdx=1:k
-               obj.Device{k} = obj.Device{k}.tempDraw(targetAxes);
+               obj.Device{cellIdx} = ...
+                   obj.Device{cellIdx}.tempDraw(targetAxes);
                 
             end
             
