@@ -2,6 +2,9 @@
 % Author: Jackson Henry
 % 6 Dot QCA Cells
 
+clear all;
+close all;
+
 %% Constants
 
 epsilon_0 = 8.854E-12; % [C/(V*m)]     
@@ -50,10 +53,13 @@ testCell.Potential(point);
 
 
 
-
+node1.Polarization = -1;
 %testing getHamiltonian.
 [V, EE] = eig(node1.getHamiltonian())
 psi = V(1,:) %ground state
+
+% Polarization is the expectation value of sigma_z
+P = psi' * kron(sz,IN) * psi;
 
 %modify gamma, pdrv, adrv and see if everything is correct.
 

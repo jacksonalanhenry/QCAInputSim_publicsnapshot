@@ -38,56 +38,6 @@ classdef ThreeDotCell < QCACell
         end
         
         
-        function pot = getPotential( obj, neighbor )
-            %get the polarization due to driver. 
-            
-           
-            epsilon_0 = 8.854E-12; % [C/(V*m)]
-            
-            qeV2J = 1.60217662E-19;% J
-            
-            qe = 1; % [eV]
-
-            
-            neighborDotPos = getDotPosition(neighbor);
-            selfDotPos = getDotPosition(obj);
-            
-            
-            neighbor_q1 = (qe/2)*(1-neighbor.Polarization)*neighbor.Activation;
-            neighbor_q2 = 1 - neighbor.Activation;
-            neighbor_q3 = (qe/2)*(neighbor.Polarization+1)*neighbor.Activation;
-            
-            %SELFDOT1
-            %r from selfdot1 to neighbor dot1
-            r11 = norm(selfDotPos(1,:)-neighborDotPos(1,:),3);
-            %r from selfdot1 to neighbor dot2
-            r12 = norm(selfDotPos(1,:)-neighborDotPos(2,:),3);
-            %r from selfdot1 to neighbor dot3
-            r13 = norm(selfDotPos(1,:)-neighborDotPos(3,:),3);
-            
-            %SELFDOT2
-            r21 = norm(selfDotPos(2,:)-neighborDotPos(1,:),3);
-            %r from selfdot1 to neighbor dot2
-            r22 = norm(selfDotPos(2,:)-neighborDotPos(2,:),3);
-            %r from selfdot1 to neighbor dot3
-            r23 = norm(selfDotPos(2,:)-neighborDotPos(3,:),3);
-            
-            %SELFDOT3
-            %r from selfdot1 to neighbor dot1
-            r31 = norm(selfDotPos(3,:)-neighborDotPos(1,:),3);
-            %r from selfdot1 to neighbor dot2
-            r32= norm(selfDotPos(3,:)-neighborDotPos(2,:),3);
-            %r from selfdot1 to neighbor dot3
-            r33 = norm(selfDotPos(3,:)-neighborDotPos(3,:),3);
-            
-            Potential_on_dot1 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q1/r11 + neighbor_q1/r12 + neighbor_q1/r13 );
-            Potential_on_dot2 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q2/r21 + neighbor_q2/r22 + neighbor_q2/r23 );
-            Potential_on_dot3 = (1/(4*pi*epsilon_0*qeV2J))*( neighbor_q3/r31 + neighbor_q3/r32 + neighbor_q3/r33 );
-
-            pot = [Potential_on_dot1; Potential_on_dot2; Potential_on_dot3;];
-            
-        end
-        
         function pot = Potential(obj, obsvPoint )
             %returns the potential at a given observation point.
             qe=1;
@@ -125,7 +75,7 @@ classdef ThreeDotCell < QCACell
             
         end
         
-        function delta = cellDetuning(obj)
+        function delta = cellDetuning(obj) %Kink Energy right now
             driver = ThreeDotCell();
             driver.Polarization = -1;
             
