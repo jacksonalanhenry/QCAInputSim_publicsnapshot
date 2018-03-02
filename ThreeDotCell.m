@@ -105,20 +105,19 @@ classdef ThreeDotCell < QCACell
             
         end
             
-            function obj = ThreeDotDraw(obj,targetAxes)
-                L = obj.length;
-                P = obj.position;
-                x = a*.25*[-1, 1, 1, -1] + P(1); % x-coordinate of corners
-                y = a*.5*[1, 1, -1, -1] + P(2); % y-coordinate of corners
-                
-                % P(1) is the x-direction, P(2) is the y-direction, 
-                % P(3) is the z- direction
-           
-                axes(targetAxes);
-                patch(x, y, 'p');
+        function obj = ThreeDotDraw(obj,targetAxes)
+            L = obj.length;
+            P = obj.position;
+            x = a*.25*[-1, 1, 1, -1] + P(1); % x-coordinate of corners
+            y = a*.5*[1, 1, -1, -1] + P(2); % y-coordinate of corners
+            
+            % P(1) is the x-direction, P(2) is the y-direction,
+            % P(3) is the z- direction
+            
+            axes(targetAxes);
+            patch(x, y, 'p');
         end
-        
-        
+              
     end
     
 end
