@@ -16,6 +16,23 @@ classdef TEMPQCACircuitClass
             obj.Device{k+1}=newDevice;            
         end
         
+        function obj = DrawCircuit (obj,varargin)
+           % targetAxes=[];
+            if length(varargin)==1
+               targetAxes = varargin{1};
+               axes(targetAxes);  %sets target axes as current axes 
+               
+            else
+                targetAxes=axes;               
+            end
+            k=length(obj.Device);
+            for cellIdx=1:k
+               obj.Device{k} = obj.Device{k}.tempDraw(targetAxes);
+                
+            end
+            
+        end
+        
     
     end
     
