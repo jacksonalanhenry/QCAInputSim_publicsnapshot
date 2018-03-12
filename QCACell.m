@@ -50,6 +50,14 @@ classdef QCACell
             
         end
         
+        function obj = set.Type(obj,value)
+            if (~isequal(value, 'Driver') && ~isequal(value,'Node'))
+                error('Invalid Type. Must be Driver or Node')
+            else
+                obj.Type = value;
+            end
+        end
+        
         function obj = translateCell(obj,TranslationVect)
             % Q = Q.translateCell( TranslationVect )
             %
@@ -60,7 +68,6 @@ classdef QCACell
             obj.Position = obj.CenterPosition + TranslationVect;
             
         end
-        
         
         function TrueDotPosition = getDotPosition( obj )
             % R = Q.getDotPosition returns the absolute coordinates of the
@@ -77,6 +84,8 @@ classdef QCACell
                     obj.CharacteristicLength*obj.DotPosition;
         
         end
+        
+
         
     end
     

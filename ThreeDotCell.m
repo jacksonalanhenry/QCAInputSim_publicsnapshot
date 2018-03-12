@@ -37,6 +37,15 @@ classdef ThreeDotCell < QCACell
             obj.DotPosition = DotPosition;
         end
         
+        function obj = set.Polarization(obj,value)
+            if (~isnumeric(value) || value < -1 || value > 1) %value must be numeric in between -1 and 1
+                error('Invalid Polarization. Must be a number inbetween -1 and 1')
+            else
+                obj.Polarization = value;
+                
+            end
+        end
+        
         
         function pot = Potential(obj, obsvPoint )
             qe=1;
@@ -75,16 +84,15 @@ classdef ThreeDotCell < QCACell
         end
         
         function delta = cellDetuning(obj, obj2) % get detuning due to 1 neighbor
-            driver = obj2;
-            driver.Polarization = -1;
+            driver = obj2;                           %copy obj2 into driver
             
-            E1 = (-1)*obj.neighborPotential(driver);
+            driver.Polarization = -1;                %change polarization
+            E1 = (-1)*obj.neighborPotential(driver); %get E in state 0
             
-            driver.Polarization = 1;
+            driver.Polarization = 1;                 %change polarization
+            E0 = (-1)*obj.neighborPotential(driver); %get E in state 1
             
-            E0 = (-1)*obj.neighborPotential(driver);
-            
-            delta = E1-E0;
+            delta = E1-E0;                           %calculate Delta.
             
         end
             
@@ -93,9 +101,20 @@ classdef ThreeDotCell < QCACell
             %step through the neighbor list and accumulate neighbor
             %potentials
             %do V_neighbor through whole neighbor list.
-            %to get true delta accululate delta for everything around it.
+            %to get true delta calculate delta for everything around it.
             
-            hamiltonian = eye(size(obj.getDotPosition,1))*cellDetuning(obj);
+            objDotpotential = zeros(size(obj.DotPosition,1),1);
+            objDelta = 0;
+            
+            for x = 1:size(neighborList,1)
+                objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x})
+                objDelta = objDelta + obj.cellDetuning(neighborList{x})
+                
+            end
+            
+            hamiltonian = eye(size(objDotpotential,1))*objDelta;
+            
+            %hamiltonian = eye(size(obj.getDotPosition,1))*cellDetuning(obj);
             
             gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];
             

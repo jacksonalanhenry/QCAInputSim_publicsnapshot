@@ -54,9 +54,8 @@ node1.Potential(point);
 
 
 
-
 %testing getHamiltonian.
-[V, EE] = eig(node2.GetHamiltonian());
+[V, EE] = eig(node2.GetHamiltonian({Driver}));
 psi = V(:,1); %ground state
 
 % Polarization is the expectation value of sigma_z
@@ -64,7 +63,6 @@ P = psi' * Z * psi
 A = 1 - psi' * Pnn * psi 
 
 %modify gamma, pdrv, adrv and see if everything is correct.
-
 
 
 
