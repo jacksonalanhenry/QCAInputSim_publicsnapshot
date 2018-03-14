@@ -24,13 +24,14 @@ k = 1/(4*pi* epsilon_0*qeV2J*a);
 Driver = ThreeDotCell(); %Spelled out super hard for now
 Driver.Type = 'Driver';  %make it type driver
 Driver.Polarization = -1; %make polarization -1
-Driver.Activation = 1;   %make activation 1
+Driver.Activation = 1; %make activation 1 
 Driver.CenterPosition = [0,0,0];
+
 
 %Now make a Node position 1,0,0
 node2 = ThreeDotCell(); %defaults are good for the most part
 node2.CenterPosition = [1,0,0];
-
+node2.ElectricField = [0,0,-1];
 
 
 one = [0;0;1];
@@ -39,18 +40,6 @@ zero = [1;0;0];
 
 Z = one*one' - zero*zero';
 Pnn = null*null';
-
-%test P=1 and P=-1 and check for opposite equality to verify kink energy
-A = 1;
-P = 1;
-DeltaV = (1-1/sqrt(2))*k*qe*A*P;
-
-node1 = ThreeDotCell();
-node1.Type = 'Driver';
-node1.Polarization = -1;
-node1.Activation = 1;
-point = [0,0.3,0.3];
-node1.Potential(point);
 
 
 

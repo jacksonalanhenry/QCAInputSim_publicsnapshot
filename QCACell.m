@@ -16,7 +16,8 @@ classdef QCACell
         
         Gamma = 0.01; % [eV]
         
-        %Electric Field
+        ElectricField = [0, 0, 0]; %Electric Field [V/nm]
+        
         
     end
     

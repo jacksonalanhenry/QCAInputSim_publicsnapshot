@@ -84,19 +84,20 @@ classdef ThreeDotCell < QCACell
         end
         
         function delta = cellDetuning(obj, obj2) % get detuning due to 1 neighbor
-            driver = obj2;                           %copy obj2 into driver
+            E1 = (-1)*obj.neighborPotential(obj2); %get E in state 0
             
-            driver.Polarization = -1;                %change polarization
-            E1 = (-1)*obj.neighborPotential(driver); %get E in state 0
+            delta = E1(3,1)-E1(1,1);                           %calculate Delta. E1(1,3)-E(1,1)
             
-            driver.Polarization = 1;                 %change polarization
-            E0 = (-1)*obj.neighborPotential(driver); %get E in state 1
-            
-            delta = E1-E0;                           %calculate Delta.
+%             one = [0;0;1];
+%             zero = [1;0;0];
+%             delta = sum(one'*(-1 * obj.neighborPotential(obj2))*one - zero'*(-1 * obj.neighborPotential(obj2))*zero);
+
             
         end
             
         function hamiltonian = GetHamiltonian(obj, neighborList) %add small neighborlist functionality
+            
+
             
             %step through the neighbor list and accumulate neighbor
             %potentials
@@ -108,17 +109,19 @@ classdef ThreeDotCell < QCACell
             
             for x = 1:size(neighborList,1)
                 objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x})
-                objDelta = objDelta + obj.cellDetuning(neighborList{x})
-                
+                %objDelta = objDelta + obj.cellDetuning(neighborList{x})
+
             end
-            
-            hamiltonian = eye(size(objDotpotential,1))*objDelta;
-            
-            %hamiltonian = eye(size(obj.getDotPosition,1))*cellDetuning(obj);
-            
+
             gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];
             
-            hamiltonian = hamiltonian + gammaMatrix;
+            
+            hamiltonian = -diag(objDotpotential) + gammaMatrix;
+            
+            h = abs(obj.DotPosition(2,3)-obj.DotPosition(1,3));
+            
+            hamiltonian(2,2) =+ -obj.ElectricField(1,3)*h %add clock E
+
             
         end
         
