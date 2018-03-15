@@ -59,6 +59,14 @@ classdef QCACell
             end
         end
         
+        function obj = set.ElectricField(obj,value)
+            if (isequal(size(obj.ElectricField), size(value)))
+                obj.ElectricField = value;
+            else
+                error('Electric field must by [x,y,z]')
+            end
+        end
+        
         function obj = translateCell(obj,TranslationVect)
             % Q = Q.translateCell( TranslationVect )
             %

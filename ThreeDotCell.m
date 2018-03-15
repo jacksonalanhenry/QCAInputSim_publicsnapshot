@@ -100,7 +100,7 @@ classdef ThreeDotCell < QCACell
             
             hamiltonian(2,2) =+ -obj.ElectricField(1,3)*h; %add clock E
 
-            
+        
         end
         
         function obj = tempDraw(obj, varargin)
