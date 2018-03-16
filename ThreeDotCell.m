@@ -86,9 +86,8 @@ classdef ThreeDotCell < QCACell
             
             objDotpotential = zeros(size(obj.DotPosition,1),1);
             
-            for x = 1:size(neighborList,1)
+            for x = 1:size(neighborList,2)
                 objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x});
-
             end
 
             gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];

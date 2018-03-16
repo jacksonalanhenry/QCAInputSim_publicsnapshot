@@ -19,7 +19,7 @@ zero = [1;0;0];
 
 %% Parameters
 a = 10; %[nm]
-gamma = 10;
+gamma = 60;
 
 k = 1/(4*pi* epsilon_0*qeV2J*a);
 
@@ -33,10 +33,15 @@ Pnn = null*null';
 %Start with a Driver at position 0,0,0
 Driver = ThreeDotCell(); %Spelled out super hard for now
 Driver.Type = 'Driver';  %make it type driver
-Driver.Polarization = -1; %make polarization -1
+Driver.Polarization = 1; %make polarization -1
 Driver.Activation = 1; %make activation 1 
 Driver.CenterPosition = [0,0,0];
 
+Driver2 = ThreeDotCell(); 
+Driver2.Type = 'Driver';  
+Driver2.Polarization = 1; 
+Driver2.Activation = 1;  
+Driver2.CenterPosition = [2,0,0];
 
 %Now make a Node position 1,0,0
 node2 = ThreeDotCell(); %defaults are good for the most part
@@ -74,29 +79,28 @@ for x=1:dt
 end %x
 
 
+%testing getHamiltonian.
+[V, EE] = eig(node2.GetHamiltonian({Driver, Driver2}));
+psi = V(:,1); %ground state
 
-% %testing getHamiltonian.
-% [V, EE] = eig(node2.GetHamiltonian({Driver}));
-% psi = V(:,1); %ground state
-% 
-% % Polarization is the expectation value of sigma_z
-% P = psi' * Z * psi;
-% A = 1 - psi' * Pnn * psi;
-% 
-% %modify gamma, pdrv, adrv and see if everything is correct.
+% Polarization is the expectation value of sigma_z
+P = psi' * Z * psi
+A = 1 - psi' * Pnn * psi
+
+%modify gamma, pdrv, adrv and see if everything is correct.
 
 
 %% Visualization
 
-figure
-pcolor(Pdrv, Efield, P);
-
-c = colorbar;
-
-shading interp
-grid on;
-set(gca, 'FontSize', 18, 'Fontname', 'Times');
-ylabel('$E_z$ [V/nm]', 'Interpreter', 'latex');
-xlabel('$P_{drv}$', 'Interpreter', 'latex');
-zlabel('$P_{tgt}$', 'Interpreter', 'latex');
+% figure
+% pcolor(Pdrv, Efield, P);
+% 
+% c = colorbar;
+% 
+% shading interp
+% grid on;
+% set(gca, 'FontSize', 18, 'Fontname', 'Times');
+% ylabel('$E_z$ [V/nm]', 'Interpreter', 'latex');
+% xlabel('$P_{drv}$', 'Interpreter', 'latex');
+% zlabel('$P_{tgt}$', 'Interpreter', 'latex');
 
