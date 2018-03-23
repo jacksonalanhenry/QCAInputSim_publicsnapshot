@@ -28,8 +28,11 @@ classdef QCACircuit
             obj.Device{n_old+1}.CellID = length(obj.Device);
             
         end
-        
-        
+
+            
+%         function obj = addNode(obj, newcell)
+%             obj.Device{length(obj.Device)+1}=newcell
+%         end
         
         function NeighborCheck( obj ) %Checks for each cell
             
@@ -51,13 +54,12 @@ classdef QCACircuit
                 
             end
             
-        end
-        
+        end   
         
         function obj = CircuitDraw(obj, targetAxes)
             hold on
             for CellIndex = 1:length(obj.Device)
-                obj.Devcice{CellIndex} = obj.Device{CellIndex}.ThreeDotDraw(targetAxes);
+                obj.Device{CellIndex} = obj.Device{CellIndex}.tempDraw(targetAxes);
                 
             end
             
@@ -80,9 +82,7 @@ classdef QCACircuit
                         sref = builtin('subsref',obj,s);
                     end
             end
-        end
-        
-        
+        end 
         
         function obj = subasgn(obj,s,val)
             if isempty(s) && isa(val,'QCACircuit')
