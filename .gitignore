@@ -1,0 +1,7 @@
+#Local testbed.
+#Create this file if you want a testbed to play in without it ever being
+#uploaded to the git repo
+localtestBed.m
+
+#Mac stuff
+.DS_Store
