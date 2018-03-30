@@ -2,13 +2,32 @@ classdef ThreeDotCell < QCACell
     %ThreeDotCell Defines ThreeDotCell subclass of QCACell
     %   Detailed explanation goes here
     
+    
+    properties (Constant) %Helpful Constants used in ThreeDotCell
+        
+        %basis States
+        one  = [0;0;1];
+        null = [0;1;0];
+        zero = [1;0;0];
+        
+        %helpful operators
+        Z = [-1 0 0; 0 0 0; 0 0 1];
+        Pnn = [0 0 0; 0 1 0; 0 0 0 ];
+        
+        %some constants
+        qe=1;
+        epsilon_0 = 8.854E-12; % [C/(V*m)]
+        qeC2e = -1.60217662E-19;% J
+
+    end
+    
     properties
         Polarization = 0;
         Activation = 1;
-        
-        
-        
+        Hamiltonian = zeros(3);
+ 
     end
+    
     
     methods
         function obj = ThreeDotCell( varargin )
@@ -47,19 +66,17 @@ classdef ThreeDotCell < QCACell
         end
         
         function pot = Potential(obj, obsvPoint )
-            qe=1;
-            epsilon_0 = 8.854E-12; % [C/(V*m)]
-            qeC2e = -1.60217662E-19;% J
+            
             
             selfDotPos = getDotPosition(obj);
             numberofDots = size(selfDotPos, 1);
             
             
-            charge = qe*obj.Activation*[(1/2)*(1-obj.Polarization);-1;(1/2)*(obj.Polarization+1)]; %[eV]
+            charge = obj.qe*obj.Activation*[(1/2)*(1-obj.Polarization);-1;(1/2)*(obj.Polarization+1)]; %[eV]
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
-            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9)); 
+            pot = (1/(4*pi*obj.epsilon_0)*obj.qeC2e)*sum(charge./(distance*1E-9)); 
             
         end
 
@@ -82,7 +99,7 @@ classdef ThreeDotCell < QCACell
             
         end
             
-        function hamiltonian = GetHamiltonian(obj, neighborList)
+        function hamiltonian = GetHamiltonian(obj, neighborList) 
             
             objDotpotential = zeros(size(obj.DotPosition,1),1);
             
@@ -102,7 +119,21 @@ classdef ThreeDotCell < QCACell
         
         end
         
-        
+        function obj = Calc_Polarization_Activation(obj)
+            if( strcmp(obj.Type , 'Driver' ))
+                %don't try to relax this cell
+            else
+                %relax
+                %testing getHamiltonian.
+                [V, EE] = eig(obj.Hamiltonian);
+                psi = V(:,1); %ground state
+                
+                % Polarization is the expectation value of sigma_z
+                obj.Polarization = psi' * obj.Z * psi;
+                obj.Activation = 1 - psi' * obj.Pnn * psi;
+            end
+            
+        end
         
         
         function obj = tempDraw(obj, varargin)
@@ -113,9 +144,9 @@ classdef ThreeDotCell < QCACell
             y=a*.625*[1,1,-1,-1] + r(2);
             %r(3) would be in the z direction
             
-            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.625, [1 1 1]);
-            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.625, [1 1 1]);
-            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.625, [1 1 1]);
+            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.0625, [1 1 1]);
+            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.0625, [1 1 1]);
+            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.0625, [1 1 1]);
             
             patch(x,y,'r');
             

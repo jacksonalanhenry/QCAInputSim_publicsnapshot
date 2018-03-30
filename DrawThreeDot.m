@@ -1,8 +1,16 @@
 function d = DrawThreeDot(CenterPosition)
 
-c1 = circle(CenterPosition(1), CenterPosition(2), 0.5, [1 0 1]);
-c2 = circle(CenterPosition(1), CenterPosition(2)+2, 0.5, [1 0 1]);
-c3 = circle(CenterPosition(1), CenterPosition(2)+4, 0.5, [1 0 1]);
+c1 = circle(CenterPosition(1), CenterPosition(2), 0.5, [1 1 1]);
+c2 = circle(CenterPosition(1), CenterPosition(2)+2, 0.5, [1 1 1]);
+c3 = circle(CenterPosition(1), CenterPosition(2)+4, 0.5, [1 1 1]);
+
+%draw electron
+
+
+
+c1 = circle(CenterPosition(1), CenterPosition(2)+4, 0.7*0.5, [1 0 0]);
+
+
 
 hold on;
 

@@ -6,6 +6,8 @@ classdef QCACircuit
     properties
         Device = {}; % QCA CELL ARRAY
         RefinedDevice = {};
+        GroundState = [];
+        
     end
     
     methods
@@ -106,7 +108,41 @@ classdef QCACircuit
             end
         end
         
+        function obj = Relax2GroundState(obj)
+        %iterate to self consistent instantaeous ground state
+        
+            NewPolarization = ones(1,length(obj.Device));
 
+            converganceTolerance = 1;
+            while(converganceTolerance > 0.001)
+                OldPolarization = NewPolarization
+                
+                for x = 1:length(obj.Device)
+
+                    if( strcmp(obj.Device{x}.Type , 'Driver' ))
+                        %don't try to relax this cell
+                    else
+                        %relax
+
+                        neighborList = obj.Device(obj.Device{x}.NeighborList);
+                        %calculate hamiltonian
+                        hamiltonian = obj.Device{x}.GetHamiltonian(neighborList);
+                        obj.Device{x}.Hamiltonian = hamiltonian;
+                        %calculate Polarization and Activation of Cells in
+                        %Circuit
+                        obj.Device{x} = obj.Device{x}.Calc_Polarization_Activation();
+                        
+                    end
+                    NewPolarization(x) = abs(obj.Device{x}.Polarization);
+                    %DeltaPolarization(x) = DeltaPolarization(x) - abs(obj.Device{x}.Polarization)
+                    
+                end
+                
+                DeltaPolarization = OldPolarization - NewPolarization
+                converganceTolerance = max(DeltaPolarization)
+                
+            end
+        end
         
         
     end
