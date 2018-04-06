@@ -71,6 +71,14 @@ classdef QCACircuit
                     sref = builtin('subsref',obj,s);
                 case '()'
                     
+                    if length(s) < 2
+                        s.type = '{}';
+                        sref = builtin('subsref',obj.Device,s);
+                        return
+                    else
+                        s(1).type = '{}';
+                        sref = builtin('subsref',obj.Device,s);
+                    end
                 case '{}'
                     if length(s) < 2
                         sref = builtin('subsref',obj.Device,s);
