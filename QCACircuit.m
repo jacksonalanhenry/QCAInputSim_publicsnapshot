@@ -31,11 +31,6 @@ classdef QCACircuit
             
         end
 
-            
-%         function obj = addNode(obj, newcell)
-%             obj.Device{length(obj.Device)+1}=newcell
-%         end
-        
         function NeighborCheck( obj ) %Checks for each cell
             
             obj.RefinedDevice = obj.Device;
@@ -143,7 +138,6 @@ classdef QCACircuit
                 
             end
         end
-        
         
     end
     
