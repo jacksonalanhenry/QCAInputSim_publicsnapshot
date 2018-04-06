@@ -135,8 +135,7 @@ classdef ThreeDotCell < QCACell
             
         end
         
-        
-        function obj = tempDraw(obj, varargin)
+        function obj = ThreeDotColorDraw(obj, varargin)
             targetAxes = [];
             a= obj.CharacteristicLength;
             r= obj.CenterPosition;
@@ -150,8 +149,8 @@ classdef ThreeDotCell < QCACell
             cell_patch.FaceColor = faceColor;
             
             c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125, [1 1 1]);
-            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.125, [1 1 1]);
-            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.125, [1 1 1]);
+            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125, [1 1 1]);
+            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 1 1]);
             
             
             
@@ -168,7 +167,6 @@ classdef ThreeDotCell < QCACell
         
         function color = getFaceColor(obj)
             pol = obj.Polarization;
-            %color = [0.5 0.95 0.5];
             if(pol < 0)
                 %color = [abs(pol) 0 0];
                 color = [1-abs(pol) 1 1-abs(pol)];
@@ -177,10 +175,7 @@ classdef ThreeDotCell < QCACell
                 color = [1 1-abs(pol) 1-abs(pol)];
             else
                 color = [1 1 1];
-            end
-            
-            %good red = [1 0 0]
-            %good green = [0 1 0]
+            end  
         end
         
         

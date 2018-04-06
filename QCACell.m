@@ -9,7 +9,7 @@ classdef QCACell
     properties
         CellID = 0; % Unique Cell identifier
         Type = 'node';% Driver/Node
-        CenterPosition = [ 0, 0, 0]; % poisiton of the cell center
+        CenterPosition = [0, 0, 0]; % poisiton of the cell center
         DotPosition = []; % [*CharacteristicLength] positions of dots 
                          %      relative to cell center
         CharacteristicLength = 1; % [nm]

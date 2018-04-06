@@ -56,12 +56,12 @@ classdef QCACircuit
                 
             end
             
-        end   
+        end
         
         function obj = CircuitDraw(obj, targetAxes)
             hold on
             for CellIndex = 1:length(obj.Device)
-                obj.Device{CellIndex} = obj.Device{CellIndex}.tempDraw(targetAxes);
+                obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotColorDraw(targetAxes);
                 
             end
             
