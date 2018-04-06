@@ -115,7 +115,7 @@ classdef QCACircuit
 
             converganceTolerance = 1;
             while(converganceTolerance > 0.001)
-                OldPolarization = NewPolarization
+                OldPolarization = NewPolarization;
                 
                 for x = 1:length(obj.Device)
 
@@ -138,8 +138,8 @@ classdef QCACircuit
                     
                 end
                 
-                DeltaPolarization = OldPolarization - NewPolarization
-                converganceTolerance = max(DeltaPolarization)
+                DeltaPolarization = OldPolarization - NewPolarization;
+                converganceTolerance = max(abs(DeltaPolarization));
                 
             end
         end

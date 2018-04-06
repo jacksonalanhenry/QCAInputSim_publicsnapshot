@@ -14,10 +14,6 @@ classdef ThreeDotCell < QCACell
         Z = [-1 0 0; 0 0 0; 0 0 1];
         Pnn = [0 0 0; 0 1 0; 0 0 0 ];
         
-        %some constants
-        qe=1;
-        epsilon_0 = 8.854E-12; % [C/(V*m)]
-        qeC2e = -1.60217662E-19;% J
 
     end
     
@@ -66,17 +62,20 @@ classdef ThreeDotCell < QCACell
         end
         
         function pot = Potential(obj, obsvPoint )
-            
+            import QCALayoutPack.*
+            qe = QCA_Constants.qe;
+            epsilon_0 = QCA_Constants.epsilon_0;
+            qeC2e = QCA_Constants.qeC2e;
             
             selfDotPos = getDotPosition(obj);
             numberofDots = size(selfDotPos, 1);
             
             
-            charge = obj.qe*obj.Activation*[(1/2)*(1-obj.Polarization);-1;(1/2)*(obj.Polarization+1)]; %[eV]
+            charge = qe*obj.Activation*[(1/2)*(1-obj.Polarization);-1;(1/2)*(obj.Polarization+1)]; %[eV]
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
-            pot = (1/(4*pi*obj.epsilon_0)*obj.qeC2e)*sum(charge./(distance*1E-9)); 
+            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9)); 
             
         end
 
@@ -125,6 +124,7 @@ classdef ThreeDotCell < QCACell
             else
                 %relax
                 %testing getHamiltonian.
+                
                 [V, EE] = eig(obj.Hamiltonian);
                 psi = V(:,1); %ground state
                 
@@ -144,11 +144,16 @@ classdef ThreeDotCell < QCACell
             y=a*.625*[1,1,-1,-1] + r(2);
             %r(3) would be in the z direction
             
-            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.0625, [1 1 1]);
-            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.0625, [1 1 1]);
-            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.0625, [1 1 1]);
             
-            patch(x,y,'r');
+            cell_patch = patch(x,y,'r');
+            faceColor = getFaceColor(obj);
+            cell_patch.FaceColor = faceColor;
+            
+            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125, [1 1 1]);
+            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.125, [1 1 1]);
+            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.125, [1 1 1]);
+            
+            
             
             if length(varargin)==1
                 targetAxes = varargin{1};
@@ -160,7 +165,25 @@ classdef ThreeDotCell < QCACell
             end
             
         end
-              
+        
+        function color = getFaceColor(obj)
+            pol = obj.Polarization;
+            %color = [0.5 0.95 0.5];
+            if(pol < 0)
+                %color = [abs(pol) 0 0];
+                color = [1-abs(pol) 1 1-abs(pol)];
+            elseif(pol > 0)
+                %color = [0 abs(pol) 0];
+                color = [1 1-abs(pol) 1-abs(pol)];
+            else
+                color = [1 1 1];
+            end
+            
+            %good red = [1 0 0]
+            %good green = [0 1 0]
+        end
+        
+        
     end
     
 end
