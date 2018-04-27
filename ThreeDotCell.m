@@ -158,7 +158,7 @@ classdef ThreeDotCell < QCACell
             faceColor = getFaceColor(obj);
             cell_patch.FaceColor = faceColor;
             
-            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125, [1 1 1]);
+            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*abs(obj.Polarization), [1 1 1]);
             c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125, [1 1 1]);
             c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 1 1]);
             
@@ -188,6 +188,57 @@ classdef ThreeDotCell < QCACell
             end  
         end
         
+        function obj = ThreeDotElectronDraw(obj, varargin)
+            targetAxes = [];
+            a= obj.CharacteristicLength;
+            r= obj.CenterPosition;
+            x=a*.25*[-1,1,1,-1] + r(1);
+            y=a*.625*[1,1,-1,-1] + r(2);
+            %r(3) would be in the z direction
+            
+            
+            cell_patch = patch(x,y,'r');
+            faceColor = getFaceColor(obj);
+            cell_patch.FaceColor = faceColor;
+            
+            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125, [1 1 1]);
+            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125, [1 1 1]);
+            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 1 1]);
+            
+            
+            if obj.Polarization < 0
+                
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125 * (1- abs(obj.Polarization)), [1 0 0]);
+                e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125 * abs(obj.Polarization), [1 0 0]);
+                %e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 0 0]);
+            
+            
+            elseif obj.Polarization == 0
+                
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125, [1 0 0]);
+                %e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125, [1 0 0]);
+                %e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 0 0]);
+         
+            
+            elseif obj.Polarization > 0
+                
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125 * (1- abs(obj.Polarization)), [1 0 0]);
+                %e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125 , [1 0 0]);
+                e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125 * abs(obj.Polarization), [1 0 0]);
+            end
+            
+            
+            
+            if length(varargin)==1
+                targetAxes = varargin{1};
+                axes(targetAxes);
+            end
+            
+            if length(varargin)==1
+                hold off;
+            end
+            
+        end
         
     end
     

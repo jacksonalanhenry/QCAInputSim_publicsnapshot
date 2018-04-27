@@ -56,7 +56,7 @@ classdef QCACircuit
         function obj = CircuitDraw(obj, targetAxes)
             hold on
             for CellIndex = 1:length(obj.Device)
-                obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotColorDraw(targetAxes);
+                obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw(targetAxes);
                 
             end
             
