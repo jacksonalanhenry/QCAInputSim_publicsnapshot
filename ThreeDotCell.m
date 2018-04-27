@@ -99,7 +99,7 @@ classdef ThreeDotCell < QCACell
         end
             
         function hamiltonian = GetHamiltonian(obj, neighborList) 
-            
+            neighborList
             objDotpotential = zeros(size(obj.DotPosition,1),1);
             
             for x = 1:size(neighborList,2)
@@ -112,9 +112,19 @@ classdef ThreeDotCell < QCACell
             hamiltonian = -diag(objDotpotential) + gammaMatrix;
             
             h = abs(obj.DotPosition(2,3)-obj.DotPosition(1,3)); %Field over entire height of cell
+            x = abs(obj.DotPosition(3,1)-obj.DotPosition(1,1));
+            y = abs(obj.DotPosition(3,2)-obj.DotPosition(1,2));
+            length = [x,y,0];
+            
+           
+            inputFieldBias = -obj.ElectricField*length';
+            
             
             hamiltonian(2,2) =+ -obj.ElectricField(1,3)*h; %add clock E
-
+            hamiltonian(1,1) =+ -inputFieldBias/2;%add input field to 0 dot 
+            hamiltonian(3,3) =+ inputFieldBias/2;%add input field to 1 dot
+            
+            hamiltonian
         
         end
         
