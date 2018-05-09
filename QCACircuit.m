@@ -144,7 +144,9 @@ classdef QCACircuit
                 DeltaPolarization = OldPolarization - NewPolarization;
                 converganceTolerance = max(abs(DeltaPolarization));
                 
+                
             end
+            
         end
         
     end
