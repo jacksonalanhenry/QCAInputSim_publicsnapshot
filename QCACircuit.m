@@ -62,7 +62,7 @@ classdef QCACircuit
             
             hold off
         end
-        
+                
         function sref = subsref(obj,s)
             % obj(index) is the same as obj.Device(index)
             

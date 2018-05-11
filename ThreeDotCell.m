@@ -122,8 +122,7 @@ classdef ThreeDotCell < QCACell
             
             hamiltonian(2,2) = hamiltonian(2,2) + -obj.ElectricField(1,3)*h; %add clock E
             hamiltonian(1,1) = hamiltonian(1,1) + (-inputFieldBias)/2;%add input field to 0 dot 
-            hamiltonian(3,3) = hamiltonian(3,3) + inputFieldBias/2;%add input field to 1 dot
-            
+            hamiltonian(3,3) = hamiltonian(3,3) + inputFieldBias/2;%add input field to 1 dot            
             
         
         end
@@ -200,23 +199,23 @@ classdef ThreeDotCell < QCACell
 
             
             %Electron Sites
-            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125, [1 1 1]);
-            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.125, [1 1 1]);
-            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.125, [1 1 1]);
+            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125, [1 1 1],'Points',25);
+            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.125, [1 1 1],'Points',25);
+            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.125, [1 1 1],'Points',25);
             
             
             %Electrons Position Probability
             scalefactor = 0.90;
             if obj.Polarization < 0
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125 * (1 - abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1]);
-                e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.125 * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1]);
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125 * (1 - abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.125 * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
 
             elseif obj.Polarization == 0
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*scalefactor, [1 0 0],'EdgeColor', [1,1,1]);
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
 
             elseif obj.Polarization > 0
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125 * (1- abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1]);
-                e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.125 * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1]);
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125 * (1- abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.125 * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
             end
             
             
@@ -232,6 +231,7 @@ classdef ThreeDotCell < QCACell
             
         end
         
+                
     end
     
 end
