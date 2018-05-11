@@ -191,6 +191,7 @@ classdef ThreeDotCell < QCACell
             targetAxes = [];
             a= obj.CharacteristicLength;
             r= obj.CenterPosition;
+            radiusfactor = 0.2;
             
             %Tunnel junctions
             x_dist = [obj.CenterPosition(1), obj.CenterPosition(1)];
@@ -199,23 +200,23 @@ classdef ThreeDotCell < QCACell
 
             
             %Electron Sites
-            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125, [1 1 1],'Points',25);
-            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.125, [1 1 1],'Points',25);
-            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.125, [1 1 1],'Points',25);
+            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor, [1 1 1],'Points',25);
+            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor, [1 1 1],'Points',25);
+            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor, [1 1 1],'Points',25);
             
             
             %Electrons Position Probability
             scalefactor = 0.90;
             if obj.Polarization < 0
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125 * (1 - abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*.125 * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1 - abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
 
             elseif obj.Polarization == 0
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
 
             elseif obj.Polarization > 0
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125 * (1- abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*.125 * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1- abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
             end
             
             
