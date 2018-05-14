@@ -15,14 +15,14 @@ classdef ThreeDotCell < QCACell
         Z = [-1 0 0; 0 0 0; 0 0 1];
         Pnn = [0 0 0; 0 1 0; 0 0 0 ];
         
-
+        
     end
     
     properties
         Polarization = 0;
         Activation = 1;
         Hamiltonian = zeros(3);
- 
+        
     end
     
     
@@ -30,14 +30,14 @@ classdef ThreeDotCell < QCACell
         function obj = ThreeDotCell( varargin )
             
             DotPosition = 0.5*[0,1,1; ...
-                               0,0,0; ...
-                               0,-1,1; ]; %Dot relative position in Characteristic Lengths
+                0,0,0; ...
+                0,-1,1; ]; %Dot relative position in Characteristic Lengths
             
             
             switch nargin
                 case 0
                     Position = [0,0,0];
-            
+                    
                 case 1
                     Position = varargin{1};
                     
@@ -49,7 +49,7 @@ classdef ThreeDotCell < QCACell
                     error('Invalid number of inputs for ThreeDotCell().')
             end
             
-            obj = obj@QCACell( Position ); 
+            obj = obj@QCACell( Position );
             obj.DotPosition = DotPosition;
         end
         
@@ -76,10 +76,10 @@ classdef ThreeDotCell < QCACell
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
-            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9)); 
+            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
             
         end
-
+        
         function V_neighbors = neighborPotential(obj, obj2) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
             %returns the potential of a neighborCell
             
@@ -94,37 +94,37 @@ classdef ThreeDotCell < QCACell
             for x = 1:length(objDotPosition)
                 V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:) );
             end
-
+            
             
             
         end
-            
-        function hamiltonian = GetHamiltonian(obj, neighborList) 
+        
+        function hamiltonian = GetHamiltonian(obj, neighborList)
             
             objDotpotential = zeros(size(obj.DotPosition,1),1);
             
             for x = 1:size(neighborList,2)
                 objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x});
             end
-
+            
             gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];
-                        
+            
             hamiltonian = -diag(objDotpotential) + gammaMatrix;
             
             h = abs(obj.DotPosition(2,3)-obj.DotPosition(1,3)); %Field over entire height of cell
             x = abs(obj.DotPosition(3,1)-obj.DotPosition(1,1));
             y = abs(obj.DotPosition(3,2)-obj.DotPosition(1,2));
             length = [x,y,0];
-                        
-           
+            
+            
             inputFieldBias = -obj.ElectricField*length';
             
             
             hamiltonian(2,2) = hamiltonian(2,2) + -obj.ElectricField(1,3)*h; %add clock E
-            hamiltonian(1,1) = hamiltonian(1,1) + (-inputFieldBias)/2;%add input field to 0 dot 
-            hamiltonian(3,3) = hamiltonian(3,3) + inputFieldBias/2;%add input field to 1 dot            
+            hamiltonian(1,1) = hamiltonian(1,1) + (-inputFieldBias)/2;%add input field to 0 dot
+            hamiltonian(3,3) = hamiltonian(3,3) + inputFieldBias/2;%add input field to 1 dot
             
-        
+            
         end
         
         function obj = Calc_Polarization_Activation(obj)
@@ -184,7 +184,7 @@ classdef ThreeDotCell < QCACell
                 color = [1 1-abs(pol) 1-abs(pol)];
             else
                 color = [1 1 1];
-            end  
+            end
         end
         
         function obj = ThreeDotElectronDraw(obj, varargin)
@@ -197,23 +197,23 @@ classdef ThreeDotCell < QCACell
             x_dist = [obj.CenterPosition(1), obj.CenterPosition(1)];
             y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
             l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
-
+            
             
             %Electron Sites
             c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor, [1 1 1],'Points',25);
             c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor, [1 1 1],'Points',25);
             c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor, [1 1 1],'Points',25);
-            
-            
+
+
             %Electrons Position Probability
             scalefactor = 0.90;
             if obj.Polarization < 0
                 e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1 - abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
                 e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-
+                
             elseif obj.Polarization == 0
                 e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-
+                
             elseif obj.Polarization > 0
                 e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1- abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
                 e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
@@ -221,9 +221,12 @@ classdef ThreeDotCell < QCACell
             
             
             
+            
             if length(varargin)==1
                 targetAxes = varargin{1};
                 axes(targetAxes);
+                
+                
             end
             
             if length(varargin)==1
@@ -232,16 +235,16 @@ classdef ThreeDotCell < QCACell
             
         end
         
-                
+        
     end
     
 end
 
 % make a neighbor list.
 %QCACiruit: assign neighbors (based on center-center distance)
-    %testing just assign neightbors
+%testing just assign neightbors
 % QCACell
-    %NeighborList [unique cell ID's]
-    
+%NeighborList [unique cell ID's]
+
 
 

@@ -56,7 +56,7 @@ classdef QCACircuit
         function obj = CircuitDraw(obj, targetAxes)
             hold on
             for CellIndex = 1:length(obj.Device)
-                obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw(targetAxes);
+                obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
                 
             end
             
@@ -146,6 +146,27 @@ classdef QCACircuit
                 
                 
             end
+            
+        end
+        
+        function obj = pipeline(obj,varargin) %on hold for now. I know this will need to be used in the GUI, but I'm not quite sure how to implement it now
+            %Create E
+            
+            dt = 501;
+            x = linspace(0,4*pi,dt);
+            z = 1.5*Eo/2*(sin(x)-1);
+            E = zeros(3,dt);
+            E(1,:) = z;
+            
+            %edit Efield for all cells in circuit
+            
+            %relax2Groundstate
+            
+            %visualize
+            
+            %got to next time step
+            
+            
             
         end
         
