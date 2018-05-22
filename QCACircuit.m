@@ -53,7 +53,7 @@ classdef QCACircuit
             
         end
         
-        function obj = GetNeighborList( obj )
+        function obj = GenerateNeighborList( obj )
             %this function steps through each cell and assigns the neighborList for each
             %there will probably be multiple iterations of this function.
             
