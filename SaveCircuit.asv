@@ -1,0 +1,9 @@
+function SaveCircuit(f)
+%   Detailed explanation goes here
+    
+    Circuit=getappdata(f, 'myCircuit' )
+    File = uiputfile('*.mat')
+    save(File, 'Circuit')
+    
+end
+
