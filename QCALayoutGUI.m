@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 23-May-2018 13:16:49
+% Last Modified by GUIDE v2.5 24-May-2018 09:11:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,8 +58,10 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 myCircuit = QCACircuit();
-
 setappdata(gcf, 'myCircuit', myCircuit);
+Path.home = pwd;
+Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder';
+setappdata(gcf,'Path',Path);
 
 % UIWAIT makes QCALayoutGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -149,3 +151,12 @@ function OpenMenu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 LoadCircuit(gcf,handles)
+
+
+
+% --------------------------------------------------------------------
+function NewMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to NewMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+NewCircuit(gcf,handles);
