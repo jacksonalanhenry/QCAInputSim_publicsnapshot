@@ -6,15 +6,16 @@ function QCALayoutAddNode( handles )
     if(isempty(myCircuit.Device))
         newXlocation = 0;
     else
-        newXlocation = size(myCircuit.Device,1)*myCircuit.Device{end}.CharacteristicLength;
-
+          newXlocation = length(myCircuit.Device)-.5;
+%         newXlocation = size(myCircuit.Device,1)*myCircuit.Device{end}.CharacteristicLength  
+          newXlocation = newXlocation+1;
     end
-    
+
     % add node to circuit
-    myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation 0 0]))
+    myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation 0 0]));
     % modify appdata circuit
     setappdata(gcf, 'myCircuit', myCircuit);
-    
+       
     % circuitDraw
     myCircuit.CircuitDraw(handles.LayoutWindow);
     

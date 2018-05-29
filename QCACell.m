@@ -19,7 +19,7 @@ classdef QCACell
         ElectricField = [0, 0, 0]; %Electric Field [V/nm]
         
         NeighborList = []; %this Cell's Neighbors
-        
+        LayoutMode='';
         
     end
     

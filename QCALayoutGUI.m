@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 20-Mar-2018 15:32:16
+% Last Modified by GUIDE v2.5 29-May-2018 13:11:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,6 +59,9 @@ handles.output = hObject;
 guidata(hObject, handles);
 myCircuit = QCACircuit();
 setappdata(gcf, 'myCircuit', myCircuit);
+Path.home = pwd;
+Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder';
+setappdata(gcf,'Path',Path);
 
 % UIWAIT makes QCALayoutGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -80,4 +83,80 @@ function addNodeButton_Callback(hObject, eventdata, handles)
 % hObject    handle to addNodeButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-QCALayoutAddNode(handles)
+QCALayoutAddNode(handles);
+
+
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+
+delete(hObject);
+
+
+
+function editText_Callback(hObject, eventdata, handles)
+% hObject    handle to editText (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editText as text
+%        str2double(get(hObject,'String')) returns contents of editText as a double
+QCALayoutAddNode(handles);
+
+% --- Executes during object creation, after setting all properties.
+function editText_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editText (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --------------------------------------------------------------------
+function FileMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to FileMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function SaveCircuit_Callback(hObject, eventdata, handles)
+% hObject    handle to SaveCircuit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% SaveCircuit(gcf);
+
+
+
+% --------------------------------------------------------------------
+function SaveMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to SaveMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+SaveCircuit(gcf);
+
+% --------------------------------------------------------------------
+function OpenMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to OpenMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+LoadCircuit(gcf,handles)
+
+
+
+% --------------------------------------------------------------------
+function NewMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to NewMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+NewCircuit(gcf,handles);

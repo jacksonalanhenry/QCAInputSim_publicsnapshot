@@ -8,7 +8,7 @@ c3 = circle(CenterPosition(1), CenterPosition(2)+4, 0.5, [1 1 1]);
 
 
 
-c1 = circle(CenterPosition(1), CenterPosition(2)+4, 0.7*0.5, [1 0 0]);
+e1 = circle(CenterPosition(1), CenterPosition(2)+4, 0.7*0.5, [1 0 0]);
 
 
 
