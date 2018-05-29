@@ -10,7 +10,7 @@ function LoadCircuit(f,handles)
     cd(circpath)
     [newFile, newFilePath] = uigetfile('*.mat');
     
-
+    
     copyfile(newFile,home);
     cd(home);
 %     home='C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim';
@@ -18,9 +18,10 @@ function LoadCircuit(f,handles)
     
     
     loader=load(newFile);
-    
+    cla;
+
     setappdata(f,'myCircuit',loader.Circuit);
-    loader.Circuit;
+    
    loader.Circuit.CircuitDraw(handles.LayoutWindow);
     axis equal
     delete(newFile);

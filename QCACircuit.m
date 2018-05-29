@@ -7,6 +7,7 @@ classdef QCACircuit
         Device = {}; % QCA CELL ARRAY
         RefinedDevice = {};
         GroundState = [];
+        LayoutMode='';
         
     end
     
@@ -51,7 +52,8 @@ classdef QCACircuit
                 
             end
             
-        end
+        end         
+        
         
         function obj = GenerateNeighborList( obj )
             %this function steps through each cell and assigns the neighborList for each
