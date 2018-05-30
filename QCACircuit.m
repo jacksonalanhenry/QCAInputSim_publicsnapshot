@@ -29,17 +29,10 @@ classdef QCACircuit
             n_old = length(obj.Device);
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
-            
         end
         
         
-        function obj  = removeNode(obj)
-           n_old = length(obj.Device);
-           obj.Device{n_ol} = [];
-           
-            
-        end
-        
+
         function NeighborCheck( obj ) %Checks for each cell
             
             obj.RefinedDevice = obj.Device;
