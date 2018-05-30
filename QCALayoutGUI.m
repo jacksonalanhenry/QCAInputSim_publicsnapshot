@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 29-May-2018 13:11:36
+% Last Modified by GUIDE v2.5 29-May-2018 14:32:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -160,3 +160,5 @@ function NewMenu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 NewCircuit(gcf,handles);
+
+

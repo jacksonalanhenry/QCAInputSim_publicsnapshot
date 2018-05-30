@@ -8,7 +8,7 @@ classdef QCACell
     
     properties
         CellID = 0; % Unique Cell identifier
-        Type = 'node';% Driver/Node
+        Type = 'Node';% Driver/Node
         CenterPosition = [0, 0, 0]; % poisiton of the cell center
         DotPosition = []; % [*CharacteristicLength] positions of dots 
                          %      relative to cell center
@@ -19,7 +19,7 @@ classdef QCACell
         ElectricField = [0, 0, 0]; %Electric Field [V/nm]
         
         NeighborList = []; %this Cell's Neighbors
-        LayoutMode='';
+    
         
     end
     

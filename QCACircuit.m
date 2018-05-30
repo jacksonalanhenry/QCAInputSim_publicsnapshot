@@ -7,7 +7,7 @@ classdef QCACircuit
         Device = {}; % QCA CELL ARRAY
         RefinedDevice = {};
         GroundState = [];
-        LayoutMode='';
+      
         
     end
     
@@ -29,6 +29,14 @@ classdef QCACircuit
             n_old = length(obj.Device);
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
+            
+        end
+        
+        
+        function obj  = removeNode(obj)
+           n_old = length(obj.Device);
+           obj.Device{n_ol} = [];
+           
             
         end
         
@@ -82,15 +90,15 @@ classdef QCACircuit
                             obj.Device{node}.NeighborList(l+1) = obj.Device{checknode}.CellID;
                             
                         end
-                            
-                        end %dont check self
-                    end %checknodeloop
-%                     disp(yo)
-
-                end %nodeloop
+                        
+                    end %dont check self
+                end %checknodeloop
+                %                     disp(yo)
                 
-                
-            end
+            end %nodeloop
+            
+            
+        end
             
             function obj = CircuitDraw(obj, targetAxes)
                 hold on
@@ -184,7 +192,6 @@ classdef QCACircuit
                     
                     DeltaPolarization = OldPolarization - NewPolarization;
                     converganceTolerance = max(abs(DeltaPolarization));
-                    
                     
                 end
                 
