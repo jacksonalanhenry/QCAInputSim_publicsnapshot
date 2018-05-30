@@ -65,13 +65,8 @@ classdef QCACircuit
         
         function obj = GenerateNeighborList( obj )
             %this function steps through each cell and assigns the neighborList for each
-            %there will probably be multiple iterations of this function.
-            
-            %for now, check to see if a cell is within 1a in the x direction
-            %and 2a in the y direction
             
             for node = 1:length(obj.Device)%go through each node
-                yo = 0;
                 for checknode = 1:length(obj.Device)%compare against every node
                     if(obj.Device{node}.CellID ~= obj.Device{checknode}.CellID) %don't check yourself
                         
@@ -85,17 +80,16 @@ classdef QCACircuit
                         
                         
                         if( magnitude <= 5.01*a)
-                            yo=yo+1;
                             l = length(obj.Device{node}.NeighborList);
                             obj.Device{node}.NeighborList(l+1) = obj.Device{checknode}.CellID;
                             
                         end
-                        
-                    end %dont check self
-                end %checknodeloop
-                %                     disp(yo)
-                
-            end %nodeloop
+
+                            
+                        end %dont check self
+                    end %checknodeloop
+
+                end %nodeloop
             
             
         end
