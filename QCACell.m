@@ -1,4 +1,4 @@
-classdef QCACell
+classdef QCACell 
     %QCACell Container class for any QCA Cell
     %   Detailed explanation goes here
     %   Actually add a explaination of properties
@@ -19,8 +19,7 @@ classdef QCACell
         ElectricField = [0, 0, 0]; %Electric Field [V/nm]
         
         NeighborList = []; %this Cell's Neighbors
-    
-        
+
     end
     
     methods

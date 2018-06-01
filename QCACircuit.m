@@ -29,6 +29,9 @@ classdef QCACircuit
             n_old = length(obj.Device);
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
+            obj.Device{n_old+1}
+            newcell
+            
         end
         
         
@@ -93,6 +96,7 @@ classdef QCACircuit
         function obj = CircuitDraw(obj, targetAxes)
             hold on
             for CellIndex = 1:length(obj.Device)
+                obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                 obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
                 
             end

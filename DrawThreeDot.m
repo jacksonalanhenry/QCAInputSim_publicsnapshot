@@ -1,5 +1,5 @@
 function d = DrawThreeDot(CenterPosition)
-
+CenterPosition=[1 2];
 c1 = circle(CenterPosition(1), CenterPosition(2), 0.5, [1 1 1]);
 c2 = circle(CenterPosition(1), CenterPosition(2)+2, 0.5, [1 1 1]);
 c3 = circle(CenterPosition(1), CenterPosition(2)+4, 0.5, [1 1 1]);

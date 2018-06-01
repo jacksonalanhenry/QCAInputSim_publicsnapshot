@@ -10,7 +10,7 @@ classdef ThreeDotCell < QCACell
         one  = [0;0;1];
         null = [0;1;0];
         zero = [1;0;0];
-        
+    
         %helpful operators
         Z = [-1 0 0; 0 0 0; 0 0 1];
         Pnn = [0 0 0; 0 1 0; 0 0 0 ];
@@ -22,7 +22,7 @@ classdef ThreeDotCell < QCACell
         Polarization = 0;
         Activation = 1;
         Hamiltonian = zeros(3);
-        
+        SelectBox;
     end
     
     
@@ -33,7 +33,7 @@ classdef ThreeDotCell < QCACell
                 0,0,0; ...
                 0,-1,1; ]; %Dot relative position in Characteristic Lengths
             
-            
+            SelectBox=patch('Visible','off');
             switch nargin
                 case 0
                     Position = [0,0,0];
@@ -160,7 +160,9 @@ classdef ThreeDotCell < QCACell
             c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*abs(obj.Polarization), [1 1 1]);
             c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125, [1 1 1]);
             c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 1 1]);
+                 
             
+
             
             
             if length(varargin)==1
@@ -187,24 +189,40 @@ classdef ThreeDotCell < QCACell
             end
         end
         
+        function obj = BoxDraw(obj)
+            
+            obj.SelectBox=patch;
+            obj.SelectBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];
+            obj.SelectBox.YData=[obj.CenterPosition(2)-.75;obj.CenterPosition(2)-.75;obj.CenterPosition(2)+.75;obj.CenterPosition(2)+.75];
+            obj.SelectBox.FaceColor=[1 1 1];
+            
+            %             obj.SelectBox.FaceAlpha=0;
+            %             obj.SelectBox.Selected='on';
+            
+        end
+        
+        
         function obj = ThreeDotElectronDraw(obj, varargin)
             targetAxes = [];
             a= obj.CharacteristicLength;
             r= obj.CenterPosition;
             radiusfactor = 0.2;
             
+
+ 
             %Tunnel junctions
             x_dist = [obj.CenterPosition(1), obj.CenterPosition(1)];
             y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
             l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
             
+
+
             
             %Electron Sites
             c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor, [1 1 1],'Points',25);
             c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor, [1 1 1],'Points',25);
             c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor, [1 1 1],'Points',25);
-
-
+           
             %Electrons Position Probability
             scalefactor = 0.90;
             if obj.Polarization < 0
@@ -219,7 +237,8 @@ classdef ThreeDotCell < QCACell
                 e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
             end
             
-            
+
+
             
             
             if length(varargin)==1

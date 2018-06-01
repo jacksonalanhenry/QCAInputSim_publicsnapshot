@@ -13,14 +13,25 @@ function QCALayoutAddNode( handles )
 
     % add node to circuit
     myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation 0 0]));
+    
+%     
+
+
     % modify appdata circuit
-    setappdata(gcf, 'myCircuit', myCircuit);
+  setappdata(gcf, 'myCircuit', myCircuit);
        
     % circuitDraw
-    myCircuit.CircuitDraw(handles.LayoutWindow);
+    myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow)
+    myCircuit.Device{4}.SelectBox
     
+   
+%         myCircuit.Device{3}.CenterPosition       
+       
+
     %axis tight
     axis equal
+ 
+%     Select(myCircuit.Device{end}.SelectBox);
     
 end
 
