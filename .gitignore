@@ -2,7 +2,9 @@
 #Create this file if you want a testbed to play in without it ever being
 #uploaded to the git repo
 localtestBed*.m
+testbed.m
 *.asv #don't look at autosave files
+
 
 #Mac stuff
 .DS_Store
