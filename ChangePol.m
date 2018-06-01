@@ -1,15 +1,13 @@
-function myCircuit=ChangeX(handles)
-%UNTITLED3 Summary of this function goes here
+function ChangePol(handles)
+%UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-myCircuit=getappdata(gcf,'myCircuit');
-
-
+myCircuit = getappdata(gcf,'myCircuit');
 
 for i=1:length(myCircuit.Device)
-%     myCircuit.Device{i}.SelectBox
+    %     myCircuit.Device{i}.SelectBox
     if (strcmp(myCircuit.Device{i}.SelectBox.Selected,'on'))
-
-        myCircuit.Device{i}.CenterPosition(1)=str2num(get(handles.changex,'String'));
+        
+        myCircuit.Device{i}.Polarization=str2num(get(handles.chngPol,'String'));
         
     end
 end
@@ -26,4 +24,7 @@ for i=1:it
     Select(myCircuit.Device{i}.SelectBox);
 end
 end
+
+
+
 

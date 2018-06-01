@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 31-May-2018 12:48:39
+% Last Modified by GUIDE v2.5 01-Jun-2018 15:40:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -205,6 +205,53 @@ function changey_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+
+function chngPol_Callback(hObject, eventdata, handles)
+% hObject    handle to chngPol (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of chngPol as text
+%        str2double(get(hObject,'String')) returns contents of chngPol as a double
+ChangePol(handles)
+
+% --- Executes during object creation, after setting all properties.
+function chngPol_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to chngPol (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in changeLayout.
+function changeLayout_Callback(hObject, eventdata, handles)
+% hObject    handle to changeLayout (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns changeLayout contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from changeLayout
+SwitchMode(handles)
+
+% --- Executes during object creation, after setting all properties.
+function changeLayout_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to changeLayout (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');

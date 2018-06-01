@@ -77,6 +77,7 @@ classdef QCACell
             %       reassign it (i.e. we need "Q = Q.translateCell(...)")
             obj.Position = obj.CenterPosition + TranslationVect;
             
+            
         end
         
         function TrueDotPosition = getDotPosition( obj )

@@ -56,22 +56,22 @@ Circuit=Circuit.addNode(node8);
 Circuit=Circuit.addNode(nodedriver);
 
 
-Circuit.Device{1}.NeighborList=[2];
-Circuit.Device{2}.NeighborList=[1 3 4 5];
-Circuit.Device{3}.NeighborList=[2 4 5 6 7 8];
-Circuit.Device{4}.NeighborList=[2 3 6 7];
-Circuit.Device{5}.NeighborList=[2 3 6 8];
-Circuit.Device{6}.NeighborList=[3 4 5 7 8];
-Circuit.Device{7}.NeighborList=[3 4 6];
-Circuit.Device{8}.NeighborList=[3 5 6];
+% Circuit.Device{1}.NeighborList=[2];
+% Circuit.Device{2}.NeighborList=[1 3 4 5];
+% Circuit.Device{3}.NeighborList=[2 4 5 6 7 8];
+% Circuit.Device{4}.NeighborList=[2 3 6 7];
+% Circuit.Device{5}.NeighborList=[2 3 6 8];
+% Circuit.Device{6}.NeighborList=[3 4 5 7 8];
+% Circuit.Device{7}.NeighborList=[3 4 6];
+% Circuit.Device{8}.NeighborList=[3 5 6];
 
 
 
 
-% Circuit=Circuit.GenerateNeighborList();
-Circuit=Circuit.Relax2GroundState();
+Circuit=Circuit.GenerateNeighborList()
+Circuit=Circuit.Relax2GroundState()
 
-Circuit.CircuitDraw(a);
+Circuit.CircuitDraw(a)
 %% 
 % Super=SuperCell();
 % Super= Super.addCell(node1);

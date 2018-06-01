@@ -10,7 +10,7 @@ end
 p.ButtonDownFcn=@selObject;
 % a.ButtonDownFcn=@deSelObject;
 myCircuit = getappdata(gcf,'myCircuit');
-
+k=length(myCircuit.Device);
     function selObject(hObject, eventdata)
         
         
@@ -18,7 +18,11 @@ myCircuit = getappdata(gcf,'myCircuit');
             if ~isempty(p.ButtonDownFcn)
                 
                 p.Selected='on';
-
+                if length(myCircuit.Device)~=k
+                    k
+                    length(my)
+                    p.Selected = 'off';
+                end
                 
                 
                 p.ButtonDownFcn=@deSelObject;

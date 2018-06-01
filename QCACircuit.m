@@ -29,8 +29,6 @@ classdef QCACircuit
             n_old = length(obj.Device);
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
-            obj.Device{n_old+1}
-            newcell
             
         end
         
@@ -64,7 +62,7 @@ classdef QCACircuit
             
             for node = 1:length(obj.Device)%go through each node
                 for checknode = 1:length(obj.Device)%compare against every node
-                    if(obj.Device{node}.CellID ~= obj.Device{checknode}.CellID) %don't check yourself
+                    if(obj.Device{node}.CellID ~= obj.Device{checknode}.CellID) %don't check yourself or else you'll wreck yourself
                         
                         nodePos = obj.Device{node}.CenterPosition;
                         checknodePos = obj.Device{checknode}.CenterPosition;
@@ -80,7 +78,7 @@ classdef QCACircuit
                             obj.Device{node}.NeighborList(l+1) = obj.Device{checknode}.CellID;
                             
                             
-                            disp('hi')
+%                             disp('hi')
                             
                         end
                         
@@ -95,12 +93,14 @@ classdef QCACircuit
         
         function obj = CircuitDraw(obj, targetAxes)
             hold on
+            CellIndex = length(obj.Device);
+%              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
             for CellIndex = 1:length(obj.Device)
                 obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                 obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
                 
             end
-            
+           
             hold off
         end
         

@@ -7,15 +7,20 @@ myCircuit = getappdata(gcf, 'myCircuit');
 if(isempty(myCircuit.Device))
     newXlocation = 0;
 else
-    newXlocation = length(myCircuit.Device)-.5;
+              newXlocation = length(myCircuit.Device)-.5;
     % %         newXlocation = size(myCircuit.Device,1)*myCircuit.Device{end}.CharacteristicLength
-    newXlocation = newXlocation+1;
+              newXlocation = newXlocation+1;
     
-    %     for i=1:length(myCircuit.Device)
-    %         xloc(i)=myCircuit.Device{i}.CenterPosition(1)
-    %     end
+%     for i=1:length(myCircuit.Device)
+%         xloc(i)=myCircuit.Device{i}.CenterPosition(1)
+%     end
 end
 
+it=length(myCircuit.Device);
+for i=1:it
+    if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
+    myCircuit.Device(i).SelectBox.Selected='off';
+end
 
 
 % newXlocation=max(xloc);
@@ -45,3 +50,5 @@ it=length(myCircuit.Device);
 for i=1:it
     Select(myCircuit.Device{i}.SelectBox);
 end
+
+

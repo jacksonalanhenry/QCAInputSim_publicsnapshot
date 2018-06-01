@@ -190,15 +190,15 @@ classdef ThreeDotCell < QCACell
         end
         
         function obj = BoxDraw(obj)
-            
             obj.SelectBox=patch;
             obj.SelectBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];
             obj.SelectBox.YData=[obj.CenterPosition(2)-.75;obj.CenterPosition(2)-.75;obj.CenterPosition(2)+.75;obj.CenterPosition(2)+.75];
             obj.SelectBox.FaceColor=[1 1 1];
+
+%             disp('yeet');
             
-            %             obj.SelectBox.FaceAlpha=0;
-            %             obj.SelectBox.Selected='on';
-            
+%                         obj.SelectBox.FaceAlpha=0;
+%                         obj.SelectBox.Selected='off'; 
         end
         
         
