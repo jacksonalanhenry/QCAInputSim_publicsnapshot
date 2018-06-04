@@ -7,7 +7,7 @@ classdef QCACircuit
         Device = {}; % QCA CELL ARRAY
         RefinedDevice = {};
         GroundState = [];
-        
+        Mode='Simulation';
         
     end
     
@@ -92,6 +92,7 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
+            cla;
             hold on
             CellIndex = length(obj.Device);
 %              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
@@ -100,9 +101,31 @@ classdef QCACircuit
                 obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
                 
             end
-           
+            it=length(obj.Device);
+            for i=1:it
+                obj.Device{i}.SelectBox.Selected='off';
+                Select(obj.Device{i}.SelectBox);
+            end
             hold off
         end
+        
+        function obj = LayoutDraw(obj, targetAxes)
+            cla;
+            hold on
+            CellIndex = length(obj.Device);
+            %              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+            for CellIndex = 1:length(obj.Device)
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.LayoutModeDraw();                
+            end
+            
+            it=length(obj.Device);
+            for i=1:it
+                Select(obj.Device{i}.LayoutBox);
+            end
+            
+%             hold off
+        end
+        
         
         %reference this based on CellId
         function sref = subsref(obj,s)

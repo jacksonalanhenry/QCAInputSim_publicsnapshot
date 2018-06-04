@@ -10,6 +10,9 @@ classdef QCACell
         CellID = 0; % Unique Cell identifier
         Type = 'Node';% Driver/Node
         CenterPosition = [0, 0, 0]; % poisiton of the cell center
+        
+        LayoutCenterPosition=[0 0 0]; %baseline for layout mode, to be altered 
+        
         DotPosition = []; % [*CharacteristicLength] positions of dots 
                          %      relative to cell center
         CharacteristicLength = 1; % [nm]

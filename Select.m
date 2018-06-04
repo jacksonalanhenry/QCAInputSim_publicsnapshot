@@ -3,13 +3,12 @@ function Select(p)
 % Select functionality, then once that object is selected in the gui,
 % it can be dragged and dropped.  Once deselected, it cannot be
 % dragged and dropped until it is selected again.
-if strcmp(p.ButtonDownFcn,'on')
-    p.ButtonDownFcn = 'off';
-end
+
+%     p.Selected = 'off';
+
 
 p.ButtonDownFcn=@selObject;
-% a.ButtonDownFcn=@deSelObject;
-myCircuit = getappdata(gcf,'myCircuit');
+
 
     function selObject(hObject, eventdata)
         
@@ -18,17 +17,16 @@ myCircuit = getappdata(gcf,'myCircuit');
             if ~isempty(p.ButtonDownFcn)
                 
                 p.Selected='on';
-
-                
                 
                 p.ButtonDownFcn=@deSelObject;
 %                                     DragDropPatch(f,p,a);
             end
         end
-        
-        %         if strcmp(p.Selected,'on')
-        %             DragDropPatch(f,p,a);
-        %         end
+                myCircuit=getappdata(gcf,'myCircuit');
+                
+                if strcmp(myCircuit.Mode,'Layout')
+                    DragDropPatch(gcf,p,gca);
+                end
     end
 
 

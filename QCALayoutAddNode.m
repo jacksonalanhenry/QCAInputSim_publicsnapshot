@@ -22,6 +22,8 @@ end
 % add node to circuit
 myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation 0 0]));
 
+myCircuit.Device{length(myCircuit.Device)}.LayoutCenterPosition = [newXlocation 0 0];
+
 
 % xloc(end+1)=myCircuit.Device{length(myCircuit.Device)}.CenterPosition(1)
 
@@ -30,6 +32,9 @@ setappdata(gcf, 'myCircuit', myCircuit);
 
 % circuitDraw
 myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
+
+handles.layoutchange.Value=0;
+
 setappdata(gcf,'myCircuit',myCircuit);
 
 
@@ -41,7 +46,8 @@ setappdata(gcf,'myCircuit',myCircuit);
 axis equal
 
 
-it=length(myCircuit.Device);
-for i=1:it
-    Select(myCircuit.Device{i}.SelectBox);
-end
+% it=length(myCircuit.Device);
+% for i=1:it
+%     myCircuit.Device{i}.SelectBox.Selected='off';
+%     Select(myCircuit.Device{i}.SelectBox);
+% end

@@ -3,11 +3,13 @@ function LoadCircuit(f,handles)
 %   Extremely detailed explanation goes here
 
 Path = getappdata(gcf,'Path');
-
+myCircuit = getappdata(gcf,'myCircuit');
 circpath = Path.circ;
 home = Path.home;
 cd(circpath)
 newFile = uigetfile('*.mat');
+
+
 if ~newFile
     cd(home)
 else
@@ -23,8 +25,20 @@ else
     loader.Circuit.CircuitDraw(handles.LayoutWindow);
     axis equal
     delete(newFile);
+    
+    
+    myCircuit=getappdata(gcf,'myCircuit');
+    setappdata(gcf,'myCircuit',myCircuit);
+    
+
+    
 end
 
+% it=length(myCircuit.Device);
+% for i=1:it
+%     myCircuit.Device{i}.SelectBox.Selected='off';
+%     Select(myCircuit.Device{i}.SelectBox)
+% end
 
 
 end
