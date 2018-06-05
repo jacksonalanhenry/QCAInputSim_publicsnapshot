@@ -1,4 +1,4 @@
-classdef QCACell
+classdef QCACell 
     %QCACell Container class for any QCA Cell
     %   Detailed explanation goes here
     %   Actually add a explaination of properties

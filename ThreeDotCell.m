@@ -104,6 +104,8 @@ classdef ThreeDotCell < QCACell
             objDotpotential = zeros(size(obj.DotPosition,1),1);
             
             for x = 1:size(neighborList,2)
+                
+%                 disp([num2str(obj.CellID) '---' num2str(neighborList{x}.CellID)])
                 objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x});
             end
             
