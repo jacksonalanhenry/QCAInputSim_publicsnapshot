@@ -44,10 +44,3 @@ setappdata(gcf,'myCircuit',myCircuit);
 
 %axis tight
 axis equal
-
-
-% it=length(myCircuit.Device);
-% for i=1:it
-%     myCircuit.Device{i}.SelectBox.Selected='off';
-%     Select(myCircuit.Device{i}.SelectBox);
-% end

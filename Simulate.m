@@ -3,11 +3,11 @@ function Simulate(handles)
 %   Detailed explanation goes here
     myCircuit = getappdata(gcf, ' myCircuit');
     
-myCircuit=myCircuit.GenerateNeighborList();
+myCircuit=myCircuit.GenerateNeighborList(); %doing all the calculations
 myCircuit=myCircuit.Relax2GroundState();
 
 
-cla;
+cla;                    %redraw circuit
 myCircuit=myCircuit.CircuitDraw(a);
 setappdata(gcf,'myCircuit',myCircuit);
 end

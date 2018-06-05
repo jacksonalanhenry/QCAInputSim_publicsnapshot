@@ -47,11 +47,11 @@ p.ButtonDownFcn=@dragObject;
             
             %somewhat redundant logic, but the new center position is
             %becoming the new location of the layout box patch
-            
+            for i=1:length(myCircuit.Device)
                 myCircuit.Device{ID}.LayoutCenterPosition = [p.XData(1)+.25 p.YData(1)+.75 0];
-                
+                myCircuit.Device{ID}.LayoutCenterPosition = [p.XData(1)+.25 p.YData(1)+.75 0];
                 myCircuit.Device{ID}.CenterPosition=myCircuit.Device{ID}.LayoutCenterPosition;
-            
+            end
             setappdata(gcf,'myCircuit',myCircuit);
 %             end
             

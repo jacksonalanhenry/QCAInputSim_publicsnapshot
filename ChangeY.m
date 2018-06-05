@@ -3,31 +3,21 @@ function myCircuit=ChangeY(handles)
 %   Detailed explanation goes here
 myCircuit=getappdata(gcf,'myCircuit');
 
-
-
 for i=1:length(myCircuit.Device)
-%     myCircuit.Device{i}.SelectBox
-    if (strcmp(myCircuit.Device{i}.SelectBox.Selected,'on'))
-        
+ 
+    if (strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')) %is it selected?
         myCircuit.Device{i}.CenterPosition(2)=myCircuit.Device{i}.CenterPosition(2)+str2num(get(handles.changey,'String'));
-        
-        
-%     elseif (strcmp(myCircuit.Device{i}.LayoutBox.Selected,'on'))
-%         myCircuit.Device{i}.CenterPosition(2)=myCircuit.Device{i}.LayoutCenterPosition(2)+str2num(get(handles.changey,'String'));
-%         
+            %change the Y coordinates by how much the user inputs
     end
+   
+            
 end
 
-myCircuit.Device;
 
-cla;
+cla;%clear and draw
 myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
 
 setappdata(gcf,'myCircuit',myCircuit);
 
-it=length(myCircuit.Device);
-for i=1:it
-    Select(myCircuit.Device{i}.SelectBox);
-end
 end
 

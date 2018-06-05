@@ -3,13 +3,13 @@ function Select(p)
 % Select functionality, then once that object is selected in the gui,
 % it can be dragged and dropped.  Once deselected, it cannot be
 % dragged and dropped until it is selected again.
-
-%     p.Selected = 'off';
-
-
+% a=gca;
+%
+% a.ButtonDownFcn=@deSelAll;
+%assigning the callback function, the deselect function will get its call
+%back in the select function
 p.ButtonDownFcn=@selObject;
-% a.ButtonDownFcn=@deSelObject;
-% myCircuit = getappdata(gcf,'myCircuit');
+
 
     function selObject(hObject, eventdata)
         
@@ -18,17 +18,19 @@ p.ButtonDownFcn=@selObject;
             if ~isempty(p.ButtonDownFcn)
                 
                 p.Selected='on';
-
-                
                 
                 p.ButtonDownFcn=@deSelObject;
-%                                     DragDropPatch(f,p,a);
+                
             end
         end
+        myCircuit=getappdata(gcf,'myCircuit');
         
-                if strcmp(p.Selected,'on') && p.FaceColor
-                    DragDropPatch(f,p,a);
-                end
+        if strcmp(myCircuit.Mode,'Layout')
+            
+            DragDropPatch(gcf,p,gca);
+        
+        
+        end
     end
 
 
@@ -44,5 +46,40 @@ p.ButtonDownFcn=@selObject;
     end
 
 end
+
+%
+%     function deSelAll(hObject,eventdata)
+%         myCircuit=getappdata(gcf,'myCircuit');
+%
+%         mode = myCircuit.Mode;
+%
+%         if ~isempty(a.ButtonDownFcn)
+%             for i=1:length(myCircuit.Device)
+%
+%                 switch mode
+%
+%                     case 'Simulation'
+%
+%                         if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
+%                             myCircuit.Device{i}.SelectBox.Selected='off';
+%                             setappdata(gcf,'myCircuit',myCircuit);
+%                         end
+%
+%                     case 'Layout'
+%
+%                         if strcmp(myCircuit.Device{i}.LayoutBox.Selected,'on')
+%                             myCircuit.Device{i}.LayoutBox.Selected='off';
+%                             setappdata(gcf,'myCircuit',myCircuit);
+%                         end
+%                 end
+%
+%             end
+%             Select(p)
+%
+%         end
+%     end
+%
+%
+% end
 
 

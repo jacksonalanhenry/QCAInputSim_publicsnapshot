@@ -107,6 +107,7 @@ classdef QCACircuit
                 Select(obj.Device{i}.SelectBox);
             end
             hold off
+            grid on
         end
         
         function obj = LayoutDraw(obj, targetAxes)
@@ -115,10 +116,10 @@ classdef QCACircuit
             CellIndex = length(obj.Device);
             %              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
             for CellIndex = 1:length(obj.Device)
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.LayoutModeDraw();                
+                obj.Device{CellIndex} = obj.Device{CellIndex}.LayoutModeDraw();                
             end
             
-            it=length(obj.Device);
+            it=length(obj.Device); %throwing every cell into the select function
             for i=1:it
                 Select(obj.Device{i}.LayoutBox);
             end

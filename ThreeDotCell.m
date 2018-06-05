@@ -195,12 +195,16 @@ classdef ThreeDotCell < QCACell
         
         
         function obj = LayoutModeDraw(obj)
+            %drawing a patch to replace the three dot model
             obj.LayoutBox=patch;
             obj.LayoutBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];
             obj.LayoutBox.YData=[obj.CenterPosition(2)-.75;obj.CenterPosition(2)-.75;obj.CenterPosition(2)+.75;obj.CenterPosition(2)+.75];
             obj.LayoutBox.FaceColor='red';
             obj.LayoutBox.EdgeColor='red';
+            obj.LayoutBox.UserData = obj.CellID; %this will allow access for later use
+            obj.LayoutCenterPosition = [obj.LayoutBox.XData(1)+.25, obj.LayoutBox.YData(1)+.75, 0];
             
+  
         end
         
                 

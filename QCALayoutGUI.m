@@ -144,7 +144,7 @@ function SaveMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-SaveCircuit(gcf);
+SaveCircuit(gcf,handles);
 
 % --------------------------------------------------------------------
 function OpenMenu_Callback(hObject, eventdata, handles)
