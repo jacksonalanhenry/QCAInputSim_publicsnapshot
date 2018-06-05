@@ -4,7 +4,7 @@ myCircuit = getappdata(gcf,'myCircuit');
 
 
 mode = get(handles.layoutchange,'Value');%use this for the switch
-                                
+handles.makeSC.Value=0;                                
 % we could also use mode=myCircuit.Mode, but the current use allows us to
 % take information directly from the GUI's radio button
 
