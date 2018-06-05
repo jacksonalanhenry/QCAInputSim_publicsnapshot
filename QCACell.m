@@ -10,6 +10,9 @@ classdef QCACell
         CellID = 0; % Unique Cell identifier
         Type = 'Node';% Driver/Node
         CenterPosition = [0, 0, 0]; % poisiton of the cell center
+        
+        LayoutCenterPosition=[0 0 0]; %baseline for layout mode, to be altered 
+        
         DotPosition = []; % [*CharacteristicLength] positions of dots 
                          %      relative to cell center
         CharacteristicLength = 1; % [nm]
@@ -19,8 +22,7 @@ classdef QCACell
         ElectricField = [0, 0, 0]; %Electric Field [V/nm]
         
         NeighborList = []; %this Cell's Neighbors
-    
-        
+
     end
     
     methods
@@ -77,6 +79,7 @@ classdef QCACell
             %       Q is not modified outside of this method unless we
             %       reassign it (i.e. we need "Q = Q.translateCell(...)")
             obj.Position = obj.CenterPosition + TranslationVect;
+            
             
         end
         

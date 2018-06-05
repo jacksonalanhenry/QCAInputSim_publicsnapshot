@@ -7,7 +7,7 @@ classdef QCACircuit
         Device = {}; % QCA CELL ARRAY
         RefinedDevice = {};
         GroundState = [];
-        
+        Mode='Simulation';
         
     end
     
@@ -29,6 +29,7 @@ classdef QCACircuit
             n_old = length(obj.Device);
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
+
             
             if isa(newcell, 'QCASuperCell') 
                 newcell = obj.Device{n_old+1}; %call just recently added supercell, newcell
@@ -81,6 +82,7 @@ classdef QCACircuit
                     superCellID = obj.Device{cellIDToplevelnodes(idx)}.CellID;
 
                     for subnode = 1:length(obj.Device{superCellID}.Device)
+
                         
                         c = obj.Device{superCellID}.Device{subnode}.CellID;
                         
@@ -92,6 +94,15 @@ classdef QCACircuit
                         %give me the cellid's of the node within a certain limit
                         neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
                         
+
+                        if( magnitude <= 5.01*a)
+                            l = length(obj.Device{node}.NeighborList);
+                            obj.Device{node}.NeighborList(l+1) = obj.Device{checknode}.CellID;
+                            
+                            
+%                             disp('hi')
+                            
+                        end
                         
                         
 %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
@@ -128,19 +139,49 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
+            cla;
             hold on
+            CellIndex = length(obj.Device);
+%              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
             for CellIndex = 1:length(obj.Device)
+
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
-                        obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw()
                     end
                 else
                     obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw()
                 end
+
+                
+
                 
             end
-            
+            it=length(obj.Device);
+            for i=1:it
+                obj.Device{i}.SelectBox.Selected='off';
+                Select(obj.Device{i}.SelectBox);
+            end
             hold off
+        end
+        
+        function obj = LayoutDraw(obj, targetAxes)
+            cla;
+            hold on
+            CellIndex = length(obj.Device);
+            %              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+            for CellIndex = 1:length(obj.Device)
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.LayoutModeDraw();                
+            end
+            
+            it=length(obj.Device);
+            for i=1:it
+                Select(obj.Device{i}.LayoutBox);
+            end
+            
+%             hold off
         end
         
         %reference this based on CellId

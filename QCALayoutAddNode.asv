@@ -21,8 +21,7 @@ end
 % newXlocation=max(xloc);
 % add node to circuit
 myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation 0 0]));
-
-myCircuit.Device{length(myCircuit.Device)}.LayoutCenterPosition = [newXlocation 0 0];
+myCircuit = myCircuit.D
 
 
 % xloc(end+1)=myCircuit.Device{length(myCircuit.Device)}.CenterPosition(1)
