@@ -7,7 +7,7 @@ classdef QCACircuit
         Device = {}; % QCA CELL ARRAY
         RefinedDevice = {};
         GroundState = [];
-        Mode='Simulation';
+        Mode='Layout';
         
     end
     
@@ -95,14 +95,7 @@ classdef QCACircuit
                         neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
                         
 
-                        if( magnitude <= 5.01*a)
-                            l = length(obj.Device{node}.NeighborList);
-                            obj.Device{node}.NeighborList(l+1) = obj.Device{checknode}.CellID;
-                            
-                            
-%                             disp('hi')
-                            
-                        end
+                        
                         
                         
 %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
@@ -147,23 +140,27 @@ classdef QCACircuit
 
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
+                        
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
-                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw()
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off'; 
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
+                        Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
                     end
                 else
+                    
+                    
+                    
                     obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw()
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+                    obj.Device{CellIndex}.SelectBox.Selected = 'off';
+                    obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
+                    
+                    Select(obj.Device{CellIndex}.SelectBox);
                 end
 
-                
-
-                
             end
-            it=length(obj.Device);
-            for i=1:it
-                obj.Device{i}.SelectBox.Selected='off';
-                Select(obj.Device{i}.SelectBox);
-            end
+            
             hold off
         end
         
