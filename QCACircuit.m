@@ -7,7 +7,7 @@ classdef QCACircuit
         Device = {}; % QCA CELL ARRAY
         RefinedDevice = {};
         GroundState = [];
-        Mode='Simulation';
+        Mode='Layout';
         
     end
     
@@ -29,66 +29,106 @@ classdef QCACircuit
             n_old = length(obj.Device);
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
-            
-        end
-        
-        
 
-        function NeighborCheck( obj ) %Checks for each cell
             
-            obj.RefinedDevice = obj.Device;
-            for n = 1:length(obj.Device)
-                normarray = [];
-                Stationary = obj.Device{n};
-                
-                for m = 1:length(obj.Device)
-                    if m ~= n
-                        Comparison = obj.Device{m};
-                        normarray(m) = norm(Stationary.CenterPosition - Comparison.CenterPosition);
-                        
-                        
-                    end
+            if isa(newcell, 'QCASuperCell') 
+                newcell = obj.Device{n_old+1}; %call just recently added supercell, newcell
+
+                for x = 1:length(newcell.Device) % edit each subcell's CellID to reflect the supernode's integer
+                    newcell.Device{x}.CellID = newcell.Device{x}.CellID + newcell.CellID;
                 end
-                SmallestNorm = find(normarray == min(normarray)); %returns indicie of smallest normalized vector
-                obj.RefinedDevice{n+1} = obj.Device{SmallestNorm};
+                obj.Device{n_old+1} = newcell;
+                
                 
             end
             
+            
         end
-        
         
         function obj = GenerateNeighborList( obj )
             %this function steps through each cell and assigns the neighborList for each
+
             
-            for node = 1:length(obj.Device)%go through each node
-                for checknode = 1:length(obj.Device)%compare against every node
-                    if(obj.Device{node}.CellID ~= obj.Device{checknode}.CellID) %don't check yourself or else you'll wreck yourself
-                        
-                        nodePos = obj.Device{node}.CenterPosition;
-                        checknodePos = obj.Device{checknode}.CenterPosition;
-                        a = obj.Device{node}.CharacteristicLength;
-                        
-                        vector = checknodePos - nodePos;
-                        vector = vector.^2;
-                        magnitude = sum(vector);
-                        
-                        
-                        if( magnitude <= 5.01*a)
-                            l = length(obj.Device{node}.NeighborList);
-                            obj.Device{node}.NeighborList(l+1) = obj.Device{checknode}.CellID;
-                            
-                            
-%                             disp('hi')
-                            
-                        end
-                        
-                        
-                    end %dont check self
-                end %checknodeloop
+            %All CellID Array (including subcells)
+            cellIDArray = [];
+            
+            idx = 1;
+            for node = 1:length(obj.Device) %step through all the node/supernodes
                 
-            end %nodeloop
+                
+                
+                if(isa(obj.Device{node}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
+                    for subnode = 1:length(obj.Device{node}.Device) %step through all subnodes
+                        cellIDArray(idx) = obj.Device{node}.Device{subnode}.CellID;
+                        cellpositions(idx,:) = obj.Device{node}.Device{subnode}.CenterPosition;
+                        idx = idx + 1;
+                    end
+                else
+                    cellIDArray(idx) = obj.Device{node}.CellID; %add the node
+                    cellpositions(idx,:) = obj.Device{node}.CenterPosition;
+                    idx = idx + 1;
+                end
+            end
             
+            cellpositions = cellpositions';
+            cellIDToplevelnodes = floor(cellIDArray);
             
+            %now go through list of CellID's to find neighbors
+            idx = 1;
+            while idx <= length(cellIDArray)
+                
+                
+                if(isa(obj.Device{cellIDToplevelnodes(idx)}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
+                    superCellID = obj.Device{cellIDToplevelnodes(idx)}.CellID;
+
+                    for subnode = 1:length(obj.Device{superCellID}.Device)
+
+                        
+                        c = obj.Device{superCellID}.Device{subnode}.CellID;
+                        
+                        %shift and find magnitudes
+                        shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
+                        shifted = shifted.^2;
+                        shifted = sum(shifted,1);
+                        
+                        %give me the cellid's of the node within a certain limit
+                        neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
+                        
+
+                        
+                        
+                        
+%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                        obj.Device{superCellID}.Device{subnode}.NeighborList = neighbors;
+                        
+                        
+                        idx = idx+1;
+                    end
+                    
+                    
+                else
+                    %shift and find magnitudes
+                    shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
+                    shifted = shifted.^2;
+                    shifted = sum(shifted,1);
+                    
+                    %give me the cellid's of the node within a certain limit
+                    neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
+                    
+                    
+                    c= obj.Device{cellIDToplevelnodes(idx)}.CellID;
+                    
+%                     disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                    obj.Device{cellIDToplevelnodes(idx)}.NeighborList = neighbors;
+
+                    idx = idx+1;
+                end
+                
+                
+                
+            end
+            
+
         end
         
         function obj = CircuitDraw(obj, targetAxes)
@@ -97,15 +137,30 @@ classdef QCACircuit
             CellIndex = length(obj.Device);
 %              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
             for CellIndex = 1:length(obj.Device)
-                obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
-                obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
-                
+
+                if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
+                    for subnode = 1:length(obj.Device{CellIndex}.Device)
+                        
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off'; 
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
+                        Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
+                    end
+                else
+                    
+                    
+                    
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+                    obj.Device{CellIndex}.SelectBox.Selected = 'off';
+                    obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
+                    
+                    Select(obj.Device{CellIndex}.SelectBox);
+                end
+
             end
-            it=length(obj.Device);
-            for i=1:it
-                obj.Device{i}.SelectBox.Selected='off';
-                Select(obj.Device{i}.SelectBox);
-            end
+            
             hold off
             grid on
         end
@@ -126,7 +181,6 @@ classdef QCACircuit
             
 %             hold off
         end
-        
         
         %reference this based on CellId
         function sref = subsref(obj,s)
@@ -191,10 +245,15 @@ classdef QCACircuit
                     
                     if( strcmp(obj.Device{x}.Type , 'Driver' ))
                         %don't try to relax this cell
-                    else
-                        %relax
+                    elseif (isa(obj.Device{x}, 'QCASuperCell') ) %relax the super cell all together
+                        disp('yeh')
                         
-                        neighborList = obj.Device(obj.Device{x}.NeighborList);
+                    else
+                        %%relax
+                        cellIDArray = obj.Device{x}.NeighborList;
+
+                        
+                        neighborList = obj.Device(obj.Device{x}.NeighborList)
                         %calculate hamiltonian
                         hamiltonian = obj.Device{x}.GetHamiltonian(neighborList);
                         obj.Device{x}.Hamiltonian = hamiltonian;
@@ -214,6 +273,97 @@ classdef QCACircuit
             end
             
         end
+        
+        function obj = Calculate_CircuitPolAct(obj)
+            %this function basically just runs through the whole circuit
+            %and calls the QCACells functions for calculating the
+            %polarization
+
+            idx = 1;
+            while idx <= length(obj.Device)
+                
+                
+                if( isa(obj.Device{idx}, 'QCASuperCell') )
+                    
+                    supernode = floor(obj.Device{idx}.Device{1}.CellID);
+                    
+                    for subnode = 1:length(obj.Device{supernode}.Device)
+
+                        
+                        id = obj.Device{supernode}.Device{subnode}.CellID;
+                        nl = obj.Device{supernode}.Device{subnode}.NeighborList;
+                        pol = obj.Device{supernode}.Device{subnode}.Polarization;
+                        %now I have the nl of CellIDs. So I need to
+                        %construct an nl cell array of objects. then pass
+                        %that to GetHamiltonian, then do calculation of
+                        %polarization and activation
+                        
+                        %get Neighbor Objects
+                        nl_obj = obj.getCellArray(nl); 
+                        
+                        %get hamiltonian for current cell
+                        hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj);
+                        obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
+                        
+                        %calculate polarization
+                        obj.Device{supernode}.Device{subnode} = obj.Device{supernode}.Device{subnode}.Calc_Polarization_Activation();
+
+                        %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+                       
+%                         idx = idx + 1;
+                    end
+                    idx=idx+1;
+                    
+                else
+                    %obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
+                    id = obj.Device{idx}.CellID;
+                    nl = obj.Device{idx}.NeighborList;
+                    pol = obj.Device{idx}.Polarization;
+                    
+                    %get Neighbor Objects
+                    nl_obj = obj.getCellArray(nl); 
+                    
+                    %get hamiltonian for current cell
+                    hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
+                    obj.Device{idx}.Hamiltonian = hamiltonian;
+                    
+                    %calculate polarization
+                    obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
+                    
+                    %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+                    
+                    idx = idx+1;
+                end
+                
+                
+            end
+            
+            
+            %then just do cell.Calculate_Polarization_Activation
+            
+            
+            
+        end
+        
+        function cell_obj = getCellArray(obj, CellIDArray)
+            %this function returns an array of QCACell objects given a list
+            %of IDs
+            
+            for idx = 1:length(CellIDArray)
+                if floor(CellIDArray(idx)) ~= CellIDArray(idx)
+                    superID = floor(CellIDArray(idx));
+                    subID = round((CellIDArray(idx)-superID)*100);
+                    cell_obj{idx} = obj.Device{superID}.Device{subID};
+                    
+                else
+                    cell_obj{idx} = obj.Device{CellIDArray(idx)}; 
+                end
+                
+                
+            end
+            
+        end
+        
         
         function obj = pipeline(obj,varargin)
             %Create E
