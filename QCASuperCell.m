@@ -7,7 +7,6 @@ classdef QCASuperCell
         Device = {}; %what QCACells are in 
         CellID = 0;  %unique ID
         NeighborList = []; %this SuperCell's Neighbors
-        CenterPosition=[0 0 0];
         BoxColor='';
         
     end
@@ -42,12 +41,7 @@ classdef QCASuperCell
             hold off
         end
         
-        function obj=define_center(obj)
-           obj.CenterPosition(1) = obj.Device{length(obj.Device)}.CenterPosition(1);
-           obj.CenterPosition(2) = obj.Device{length(obj.Device)}.CenterPosition(2);          
-           
-            
-        end        
+
         
     end
     
