@@ -41,10 +41,6 @@ classdef QCASuperCell
         end
         
         
-        
-        
-        
-        
     end
     
 end

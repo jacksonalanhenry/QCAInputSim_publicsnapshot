@@ -7,7 +7,7 @@ classdef QCACircuit
         Device = {}; % QCA CELL ARRAY
         RefinedDevice = {};
         GroundState = [];
-        Mode='Layout';
+        Mode='Simulation';
         
     end
     
@@ -232,116 +232,99 @@ classdef QCACircuit
             end
         end
         
+        
         function obj = Relax2GroundState(obj)
-            %iterate to self consistent instantaeous ground state
+            %Iterate to Selfconsistency
             
-            NewPolarization = ones(1,length(obj.Device));
-            
+            NewCircuitPols = ones(1,length(obj.Device));
             converganceTolerance = 1;
-            while(converganceTolerance > 0.001)
-                OldPolarization = NewPolarization;
+            
+            while (converganceTolerance > 0.001)
+                OldCircuitPols = NewCircuitPols;
                 
-                for x = 1:length(obj.Device)
+                idx = 1;
+                while idx <= length(obj.Device)
                     
-                    if( strcmp(obj.Device{x}.Type , 'Driver' ))
-                        %don't try to relax this cell
-                    elseif (isa(obj.Device{x}, 'QCASuperCell') ) %relax the super cell all together
-                        disp('yeh')
+                    if( isa(obj.Device{idx}, 'QCASuperCell') )
+                        
+                        
+                        NewPols = ones(1,length(obj.Device{idx}.Device));
+                        subnodeTolerance = 1;
+                        
+                        while (subnodeTolerance > 0.001)
+                            OldPols = NewPols;
+                            
+                            supernode = floor(obj.Device{idx}.Device{1}.CellID);
+                            
+                            for subnode = 1:length(obj.Device{supernode}.Device)
+                                
+                                if( strcmp(obj.Device{supernode}.Device{subnode}.Type, 'Driver') )
+                                    %don't relax
+                                else
+                                    
+                                    id = obj.Device{supernode}.Device{subnode}.CellID;
+                                    nl = obj.Device{supernode}.Device{subnode}.NeighborList;
+                                    pol = obj.Device{supernode}.Device{subnode}.Polarization;
+                                    
+                                    %get Neighbor Objects
+                                    nl_obj = obj.getCellArray(nl);
+                                    
+                                    %get hamiltonian for current cell
+                                    hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj);
+                                    obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
+                                    
+                                    %calculate polarization
+                                    obj.Device{supernode}.Device{subnode} = obj.Device{supernode}.Device{subnode}.Calc_Polarization_Activation();
+                                    
+                                    NewPols(subnode) = obj.Device{supernode}.Device{subnode}.Polarization;
+                                    %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+                                    
+                                end
+                                
+                            end
+                            
+                            deltaPols = OldPols - NewPols;
+                            subnodeTolerance = max(abs(deltaPols));
+                            
+                        end
+                        
+                        idx=idx+1;
                         
                     else
-                        %%relax
-                        cellIDArray = obj.Device{x}.NeighborList;
-
-                        
-                        neighborList = obj.Device(obj.Device{x}.NeighborList)
-                        %calculate hamiltonian
-                        hamiltonian = obj.Device{x}.GetHamiltonian(neighborList);
-                        obj.Device{x}.Hamiltonian = hamiltonian;
-                        %calculate Polarization and Activation of Cells in
-                        %Circuit
-                        obj.Device{x} = obj.Device{x}.Calc_Polarization_Activation();
-                        
-                    end
-                    NewPolarization(x) = abs(obj.Device{x}.Polarization);
-                    %DeltaPolarization(x) = DeltaPolarization(x) - abs(obj.Device{x}.Polarization)
-                    
-                end
-                
-                DeltaPolarization = OldPolarization - NewPolarization;
-                converganceTolerance = max(abs(DeltaPolarization));
-                
-            end
-            
-        end
-        
-        function obj = Calculate_CircuitPolAct(obj)
-            %this function basically just runs through the whole circuit
-            %and calls the QCACells functions for calculating the
-            %polarization
-
-            idx = 1;
-            while idx <= length(obj.Device)
-                
-                
-                if( isa(obj.Device{idx}, 'QCASuperCell') )
-                    
-                    supernode = floor(obj.Device{idx}.Device{1}.CellID);
-                    
-                    for subnode = 1:length(obj.Device{supernode}.Device)
-
-                        
-                        id = obj.Device{supernode}.Device{subnode}.CellID;
-                        nl = obj.Device{supernode}.Device{subnode}.NeighborList;
-                        pol = obj.Device{supernode}.Device{subnode}.Polarization;
-                        %now I have the nl of CellIDs. So I need to
-                        %construct an nl cell array of objects. then pass
-                        %that to GetHamiltonian, then do calculation of
-                        %polarization and activation
+                        %obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
+                        id = obj.Device{idx}.CellID;
+                        nl = obj.Device{idx}.NeighborList;
+                        pol = obj.Device{idx}.Polarization;
                         
                         %get Neighbor Objects
-                        nl_obj = obj.getCellArray(nl); 
+                        nl_obj = obj.getCellArray(nl);
                         
                         %get hamiltonian for current cell
-                        hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj);
-                        obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
+                        hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
+                        obj.Device{idx}.Hamiltonian = hamiltonian;
                         
                         %calculate polarization
-                        obj.Device{supernode}.Device{subnode} = obj.Device{supernode}.Device{subnode}.Calc_Polarization_Activation();
-
+                        obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
+                        
+                        if(isa(obj.Device{idx}, 'QCASuperCell'))
+                            NewCircuitPols(idx) = 0;
+                        else
+                            NewCircuitPols(idx) = obj.Device{idx}.Polarization;
+                        end
                         %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
-                       
-%                         idx = idx + 1;
+                        
+                        idx = idx+1;
                     end
-                    idx=idx+1;
                     
-                else
-                    %obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
-                    id = obj.Device{idx}.CellID;
-                    nl = obj.Device{idx}.NeighborList;
-                    pol = obj.Device{idx}.Polarization;
                     
-                    %get Neighbor Objects
-                    nl_obj = obj.getCellArray(nl); 
-                    
-                    %get hamiltonian for current cell
-                    hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
-                    obj.Device{idx}.Hamiltonian = hamiltonian;
-                    
-                    %calculate polarization
-                    obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
-                    
-                    %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
-                    
-                    idx = idx+1;
                 end
                 
                 
+                deltaCircuitPols = OldCircuitPols - NewCircuitPols;
+                converganceTolerance = max(abs(deltaCircuitPols));
+                
+                
             end
-            
-            
-            %then just do cell.Calculate_Polarization_Activation
-            
-            
             
         end
         
