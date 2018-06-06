@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 05-Jun-2018 15:50:25
+% Last Modified by GUIDE v2.5 05-Jun-2018 19:03:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -251,4 +251,5 @@ function makeSC_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of makeSC
+
 MakeSuperCellGUI(handles)

@@ -29,7 +29,6 @@ classdef QCACircuit
             n_old = length(obj.Device);
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
-
             
             if isa(newcell, 'QCASuperCell') 
                 newcell = obj.Device{n_old+1}; %call just recently added supercell, newcell
@@ -139,27 +138,34 @@ classdef QCACircuit
             for CellIndex = 1:length(obj.Device)
 
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
-                    colors= ['blue' 'green' 'red' 'cyan' 'magenta' 'yellow' 'black']; 
-                    chosencolor = colors(randi(abs(6))+1)
+                    
+                    if strcmp(obj.Device{CellIndex}.BoxColor,'')
+                    color= [rand(1) rand(1) rand(1)];%make a random color that all the cells will have as outline
+                    obj.Device{CellIndex}.BoxColor=color;
+                    else
+                        
+                    end
+                    
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
                         
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off'; 
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
-                        obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = chosencolor;
-                        obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 1.2;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
                         Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
                     end
                 else
-              
                     
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
-                    obj.Device{CellIndex}.SelectBox.Selected = 'off';
-                    obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
                     
-                    Select(obj.Device{CellIndex}.SelectBox);
+                        obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
+                        obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+                        obj.Device{CellIndex}.SelectBox.Selected = 'off';
+                        obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
+                        
+                        Select(obj.Device{CellIndex}.SelectBox);
+                    
                 end
 
             end
@@ -277,7 +283,7 @@ classdef QCACircuit
             
         end
         
-        function obj = Calculate_CircuitPolAct(obj)
+        function obj = Calculate_CircuitPolAct(obj) %this will become relax2ground
             %this function basically just runs through the whole circuit
             %and calls the QCACells functions for calculating the
             %polarization
@@ -367,7 +373,6 @@ classdef QCACircuit
             
         end
         
-        
         function obj = pipeline(obj,varargin)
             %Create E
             Eo = 0.4217;% qe^2*(1.602e-19)/(4*pi*epsilon_0*a)*(1-1/sqrt(2));
@@ -414,6 +419,23 @@ classdef QCACircuit
             close(v);
             
             
+        end
+        
+        function CellIds = GetCellIDs(obj,cells)
+            ids=[];
+            for i=1:length(cells.Device)
+                if isa(cells.Device{i},'QCASuperCell')
+                    
+                    for j=1:length(cells.Device{i})
+                        ids(end+1)=cells.Device{i}.Device{j}.CellID;
+                    end
+                else
+
+                        ids(end+1)=cells.Device{i}.CellID;
+                end
+            end
+            
+            CellIds = ids;
         end
         
     end
