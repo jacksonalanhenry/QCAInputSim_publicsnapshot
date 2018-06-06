@@ -139,17 +139,20 @@ classdef QCACircuit
             for CellIndex = 1:length(obj.Device)
 
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
+                    colors= ['blue' 'green' 'red' 'cyan' 'magenta' 'yellow' 'black']; 
+                    chosencolor = colors(randi(abs(6))+1)
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
                         
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off'; 
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = chosencolor;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 1.2;
                         Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
                     end
                 else
-                    
-                    
+              
                     
                     obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
                     obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();

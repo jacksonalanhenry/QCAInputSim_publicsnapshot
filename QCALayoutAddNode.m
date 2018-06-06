@@ -16,8 +16,6 @@ else
     %     end
 end
 
-
-
 % newXlocation=max(xloc);
 % add node to circuit
 myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation 0 0]));
@@ -34,6 +32,7 @@ setappdata(gcf, 'myCircuit', myCircuit);
 myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
 
 handles.layoutchange.Value=0;
+handles.makeSC.Value=0;
 
 setappdata(gcf,'myCircuit',myCircuit);
 

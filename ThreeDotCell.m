@@ -215,7 +215,7 @@ classdef ThreeDotCell < QCACell
             obj.SelectBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];
             obj.SelectBox.YData=[obj.CenterPosition(2)-.75;obj.CenterPosition(2)-.75;obj.CenterPosition(2)+.75;obj.CenterPosition(2)+.75];
             obj.SelectBox.FaceColor=[1 1 1];
-            
+            obj.SelectBox.UserData = obj.CellID;
             
             
         end
