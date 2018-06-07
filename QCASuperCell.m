@@ -7,7 +7,7 @@ classdef QCASuperCell
         Device = {}; %what QCACells are in 
         CellID = 0;  %unique ID
         NeighborList = []; %this SuperCell's Neighbors
-
+        BoxColor='';
         
     end
     
@@ -28,8 +28,9 @@ classdef QCASuperCell
         function obj = addCell( obj, newcell )
             n_old = length(obj.Device);
             obj.Device{n_old+1} = newcell;
-            obj.Device{n_old+1}.CellID = obj.CellID + length(obj.Device)/100;
             
+            obj.Device{n_old+1}.CellID = obj.CellID + length(obj.Device)/100;
+           
         end
         
         function obj = CircuitDraw(obj, targetAxes)
@@ -40,6 +41,7 @@ classdef QCASuperCell
             hold off
         end
         
+
         
     end
     

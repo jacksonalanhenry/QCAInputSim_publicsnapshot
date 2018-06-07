@@ -4,12 +4,22 @@ function QCALayoutAddNode( handles )
 
 myCircuit = getappdata(gcf, 'myCircuit');
 % xloc=[];
+
+
 if(isempty(myCircuit.Device))
     newXlocation = 0;
 else
-    newXlocation = length(myCircuit.Device)-.5;
+    xs=[];
+    for i=1:length(myCircuit.Device)
+        xs(end+1)=myCircuit.Device{i}.CenterPosition(1);
+        
+    end
+    
+    newXlocation = max(xs)+1;
+    
+%     newXlocation = length(myCircuit.Device)-.5;
     % %         newXlocation = size(myCircuit.Device,1)*myCircuit.Device{end}.CharacteristicLength
-    newXlocation = newXlocation+1;
+%     newXlocation = newXlocation+1;
     
     %     for i=1:length(myCircuit.Device)
     %         xloc(i)=myCircuit.Device{i}.CenterPosition(1)

@@ -29,7 +29,6 @@ classdef QCACircuit
             n_old = length(obj.Device);
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
-
             
             if isa(newcell, 'QCASuperCell') 
                 newcell = obj.Device{n_old+1}; %call just recently added supercell, newcell
@@ -135,31 +134,38 @@ classdef QCACircuit
             cla;
             hold on
             CellIndex = length(obj.Device);
-%              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
             for CellIndex = 1:length(obj.Device)
 
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
-                    colors= ['blue' 'green' 'red' 'cyan' 'magenta' 'yellow' 'black']; 
-                    chosencolor = colors(randi(abs(6))+1);
+
+                    
+                    if strcmp(obj.Device{CellIndex}.BoxColor,'')
+                    color= [rand(1) rand(1) rand(1)];%make a random color that all the cells will have as outline
+                    obj.Device{CellIndex}.BoxColor=color;
+                    else
+                        
+                    end
+                    
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
                         
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off'; 
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
-%                         obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = chosencolor;
-                        obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 1.2;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
                         Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
                     end
                 else
-              
                     
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
-                    obj.Device{CellIndex}.SelectBox.Selected = 'off';
-                    obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
                     
-                    Select(obj.Device{CellIndex}.SelectBox);
+                        obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
+                        obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+                        obj.Device{CellIndex}.SelectBox.Selected = 'off';
+                        obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
+                        
+                        Select(obj.Device{CellIndex}.SelectBox);
+                    
                 end
 
             end
@@ -257,6 +263,7 @@ classdef QCACircuit
                         NewPols = ones(1,length(obj.Device{idx}.Device));
                         subnodeTolerance = 1;
                         super = 1;
+
                         while (subnodeTolerance > 0.001)
                             OldPols = NewPols;
                             
@@ -293,8 +300,9 @@ classdef QCACircuit
                             subnodeTolerance = max(abs(deltaPols));
                             super = super + 1;
                         end
-                        super
+                        
                         idx=idx+1;
+
                         
                     else
                         %obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
@@ -330,7 +338,7 @@ classdef QCACircuit
                 
                 sub=sub+1;
             end
-            sub
+            
         end
         
         function cell_obj = getCellArray(obj, CellIDArray)
@@ -350,7 +358,6 @@ classdef QCACircuit
             end
             
         end
-        
         
         function obj = pipeline(obj,varargin)
             %Create E
@@ -398,6 +405,24 @@ classdef QCACircuit
             close(v);
             
             
+        end
+        
+        function CellIds = GetCellIDs(obj,cells)
+            %returns just the CellIDs given a list of objects.
+            ids=[];
+            for i=1:length(cells.Device)
+                if isa(cells.Device{i},'QCASuperCell')
+                    
+                    for j=1:length(cells.Device{i})
+                        ids(end+1)=cells.Device{i}.Device{j}.CellID;
+                    end
+                else
+
+                        ids(end+1)=cells.Device{i}.CellID;
+                end
+            end
+            
+            CellIds = ids;
         end
         
     end

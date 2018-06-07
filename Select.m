@@ -17,7 +17,7 @@ p.ButtonDownFcn=@selObject;
 
     function makeSuperCell(hObject,eventdata)
    
-        
+        1;
         
     end
 
