@@ -142,10 +142,10 @@ classdef QCACircuit
             cla;
             hold on
             CellIndex = length(obj.Device);
-%              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
             for CellIndex = 1:length(obj.Device)
 
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
+
                     
                     if strcmp(obj.Device{CellIndex}.BoxColor,'')
                         color= [rand(1) rand(1) rand(1)];%make a random color that all the cells will have as outline 
@@ -261,18 +261,21 @@ classdef QCACircuit
                     end
             end
         end
-        
-        
+               
         function obj = Relax2GroundState(obj)
             %Iterate to Selfconsistency
             
             NewCircuitPols = ones(1,length(obj.Device));
             converganceTolerance = 1;
-            
+            sub = 1;
             while (converganceTolerance > 0.001)
                 OldCircuitPols = NewCircuitPols;
                 
                 idx = 1;
+                %randomize order
+%                 randarray = linspace(1,length(obj.Device),length(obj.Device));
+%                 randarray = randarray(randperm(length(randarray)))
+                
                 while idx <= length(obj.Device)
                     
                     if( isa(obj.Device{idx}, 'QCASuperCell') )
@@ -280,7 +283,7 @@ classdef QCACircuit
                         
                         NewPols = ones(1,length(obj.Device{idx}.Device));
                         subnodeTolerance = 1;
-                        
+                        super = 1;
 
                         while (subnodeTolerance > 0.001)
                             OldPols = NewPols;
@@ -316,7 +319,7 @@ classdef QCACircuit
                             
                             deltaPols = OldPols - NewPols;
                             subnodeTolerance = max(abs(deltaPols));
-                            
+                            super = super + 1;
                         end
                         
                         idx=idx+1;
@@ -351,11 +354,10 @@ classdef QCACircuit
                     
                 end
                 
-                
                 deltaCircuitPols = OldCircuitPols - NewCircuitPols;
                 converganceTolerance = max(abs(deltaCircuitPols));
                 
-                
+                sub=sub+1;
             end
             
         end
@@ -373,8 +375,7 @@ classdef QCACircuit
                 else
                     cell_obj{idx} = obj.Device{CellIDArray(idx)}; 
                 end
-                
-                
+
             end
             
         end
@@ -428,6 +429,7 @@ classdef QCACircuit
         end
         
         function CellIds = GetCellIDs(obj,cells)
+            %returns just the CellIDs given a list of objects.
             ids=[];
             for i=1:length(cells.Device)
                 if isa(cells,'QCASuperCell')
