@@ -45,15 +45,39 @@ p.ButtonDownFcn=@dragObject;
                            %for a layoutbox's parent cell
 
             
-            %somewhat redundant logic, but the new center position is
-            %becoming the new location of the layout box patch
-            
-                myCircuit.Device{ID}.LayoutCenterPosition = [p.XData(1)+.25 p.YData(1)+.75 0];
+            %This will allow the user to have their movements snap to the
+            %grid once layout mode is turned off
+                xcoor=p.XData(1)+.25;
+                diffx=xcoor-floor(xcoor);
                 
-                myCircuit.Device{ID}.CenterPosition=myCircuit.Device{ID}.LayoutCenterPosition;
-            
+                ycoor=p.YData(1)+.75;
+                diffy=ycoor-floor(ycoor);
+                
+                if diffx<.25
+                    xcoor=floor(xcoor);
+                end
+                if diffx>=.25 && diffx<=.75
+                    xcoor=floor(xcoor)+.5;
+                end
+                if diffx>.75
+                    xcoor=floor(xcoor)+1;
+                end
+                
+                if diffy<.25
+                    ycoor=floor(ycoor);
+                end
+                if diffy>=.25 && diffx<=.75
+                    ycoor=floor(ycoor)+.5;
+                end
+                if diffy>.75
+                    ycoor=floor(ycoor)+1;
+                end
+                
+                    myCircuit.Device{ID}.LayoutCenterPosition = [xcoor ycoor 0];
+                
+                    myCircuit.Device{ID}.CenterPosition=myCircuit.Device{ID}.LayoutCenterPosition;            
             setappdata(gcf,'myCircuit',myCircuit);
-%             end
+            
             
             p.ButtonDownFcn=@callSel; %assigning button to call selectfunction
             

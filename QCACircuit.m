@@ -30,6 +30,14 @@ classdef QCACircuit
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
             
+            
+            for i=1:n_old  %ensuring that CellIDs cannot be repeated
+                if obj.Device{i}.CellID == obj.Device{n_old+1}.CellID
+                    obj.Device{n_old+1}.CellID=obj.Device{n_old+1}.CellID+1;
+                end
+            end
+            
+            
             if isa(newcell, 'QCASuperCell') 
                 newcell = obj.Device{n_old+1}; %call just recently added supercell, newcell
 
@@ -140,8 +148,16 @@ classdef QCACircuit
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
                     
                     if strcmp(obj.Device{CellIndex}.BoxColor,'')
-                    color= [rand(1) rand(1) rand(1)];%make a random color that all the cells will have as outline
-                    obj.Device{CellIndex}.BoxColor=color;
+                        color= [rand(1) rand(1) rand(1)];%make a random color that all the cells will have as outline 
+                        
+                        %use 3d coordinate geometry and angles! cross or
+                        %dot product maybe....recall the old equation for
+                        %dot and cross products
+                        
+                                                        
+                        
+                        
+                        obj.Device{CellIndex}.BoxColor=color; %the color will remain the same for the same super cell
                     else
                         
                     end
@@ -157,8 +173,7 @@ classdef QCACircuit
                         Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
                     end
                 else
-                    
-                    
+                        
                         obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
                         obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                         obj.Device{CellIndex}.SelectBox.Selected = 'off';
@@ -180,13 +195,19 @@ classdef QCACircuit
             CellIndex = length(obj.Device);
             %              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
             for CellIndex = 1:length(obj.Device)
-                obj.Device{CellIndex} = obj.Device{CellIndex}.LayoutModeDraw();                
+                if isa(obj.Device{CellIndex},'QCASuperCell')
+                    for i=1:length(obj.Device{CellIndex}.Device)
+                        obj.Device{CellIndex}.Device{i}=obj.Device{CellIndex}.Device{i}.LayoutModeDraw();
+                        Select(obj.Device{CellIndex}.Device{i}.LayoutBox);
+                    end
+                    
+                else
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.LayoutModeDraw();
+                    Select(obj.Device{CellIndex}.LayoutBox);
+                end
             end
             
-            it=length(obj.Device); %throwing every cell into the select function
-            for i=1:it
-                Select(obj.Device{i}.LayoutBox);
-            end
+           
             
 %             hold off
         end
@@ -409,7 +430,7 @@ classdef QCACircuit
         function CellIds = GetCellIDs(obj,cells)
             ids=[];
             for i=1:length(cells.Device)
-                if isa(cells.Device{i},'QCASuperCell')
+                if isa(cells,'QCASuperCell')
                     
                     for j=1:length(cells.Device{i})
                         ids(end+1)=cells.Device{i}.Device{j}.CellID;
@@ -425,5 +446,5 @@ classdef QCACircuit
         
     end
     
+    
 end
-
