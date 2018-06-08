@@ -42,7 +42,7 @@ else
     end    
     
     newXlocation = max(xs)+1;
-    newYlocation = min(ys);    
+    newYlocation = mean(ys);    
     
 %     newXlocation = length(myCircuit.Device)-.5;
     % %         newXlocation = size(myCircuit.Device,1)*myCircuit.Device{end}.CharacteristicLength

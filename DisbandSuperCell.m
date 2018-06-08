@@ -1,34 +1,48 @@
 function DisbandSuperCell( handles )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-    myCircuit = getappdata(gcf,'myCircuit');
-    myCircuit.Mode = 'Simulation';
-    
-    
-    newCircuit = QCACircuit;
-    
-    for i=1:length(myCircuit.Device)
-        if isa(myCircuit.Device{i},'QCASuperCell')
-            for j=1:length(myCircuit.Device{i}.Device)
-               newCircuit= newCircuit.addNode(myCircuit.Device{i}.Device{j});
-               
-                
+myCircuit = getappdata(gcf,'myCircuit');
+myCircuit.Mode = 'Simulation';
+
+
+newCircuit = QCACircuit;
+
+for i=1:length(myCircuit.Device)
+    if isa(myCircuit.Device{i},'QCASuperCell')%if it's a supercell
+        
+        findselect=[];
+        for j=1:length(myCircuit.Device{i}.Device)
+            if strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on') %supercell that is selected
+                findselect(end+1)=1;%are any of the cells in the SC selected?
+            else
+                findselect(end+1)=0;
             end
-        else
-            newCircuit = newCircuit.addNode(myCircuit.Device{i});
-            newCircuit.Device{i}.SelectBox;
         end
+        if sum(findselect)>0 %if any of them are selected, send each cell out of the supercell
+           for j=1:length(myCircuit.Device{i}.Device)
+            newCircuit= newCircuit.addNode(myCircuit.Device{i}.Device{j});
+           end
+           
+        else
+           newCircuit = newCircuit.addNode(myCircuit.Device{i});
+        end
+                
+        
+    else
+        newCircuit = newCircuit.addNode(myCircuit.Device{i});%if it's not a supercell
     end
-    
-    myCircuit=newCircuit;
-    newCircuit.Device{2}.SelectBox;
-    
-    myCircuit.Device{2}.SelectBox;
-    myCircuit.GetCellIDs(myCircuit);
-    
-    
-    myCircuit=myCircuit.CircuitDraw(handles.LayoutWindow);
-    setappdata(gcf,'myCircuit',myCircuit);
+end
+newCircuit.Device;
+myCircuit=newCircuit;
+
+
+%     newCircuit.Device{2}.SelectBox;
+
+%     myCircuit.Device{2}.SelectBox;
+%     myCircuit.GetCellIDs(myCircuit);
+
+
+myCircuit=myCircuit.CircuitDraw(handles.LayoutWindow);
+setappdata(gcf,'myCircuit',myCircuit);
 
 end
-

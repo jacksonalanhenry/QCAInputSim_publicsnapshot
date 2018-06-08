@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 07-Jun-2018 13:03:25
+% Last Modified by GUIDE v2.5 08-Jun-2018 15:05:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;

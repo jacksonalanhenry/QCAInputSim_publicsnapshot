@@ -38,9 +38,9 @@ classdef QCACircuit
             end
             
             
-            if isa(newcell, 'QCASuperCell') 
+            if isa(newcell, 'QCASuperCell')
                 newcell = obj.Device{n_old+1}; %call just recently added supercell, newcell
-
+                
                 for x = 1:length(newcell.Device) % edit each subcell's CellID to reflect the supernode's integer
                     newcell.Device{x}.CellID = newcell.Device{x}.CellID + newcell.CellID;
                 end
@@ -54,7 +54,7 @@ classdef QCACircuit
         
         function obj = GenerateNeighborList( obj )
             %this function steps through each cell and assigns the neighborList for each
-
+            
             
             %All CellID Array (including subcells)
             cellIDArray = [];
@@ -87,9 +87,9 @@ classdef QCACircuit
                 
                 if(isa(obj.Device{cellIDToplevelnodes(idx)}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
                     superCellID = obj.Device{cellIDToplevelnodes(idx)}.CellID;
-
+                    
                     for subnode = 1:length(obj.Device{superCellID}.Device)
-
+                        
                         
                         c = obj.Device{superCellID}.Device{subnode}.CellID;
                         
@@ -101,11 +101,11 @@ classdef QCACircuit
                         %give me the cellid's of the node within a certain limit
                         neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
                         
-
                         
                         
                         
-%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                        
+                        %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
                         obj.Device{superCellID}.Device{subnode}.NeighborList = neighbors;
                         
                         
@@ -125,9 +125,9 @@ classdef QCACircuit
                     
                     c= obj.Device{cellIDToplevelnodes(idx)}.CellID;
                     
-%                     disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                    %                     disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
                     obj.Device{cellIDToplevelnodes(idx)}.NeighborList = neighbors;
-
+                    
                     idx = idx+1;
                 end
                 
@@ -135,7 +135,7 @@ classdef QCACircuit
                 
             end
             
-
+            
         end
         
         function obj = CircuitDraw(obj, targetAxes)
@@ -143,46 +143,78 @@ classdef QCACircuit
             hold on
             CellIndex = length(obj.Device);
             for CellIndex = 1:length(obj.Device)
-
+                
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
-
                     
-                    if strcmp(obj.Device{CellIndex}.BoxColor,'')
-                        color= [rand(1) rand(1) rand(1)];%make a random color that all the cells will have as outline 
+                    %check to see if there is a color for the SC
+                    if strcmp(obj.Device{CellIndex}.BoxColor,'')                        
                         
-                        %use 3d coordinate geometry and angles! cross or
-                        %dot product maybe....recall the old equation for
-                        %dot and cross products
+                        %We make a cell array of all colors that have been
+                        %used
+                        colors={};
+                        for j=1:length(obj.Device)
+                            if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
+                                colors{end+1} = obj.Device{j}.BoxColor;                                
+                            end
+                            
+                        end
                         
-                                                        
-                        
-                        
-                        obj.Device{CellIndex}.BoxColor=color; %the color will remain the same for the same super cell
+                        %compare each color to a randomly generated color
+                        %we want to make sure that the new color is not too
+                        %similar to the used colors.  Therefore, we will
+                        %use vector geometry to ensure the "angle" between
+                        %each color, represented as a 3d vector, is
+                        %sufficiently large
+                        if length(colors)>0 %there is a colors list
+                            theta=0;
+                            angles=[];
+                            colorcomp=zeros(1,length(colors));%want all elements to be ones
+                            
+                            while sum(colorcomp)<length(colors)
+                                
+                                color=[rand rand rand];
+                                for i=1:length(colors)
+                                    color1=color;
+                                    color2=colors{i};
+                                    theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
+                                    angles(i)=theta;
+                                    colorcomp(i)=(theta>20); %as long as the angle is >20 degrees, the color is permissible
+                                    
+                                end
+                                
+                                
+                            end
+                            min(angles);
+                            obj.Device{CellIndex}.BoxColor=color;
+                        else
+                            obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
+                        end
+                            
                     else
-                        
+                        %don't make a new color
                     end
                     
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
                         
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
-                        obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off'; 
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor;
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
                         Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
                     end
                 else
-                        
-                        obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
-                        obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
-                        obj.Device{CellIndex}.SelectBox.Selected = 'off';
-                        obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
-                        
-                        Select(obj.Device{CellIndex}.SelectBox);
+                    
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+                    obj.Device{CellIndex}.SelectBox.Selected = 'off';
+                    obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
+                    
+                    Select(obj.Device{CellIndex}.SelectBox);
                     
                 end
-
+                
             end
             
             hold off
@@ -197,7 +229,7 @@ classdef QCACircuit
             for CellIndex = 1:length(obj.Device)
                 if isa(obj.Device{CellIndex},'QCASuperCell')
                     for i=1:length(obj.Device{CellIndex}.Device)
-                        obj.Device{CellIndex}.Device{i}=obj.Device{CellIndex}.Device{i}.LayoutModeDraw();
+                        obj.Device{CellIndex}.Device{i}=obj.Device{CellIndex}.Device{i}.LayoutModeDraw(obj.Device{CellIndex}.BoxColor);
                         Select(obj.Device{CellIndex}.Device{i}.LayoutBox);
                     end
                     
@@ -207,9 +239,9 @@ classdef QCACircuit
                 end
             end
             
-           
             
-%             hold off
+            
+                        hold off
         end
         
         %reference this based on CellId
@@ -261,7 +293,7 @@ classdef QCACircuit
                     end
             end
         end
-               
+        
         function obj = Relax2GroundState(obj)
             %Iterate to Selfconsistency
             
@@ -273,8 +305,8 @@ classdef QCACircuit
                 
                 idx = 1;
                 %randomize order
-%                 randarray = linspace(1,length(obj.Device),length(obj.Device));
-%                 randarray = randarray(randperm(length(randarray)))
+                %                 randarray = linspace(1,length(obj.Device),length(obj.Device));
+                %                 randarray = randarray(randperm(length(randarray)))
                 
                 while idx <= length(obj.Device)
                     
@@ -284,7 +316,7 @@ classdef QCACircuit
                         NewPols = ones(1,length(obj.Device{idx}.Device));
                         subnodeTolerance = 1;
                         super = 1;
-
+                        
                         while (subnodeTolerance > 0.001)
                             OldPols = NewPols;
                             
@@ -323,7 +355,7 @@ classdef QCACircuit
                         end
                         
                         idx=idx+1;
-
+                        
                         
                     else
                         %obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
@@ -373,9 +405,9 @@ classdef QCACircuit
                     cell_obj{idx} = obj.Device{superID}.Device{subID};
                     
                 else
-                    cell_obj{idx} = obj.Device{CellIDArray(idx)}; 
+                    cell_obj{idx} = obj.Device{CellIDArray(idx)};
                 end
-
+                
             end
             
         end
@@ -438,8 +470,8 @@ classdef QCACircuit
                         ids(end+1)=cells.Device{i}.Device{j}.CellID;
                     end
                 else
-
-                        ids(end+1)=cells.Device{i}.CellID;
+                    
+                    ids(end+1)=cells.Device{i}.CellID;
                 end
             end
             

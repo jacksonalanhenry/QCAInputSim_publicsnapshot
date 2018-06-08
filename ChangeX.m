@@ -10,10 +10,11 @@ for i=1:length(myCircuit.Device)
             
             
             if strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on')
+                for k=1:length(myCircuit.Device{i}.Device)
+                    
                 
-                
-                myCircuit.Device{i}.Device{j}.CenterPosition(1)=myCircuit.Device{i}.Device{j}.CenterPosition(1)+str2num(get(handles.changex,'String'));
-            
+                    myCircuit.Device{i}.Device{k}.CenterPosition(1)=myCircuit.Device{i}.Device{k}.CenterPosition(1)+str2num(get(handles.changex,'String'));
+                end
             
             end
         end
