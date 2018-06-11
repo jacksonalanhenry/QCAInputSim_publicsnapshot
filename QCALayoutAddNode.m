@@ -42,7 +42,7 @@ else
     end    
     
     newXlocation = max(xs)+1;
-    newYlocation = mean(ys);    
+    newYlocation = min(ys);    
     
 %     newXlocation = length(myCircuit.Device)-.5;
     % %         newXlocation = size(myCircuit.Device,1)*myCircuit.Device{end}.CharacteristicLength
@@ -63,13 +63,23 @@ myCircuit.Device{length(myCircuit.Device)}.LayoutCenterPosition = [newXlocation 
 % xloc(end+1)=myCircuit.Device{length(myCircuit.Device)}.CenterPosition(1)
 
 % modify appdata circuit
-setappdata(gcf, 'myCircuit', myCircuit);
+% setappdata(gcf, 'myCircuit', myCircuit);
 
 % circuitDraw
-myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
+mode = myCircuit.Mode;
 
-handles.layoutchange.Value=0;
+switch mode
+    case 'Simulation'
+        myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
+        handles.layoutchange.Value=0;
+
+    case 'Layout'
+        myCircuit = myCircuit.LayoutDraw(handles.LayoutWindow);
+        handles.layoutchange.Value=1;
+end
+
 handles.makeSC.Value=0;
+
 
 setappdata(gcf,'myCircuit',myCircuit);
 

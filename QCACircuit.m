@@ -27,17 +27,32 @@ classdef QCACircuit
         
         function obj = addNode( obj, newcell )
             n_old = length(obj.Device);
+            ids=[];
+            if length(obj.Device)
+                ids = GetCellIDs(obj,obj);
+            end
+            
             obj.Device{n_old+1} = newcell;
             obj.Device{n_old+1}.CellID = length(obj.Device);
             
             
-            for i=1:n_old  %ensuring that CellIDs cannot be repeated
-                if obj.Device{i}.CellID == obj.Device{n_old+1}.CellID
-                    obj.Device{n_old+1}.CellID=obj.Device{n_old+1}.CellID+1;
+            
+            if length(ids)
+                for i=1:n_old  %ensuring that CellIDs cannot be repeated
+                    
+                    
+                    compare = (obj.Device{n_old+1}.CellID==ids);
+                    maxID = max(ids);
+                    if sum(compare)>0
+                        obj.Device{n_old+1}.CellID = maxID +1;
+                    end
+                    
                 end
             end
+            compare = (obj.Device{n_old+1}.CellID==ids);
+            ids = GetCellIDs(obj,obj)
             
-            
+            newIDs = GetCellIDs(obj,obj);
             if isa(newcell, 'QCASuperCell')
                 newcell = obj.Device{n_old+1}; %call just recently added supercell, newcell
                 
@@ -178,7 +193,7 @@ classdef QCACircuit
                                     color2=colors{i};
                                     theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
                                     angles(i)=theta;
-                                    colorcomp(i)=(theta>20); %as long as the angle is >20 degrees, the color is permissible
+                                    colorcomp(i)=(theta>15); %as long as the angle is >20 degrees, the color is permissible
                                     
                                 end
                                 
@@ -228,20 +243,74 @@ classdef QCACircuit
             %              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
             for CellIndex = 1:length(obj.Device)
                 if isa(obj.Device{CellIndex},'QCASuperCell')
+                    
+                    
+                    %check to see if there is a color for the SC
+                    if strcmp(obj.Device{CellIndex}.BoxColor,'')
+                        
+                        %We make a cell array of all colors that have been
+                        %used
+                        colors={};
+                        for j=1:length(obj.Device)
+                            if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
+                                colors{end+1} = obj.Device{j}.BoxColor;
+                            end
+                            
+                        end
+                        
+                        %compare each color to a randomly generated color
+                        %we want to make sure that the new color is not too
+                        %similar to the used colors.  Therefore, we will
+                        %use vector geometry to ensure the "angle" between
+                        %each color, represented as a 3d vector, is
+                        %sufficiently large
+                        if length(colors)>0 %there is a colors list
+                            theta=0;
+                            angles=[];
+                            colorcomp=zeros(1,length(colors));%want all elements to be ones
+                            
+                            while sum(colorcomp)<length(colors)
+                                
+                                color=[rand rand rand];
+                                for i=1:length(colors)
+                                    color1=color;
+                                    color2=colors{i};
+                                    theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
+                                    angles(i)=theta;
+                                    colorcomp(i)=(theta>15); %as long as the angle is >20 degrees, the color is permissible
+                                    
+                                end
+                                
+                                
+                            end
+                            min(angles);
+                            obj.Device{CellIndex}.BoxColor=color;
+                        else
+                            obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
+                        end
+                        
+                    else
+                        %don't make a new color
+                    end
+                    
+                    
                     for i=1:length(obj.Device{CellIndex}.Device)
-                        obj.Device{CellIndex}.Device{i}=obj.Device{CellIndex}.Device{i}.LayoutModeDraw(obj.Device{CellIndex}.BoxColor);
-                        Select(obj.Device{CellIndex}.Device{i}.LayoutBox);
+                    obj.Device{CellIndex}.Device{i}=obj.Device{CellIndex}.Device{i}.LayoutModeDraw(obj.Device{CellIndex}.BoxColor);
+                    Select(obj.Device{CellIndex}.Device{i}.LayoutBox);
                     end
                     
                 else
                     obj.Device{CellIndex} = obj.Device{CellIndex}.LayoutModeDraw();
                     Select(obj.Device{CellIndex}.LayoutBox);
                 end
+                
+                
+                
+                
+                
+                hold off
             end
-            
-            
-            
-                        hold off
+        
         end
         
         %reference this based on CellId
@@ -466,7 +535,7 @@ classdef QCACircuit
             for i=1:length(cells.Device)
                 if isa(cells,'QCASuperCell')
                     
-                    for j=1:length(cells.Device{i})
+                    for j=1:length(cells.Device)
                         ids(end+1)=cells.Device{i}.Device{j}.CellID;
                     end
                 else

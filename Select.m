@@ -48,7 +48,7 @@ p.ButtonDownFcn=@selObject;
 end
 
 
-% 
+
 %     function deSelAll(hObject,eventdata)
 %         myCircuit=getappdata(gcf,'myCircuit');
 % 

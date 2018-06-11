@@ -60,7 +60,7 @@ guidata(hObject, handles);
 myCircuit = QCACircuit();
 setappdata(gcf, 'myCircuit', myCircuit);
 Path.home = pwd;
-Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder';
+Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder'; %this needs to change!!!
 setappdata(gcf,'Path',Path);
 
 

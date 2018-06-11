@@ -4,7 +4,7 @@ function MakeSuperCellGUI(handles)
 myCircuit = getappdata(gcf,'myCircuit');
 
 
-myCircuit.Mode = 'Simulation';
+% myCircuit.Mode = 'Simulation';
 
 %     handles.layoutchange.Value=0;
 %     SwitchMode(handles);
@@ -13,15 +13,31 @@ button = get(handles.makeSC,'Value');
 
 SCParts=[];
 
+
+mode = myCircuit.Mode
+
+
+
 if button
     
-    for i=1:length(myCircuit.Device)
-        
-        if  ~isa(myCircuit.Device{i},'QCASuperCell') && strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
-            SCParts(end+1)=i; %need to call the cells to become part of the super cell
+    switch mode
+        case 'Simulation'
+            for i=1:length(myCircuit.Device)
+                if  ~isa(myCircuit.Device{i},'QCASuperCell') && strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
+                    SCParts(end+1)=i; %need to call the cells to become part of the super cell
+                end
+            end
             
-        end
+        case 'Layout'
+            for i=1:length(myCircuit.Device)
+                if  ~isa(myCircuit.Device{i},'QCASuperCell') && strcmp(myCircuit.Device{i}.LayoutBox.Selected,'on')
+                    SCParts(end+1)=i; %need to call the cells to become part of the super cell
+                end
+            end
+            
     end
+    
+    
     if length(SCParts)>1
         SuperCell = QCASuperCell();
         
@@ -59,7 +75,8 @@ if button
         myCircuit.Device = newCircuit;
        
         myCircuit=myCircuit.addNode(SuperCell);
-%         b=myCircuit.GetCellIDs(myCircuit)
+        
+        myCircuit.GetCellIDs(myCircuit)
         
 %        myCircuit.Device{4}
         
@@ -68,8 +85,12 @@ if button
     end
 end
     handles.makeSC.Value=0;
-    
-    myCircuit=myCircuit.CircuitDraw(gca);
+    switch mode
+        case 'Simulation'
+            myCircuit=myCircuit.CircuitDraw(gca);
+        case 'Layout'
+            myCircuit=myCircuit.LayoutDraw(gca);
+    end
     setappdata(gcf,'myCircuit',myCircuit);
     
 
