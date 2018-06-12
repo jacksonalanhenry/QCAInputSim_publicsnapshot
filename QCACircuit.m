@@ -359,44 +359,52 @@ classdef QCACircuit
             
         end
         
-        function obj = pipeline(obj,varargin)
-            %Create E
-            Eo = 0.4217;% qe^2*(1.602e-19)/(4*pi*epsilon_0*a)*(1-1/sqrt(2));
+        function obj = pipeline(obj,signal,currentaxes)
+            %give this function a signal(or field) obj
             
-            c = 3e8;
-            fs = 3012;  % Sampling frequency (samples per second)
-            dt = 1/fs;  % seconds per sample
-            T = 100/fs; % how long do you want to play sinewave
-            lambda = 50*obj.Device{1}.CharacteristicLength;
+            nt=315;
+            time_array = linspace(0,2,nt); %right now this will do 2 periods
             
-            tt = 0:dt:T;
-            d = 1.5*Eo/2*(sin(2*pi*c/lambda*tt)-1);
-            frames = length(tt);
-            E = zeros(frames,3);
-            E(:,3) = d;
             
-            myaxis = axes; %%%%%%%%%%%%%%%THIS IS CHEATING
-            
-            Frame(frames) = struct('cdata',[],'colormap',[]);
-            v = VideoWriter('sinusoidUniformEField.mp4','MPEG-4');
+            Frame(nt) = struct('cdata',[],'colormap',[]);
+            v = VideoWriter('sinusoidEField.mp4','MPEG-4');
             open(v);
-            for t = 1:frames %time step
+            
+            for t = 1:nt %time step
                 
                 %edit Efield for all cells in circuit
-                for x = 1:length(obj.Device)
-                    obj.Device{x}.ElectricField(2) = E(t,2); %changes Ey Field.
-                    obj.Device{x}.ElectricField(3) = E(t,3); %changes Ez Field.
+                idx=1;
+                while idx <= length(obj.Device)
+                    if( isa(obj.Device{idx}, 'QCASuperCell') )
+                        
+                        for subnode = 1:length(obj.Device{idx}.Device)
+                            obj.Device{idx}.Device{subnode}.ElectricField = signal.getEField(obj.Device{idx}.Device{subnode}.CenterPosition, time_array(t)); %changes E Field.
+                        end
+                        idx = idx+1;
+                    else
+                        obj.Device{idx}.ElectricField = signal.getEField(obj.Device{idx}.CenterPosition, time_array(t)); %changes E Field.
+                        
+                        idx = idx+1;
+                    end
+                    
                 end
                 
+                
                 %relax2Groundstate
+                
                 obj = obj.Relax2GroundState();
+                three = obj.Device{3}.ElectricField;
+                twelve = obj.Device{12}.ElectricField;
+                diff = abs(twelve-three);
+                disp(['t: ', num2str(t), ' diff: ', num2str(diff)])
                 
                 %visualize
-                obj.CircuitDraw(myaxis);
+                obj.CircuitDraw(currentaxes);
                 drawnow
                 %save it
                 Frame(t) = getframe(gcf);
                 writeVideo(v,Frame(t));
+                
             end %time step loop
             
             
@@ -404,6 +412,7 @@ classdef QCACircuit
             movie(fig,Frame,1)
             close(v);
             
+            disp("Complete!")
             
         end
         
