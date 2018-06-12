@@ -50,7 +50,7 @@ classdef QCACircuit
                 end
             end
             compare = (obj.Device{n_old+1}.CellID==ids);
-            ids = GetCellIDs(obj,obj)
+            ids = GetCellIDs(obj,obj);
             
             newIDs = GetCellIDs(obj,obj);
             if isa(newcell, 'QCASuperCell')
@@ -229,7 +229,7 @@ classdef QCACircuit
                     Select(obj.Device{CellIndex}.SelectBox);
                     
                 end
-                
+                obj.Mode = 'Simulation';
             end
             
             hold off
@@ -310,7 +310,7 @@ classdef QCACircuit
                 
                 hold off
             end
-        
+            obj.Mode = 'Layout';
         end
         
         %reference this based on CellId

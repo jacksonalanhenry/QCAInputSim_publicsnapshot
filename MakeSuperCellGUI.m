@@ -14,7 +14,7 @@ button = get(handles.makeSC,'Value');
 SCParts=[];
 
 
-mode = myCircuit.Mode
+mode = myCircuit.Mode;
 
 
 
@@ -76,7 +76,7 @@ if button
        
         myCircuit=myCircuit.addNode(SuperCell);
         
-        myCircuit.GetCellIDs(myCircuit)
+        myCircuit.GetCellIDs(myCircuit);
         
 %        myCircuit.Device{4}
         
