@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 05-Jun-2018 19:03:01
+% Last Modified by GUIDE v2.5 08-Jun-2018 15:05:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,7 +60,7 @@ guidata(hObject, handles);
 myCircuit = QCACircuit();
 setappdata(gcf, 'myCircuit', myCircuit);
 Path.home = pwd;
-Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder';
+Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder'; %this needs to change!!!
 setappdata(gcf,'Path',Path);
 
 
@@ -253,3 +253,11 @@ function makeSC_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of makeSC
 
 MakeSuperCellGUI(handles)
+
+
+% --- Executes on button press in disbandsupercell.
+function disbandsupercell_Callback(hObject, eventdata, handles)
+% hObject    handle to disbandsupercell (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+DisbandSuperCell(handles);

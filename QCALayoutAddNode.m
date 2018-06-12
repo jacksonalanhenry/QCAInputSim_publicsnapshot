@@ -3,19 +3,46 @@ function QCALayoutAddNode( handles )
 %   Detailed explanation goes here
 
 myCircuit = getappdata(gcf, 'myCircuit');
+
 % xloc=[];
 
 
 if(isempty(myCircuit.Device))
     newXlocation = 0;
+    newYlocation = 0;
 else
     xs=[];
+
     for i=1:length(myCircuit.Device)
-        xs(end+1)=myCircuit.Device{i}.CenterPosition(1);
+        if isa(myCircuit.Device{i},'QCASuperCell')
+            for j=1:length(myCircuit.Device{i}.Device)
+                
+                xs(end+1)=myCircuit.Device{i}.Device{j}.CenterPosition(1);
+            end
+        else
+            xs(end+1)=myCircuit.Device{i}.CenterPosition(1);
+        end
+        
         
     end
     
+    
+    ys=[];
+    for i=1:length(myCircuit.Device)
+        if isa(myCircuit.Device{i},'QCASuperCell')
+            for j=1:length(myCircuit.Device{i}.Device)
+                
+                ys(end+1)=myCircuit.Device{i}.Device{j}.CenterPosition(2);
+            end
+        else
+            ys(end+1)=myCircuit.Device{i}.CenterPosition(2);
+        end
+        
+        
+    end    
+    
     newXlocation = max(xs)+1;
+    newYlocation = min(ys);    
     
 %     newXlocation = length(myCircuit.Device)-.5;
     % %         newXlocation = size(myCircuit.Device,1)*myCircuit.Device{end}.CharacteristicLength
@@ -28,21 +55,31 @@ end
 
 % newXlocation=max(xloc);
 % add node to circuit
-myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation 0 0]));
+myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation newYlocation 0]));
 
-myCircuit.Device{length(myCircuit.Device)}.LayoutCenterPosition = [newXlocation 0 0];
+myCircuit.Device{length(myCircuit.Device)}.LayoutCenterPosition = [newXlocation newYlocation 0];
 
 
 % xloc(end+1)=myCircuit.Device{length(myCircuit.Device)}.CenterPosition(1)
 
 % modify appdata circuit
-setappdata(gcf, 'myCircuit', myCircuit);
+% setappdata(gcf, 'myCircuit', myCircuit);
 
 % circuitDraw
-myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
+mode = myCircuit.Mode;
 
-handles.layoutchange.Value=0;
+switch mode
+    case 'Simulation'
+        myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
+        handles.layoutchange.Value=0;
+
+    case 'Layout'
+        myCircuit = myCircuit.LayoutDraw(handles.LayoutWindow);
+        handles.layoutchange.Value=1;
+end
+
 handles.makeSC.Value=0;
+
 
 setappdata(gcf,'myCircuit',myCircuit);
 

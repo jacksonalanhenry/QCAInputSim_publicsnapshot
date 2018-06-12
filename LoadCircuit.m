@@ -6,7 +6,7 @@ Path = getappdata(gcf,'Path');
 myCircuit = getappdata(gcf,'myCircuit');
 circpath = Path.circ;
 home = Path.home;
-cd(circpath)
+cd(circpath);
 newFile = uigetfile('*.mat');
 
 
