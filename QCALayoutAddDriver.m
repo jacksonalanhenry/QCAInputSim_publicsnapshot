@@ -1,7 +1,7 @@
-function QCALayoutAddNode( handles )
-%UNTITLED2 Summary of this function goes here
+function QCALayoutAddDriver(handles)
+%UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
-
+    
 myCircuit = getappdata(gcf, 'myCircuit');
 
 % xloc=[];
@@ -43,17 +43,19 @@ else
     
     newXlocation = max(xs)+1;
     newYlocation = min(ys);    
-    
 
 end
+
 
 % add node to circuit
 myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation newYlocation 0]));
 
 myCircuit.Device{length(myCircuit.Device)}.LayoutCenterPosition = [newXlocation newYlocation 0];
+myCircuit.Device{length(myCircuit.Device)}.Type = 'Driver';
 
 
 
+% circuitDraw
 mode = myCircuit.Mode;
 
 switch mode
@@ -74,6 +76,6 @@ setappdata(gcf,'myCircuit',myCircuit);
 
 
 
-
 %axis tight
 axis equal
+end

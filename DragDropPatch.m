@@ -42,50 +42,86 @@ p.ButtonDownFcn=@dragObject;
             dragging = [];
             
             
-            ID=p.UserData %if you refer to the threedotcell class, you'll recall that the userdata is the same as the Cell ID
+            ID=p.UserData; %if you refer to the threedotcell class, you'll recall that the userdata is the same as the Cell ID
                             %for a layoutbox's parent cell
             
             
             %This will allow the user to have their movements snap to the
             %grid once layout mode is turned off
-            if isint(ID)    %is a normal cell, not a supercell
-                xcoor=p.XData(1)+.25;
-                diffx=xcoor-floor(xcoor);
+            
+            if ID-floor(ID)==0    %is a normal cell, not a supercell
+
                 
-                ycoor=p.YData(1)+.75;
-                diffy=ycoor-floor(ycoor);
                 
-                if diffx<.25
-                    xcoor=floor(xcoor);
-                end
-                if diffx>=.25 && diffx<=.75
-                    xcoor=floor(xcoor)+.5;
-                end
-                if diffx>.75
-                    xcoor=floor(xcoor)+1;
-                end
-                
-                if diffy<.25
-                    ycoor=floor(ycoor);
-                end
-                if diffy>=.25 && diffy<=.75
-                    ycoor=floor(ycoor)+.5;
-                end
-                if diffy>.75
-                    ycoor=floor(ycoor)+1;
-                end
-                
-                ID
-                for i=1:length(myCircuit.Device)%find the right cell with the integer version of the selected ID
+                for i=1:length(myCircuit.Device)%find the right cell with the integer version
+%                                                of the selected ID so we know which coordinate differece to use
+                    
                     if myCircuit.Device{i}.CellID == ID
-                       pick = i                       
+                        pick = i;
                     end
+                    
                 end
                 
                 
-                myCircuit.Device{pick}.LayoutCenterPosition = [xcoor ycoor 0];
                 
-                myCircuit.Device{pick}.CenterPosition=myCircuit.Device{pick}.LayoutCenterPosition;
+                centerPosList=cell(1,length(myCircuit.Device));
+                centerPosList{pick} = myCircuit.Device{pick}.LayoutCenterPosition;
+                
+                totalDiff = [];
+                
+                        xcoor=centerPosList{pick}(1);
+                        
+                        
+                        ycoor=centerPosList{pick}(2);
+                        
+                        newPos=newPos(1,:); %the final position of the dragged object
+                        totalDiff = newPos - [xcoor ycoor 0];%how much each cell will change
+                        
+                        diffx=totalDiff(1)-floor(totalDiff(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
+                        diffy=totalDiff(2)-floor(totalDiff(2));
+                        
+                        if diffx<.25
+                            totalDiff(1)=floor(totalDiff(1));
+                        end
+                        if diffx>=.25 && diffx<=.75
+                            totalDiff(1)=floor(totalDiff(1))+.5;
+                        end
+                        if diffx>.75
+                            totalDiff(1)=floor(totalDiff(1))+1;
+                        end
+                        
+                        if diffy<.25
+                            totalDiff(2)=floor(totalDiff(2));
+                        end
+                        if diffy>=.25 && diffy<=.75
+                            totalDiff(2)=floor(totalDiff(2))+.5;
+                        end
+                        if diffy>.75
+                            totalDiff(2)=floor(totalDiff(2))+1;
+                        end
+                        
+                        
+                
+                for j = 1:length(myCircuit.Device) %assign all the center positions to a cell array
+                    
+                    
+                    
+                    if ~isa(myCircuit.Device{j},'QCASuperCell') &&  strcmp(myCircuit.Device{j}.LayoutBox.Selected,'on')  %find which other cells are selected
+                        
+                        centerPosList{j} = myCircuit.Device{j}.LayoutCenterPosition;%list all their coordinates
+                        
+                        totalDiff;
+                        centerPosList{j};
+                        
+                        k = centerPosList{j} + totalDiff;
+                        centerPosList{j} = k;
+                        myCircuit.Device{j}.CenterPosition = centerPosList{j};
+                    end
+                    
+                    
+                end 
+                
+                                
                 p.ButtonDownFcn=@callSel; %assigning button to call select function
                 myCircuit = myCircuit.LayoutDraw(gca);
                 
@@ -94,18 +130,26 @@ p.ButtonDownFcn=@dragObject;
 
 
             else    %is a supercell.  We will move the entire cell if one of them is moved
+                
+                
                 newID = floor(ID);
                 pick=1;
+                
                 for i=1:length(myCircuit.Device)%find the right cell with the integer version of the selected ID
-                    if myCircuit.Device{i}.CellID == newID
-                       pick = i; 
-                       
-                    end
+                    if isa(myCircuit.Device{i},'QCASuperCell')
                     
+                        for j=1:length(myCircuit.Device{i}.Device)
+                            
+                            if myCircuit.Device{i}.Device{j}.CellID == ID
+                                pick = i;
+                    
+                            end
+                        end
+                    end
                 end
+                
                 myCircuit.GetCellIDs(myCircuit);
                 
-                isa(myCircuit.Device{pick},'QCASuperCell');
                 
                 centerPosList=cell(length(myCircuit.Device{pick}));
                 totalDiff = [];
@@ -123,7 +167,7 @@ p.ButtonDownFcn=@dragObject;
                         ycoor=centerPosList{j}(2);
                         
                         newPos=newPos(1,:);
-                        totalDiff = newPos - [xcoor ycoor 0]
+                        totalDiff = newPos - [xcoor ycoor 0];
                         
                         diffx=totalDiff(1)-floor(totalDiff(1));
                         diffy=totalDiff(2)-floor(totalDiff(2));
@@ -148,8 +192,8 @@ p.ButtonDownFcn=@dragObject;
                             totalDiff(2)=floor(totalDiff(2))+1;
                         end
                         
-                        totalDiff
-                        centerPosList{j}
+                        totalDiff;
+                        centerPosList{j};
                         
                         k = centerPosList{j} + totalDiff;
                         centerPosList{j} = k;
@@ -162,24 +206,23 @@ p.ButtonDownFcn=@dragObject;
                 for i=1:length(myCircuit.Device{pick}.Device)
                     if strcmp(myCircuit.Device{pick}.Device{i}.LayoutBox.Selected,'off')
                         centerPosList{i};
-                        totalDiff
-                        k = centerPosList{i} + totalDiff
+                        totalDiff;
+                        k = centerPosList{i} + totalDiff;
                         centerPosList{i} = k(1,:);
                         centerPosList{i};
                         myCircuit.Device{pick}.Device{i}.CenterPosition = centerPosList{i};
                     end
                 end
-                p.ButtonDownFcn=@callSel; 
                 
+                
+                p.ButtonDownFcn=@callSel; 
                 
                 myCircuit = myCircuit.LayoutDraw(gca);
                 
                 setappdata(gcf,'myCircuit',myCircuit);
                                
             end  %end drag super cell
-            
-            
-            
+
         end        
     end
 

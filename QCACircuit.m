@@ -77,8 +77,6 @@ classdef QCACircuit
             idx = 1;
             for node = 1:length(obj.Device) %step through all the node/supernodes
                 
-                
-                
                 if(isa(obj.Device{node}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
                     for subnode = 1:length(obj.Device{node}.Device) %step through all subnodes
                         cellIDArray(idx) = obj.Device{node}.Device{subnode}.CellID;
@@ -86,7 +84,7 @@ classdef QCACircuit
                         idx = idx + 1;
                     end
                 else
-                    cellIDArray(idx) = obj.Device{node}.CellID; %add the node
+                    cellIDArray(idx) = obj.Device{node}.CellID; %add the node if it's not a supercell
                     cellpositions(idx,:) = obj.Device{node}.CenterPosition;
                     idx = idx + 1;
                 end
@@ -98,7 +96,9 @@ classdef QCACircuit
             %now go through list of CellID's to find neighbors
             idx = 1;
             while idx <= length(cellIDArray)
-                
+                idx;
+                ID=cellIDToplevelnodes(idx);
+                lengthof=length(obj.Device);
                 
                 if(isa(obj.Device{cellIDToplevelnodes(idx)}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
                     superCellID = obj.Device{cellIDToplevelnodes(idx)}.CellID;
@@ -111,13 +111,10 @@ classdef QCACircuit
                         %shift and find magnitudes
                         shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
                         shifted = shifted.^2;
-                        shifted = sum(shifted,1);
+                        shifted = sum(shifted,1).^(.5);
                         
                         %give me the cellid's of the node within a certain limit
                         neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
-                        
-                        
-                        
                         
                         
                         %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
@@ -166,40 +163,45 @@ classdef QCACircuit
                         
                         %We make a cell array of all colors that have been
                         %used
-                        colors={};
+                        colors=0;
                         for j=1:length(obj.Device)
                             if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
-                                colors{end+1} = obj.Device{j}.BoxColor;                                
+%                                 colors{end+1} = obj.Device{j}.BoxColor;
+                                colors =  colors+1
                             end
                             
                         end
-                        
+                        if colors>0;
+                            
+                        color(1)= abs(sin(.4*obj.Device{j}.CellID-obj.Device{j}.CellID));
+                        color(3)= abs(sin(colors*obj.Device{j}.CellID-(obj.Device{j}.CellID)^2))*abs(sin(colors*obj.Device{j}.CellID));
+                        color(2)= abs(cos(colors*obj.Device{j}.CellID+obj.Device{j}.CellID*(obj.Device{j}.CellID-1)));
                         %compare each color to a randomly generated color
                         %we want to make sure that the new color is not too
                         %similar to the used colors.  Therefore, we will
                         %use vector geometry to ensure the "angle" between
                         %each color, represented as a 3d vector, is
                         %sufficiently large
-                        if length(colors)>0 %there is a colors list
-                            theta=0;
-                            angles=[];
-                            colorcomp=zeros(1,length(colors));%want all elements to be ones
-                            
-                            while sum(colorcomp)<length(colors)
-                                
-                                color=[rand rand rand];
-                                for i=1:length(colors)
-                                    color1=color;
-                                    color2=colors{i};
-                                    theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
-                                    angles(i)=theta;
-                                    colorcomp(i)=(theta>15); %as long as the angle is >20 degrees, the color is permissible
-                                    
-                                end
-                                
-                                
-                            end
-                            min(angles);
+%                         if length(colors)>0 %there is a colors list
+%                             theta=0;
+%                             angles=[];
+%                             colorcomp=zeros(1,length(colors));%want all elements to be ones
+%                             
+%                             while sum(colorcomp)<length(colors)
+%                                 
+%                                 color=[rand rand rand];
+%                                 for i=1:length(colors)
+%                                     color1=color;
+%                                     color2=colors{i};
+%                                     theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
+%                                     angles(i)=theta;
+%                                     colorcomp(i)=(theta>15); %as long as the angle is >20 degrees, the color is permissible
+%                                     
+%                                 end
+%                                 
+%                                 
+%                             end
+%                             min(angles);
                             obj.Device{CellIndex}.BoxColor=color;
                         else
                             obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
@@ -229,7 +231,7 @@ classdef QCACircuit
                     Select(obj.Device{CellIndex}.SelectBox);
                     
                 end
-                
+                obj.Mode = 'Simulation';
             end
             
             hold off
@@ -250,43 +252,46 @@ classdef QCACircuit
                         
                         %We make a cell array of all colors that have been
                         %used
-                        colors={};
+                        colors=0;
                         for j=1:length(obj.Device)
                             if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
-                                colors{end+1} = obj.Device{j}.BoxColor;
+%                                 colors{end+1} = obj.Device{j}.BoxColor;
+                                colors =  colors+1
                             end
                             
                         end
-                        
+                        if colors>0;
+                        color(1)= abs(sin(.4*obj.Device{j}.CellID-obj.Device{j}.CellID));
+                        color(3)= abs(sin(colors*obj.Device{j}.CellID-(obj.Device{j}.CellID)^2))*abs(sin(colors*obj.Device{j}.CellID));
+                        color(2)= abs(cos(colors*obj.Device{j}.CellID+obj.Device{j}.CellID*(obj.Device{j}.CellID-1)));
                         %compare each color to a randomly generated color
                         %we want to make sure that the new color is not too
                         %similar to the used colors.  Therefore, we will
                         %use vector geometry to ensure the "angle" between
                         %each color, represented as a 3d vector, is
                         %sufficiently large
-                        if length(colors)>0 %there is a colors list
-                            theta=0;
-                            angles=[];
-                            colorcomp=zeros(1,length(colors));%want all elements to be ones
+%                         if length(colors)>0 %there is a colors list
+%                             theta=0;
+%                             angles=[];
+%                             colorcomp=zeros(1,length(colors));%want all elements to be ones
+%                             
+%                             while sum(colorcomp)<length(colors)
+%                                 
+%                                 color=[rand rand rand];
+%                                 for i=1:length(colors)
+%                                     color1=color;
+%                                     color2=colors{i};
+%                                     theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
+%                                     angles(i)=theta;
+%                                     colorcomp(i)=(theta>15); %as long as the angle is >20 degrees, the color is permissible
+%                                     
+%                                 end
+%                                 
+%                             end
                             
-                            while sum(colorcomp)<length(colors)
-                                
-                                color=[rand rand rand];
-                                for i=1:length(colors)
-                                    color1=color;
-                                    color2=colors{i};
-                                    theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
-                                    angles(i)=theta;
-                                    colorcomp(i)=(theta>15); %as long as the angle is >20 degrees, the color is permissible
-                                    
-                                end
-                                
-                                
-                            end
-                            min(angles);
                             obj.Device{CellIndex}.BoxColor=color;
                         else
-                            obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
+                            obj.Device{CellIndex}.BoxColor=[0 0 0]; %the color will remain the same for the same super cell
                         end
                         
                     else
@@ -295,8 +300,8 @@ classdef QCACircuit
                     
                     
                     for i=1:length(obj.Device{CellIndex}.Device)
-                    obj.Device{CellIndex}.Device{i}=obj.Device{CellIndex}.Device{i}.LayoutModeDraw(obj.Device{CellIndex}.BoxColor);
-                    Select(obj.Device{CellIndex}.Device{i}.LayoutBox);
+                        obj.Device{CellIndex}.Device{i}=obj.Device{CellIndex}.Device{i}.LayoutModeDraw(obj.Device{CellIndex}.BoxColor);
+                        Select(obj.Device{CellIndex}.Device{i}.LayoutBox);
                     end
                     
                 else
@@ -310,8 +315,9 @@ classdef QCACircuit
                 
                 hold off
             end
-        
-        end
+            obj.Mode = 'Layout';
+    end
+
         
         %reference this based on CellId
         function sref = subsref(obj,s)
@@ -544,7 +550,7 @@ classdef QCACircuit
             movie(fig,Frame,1)
             close(v);
             
-            disp("Complete!")
+            disp('Complete!')
             
         end
         

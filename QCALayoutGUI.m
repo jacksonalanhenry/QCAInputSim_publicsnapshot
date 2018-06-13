@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 08-Jun-2018 15:05:19
+% Last Modified by GUIDE v2.5 13-Jun-2018 12:19:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -261,3 +261,38 @@ function disbandsupercell_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 DisbandSuperCell(handles);
+
+
+% --- Executes on button press in simbutton.
+function simbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to simbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+Simulate(handles);
+
+
+% --- Executes on button press in removeNode.
+function removeNode_Callback(hObject, eventdata, handles)
+% hObject    handle to removeNode (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+RemoveNode(handles);
+
+
+% --- Executes on button press in addDriver.
+function addDriver_Callback(hObject, eventdata, handles)
+% hObject    handle to addDriver (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+QCALayoutAddDriver(handles);
+
+
+% --- Executes on button press in add5Cells.
+function add5Cells_Callback(hObject, eventdata, handles)
+% hObject    handle to add5Cells (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Add5Cells(handles);
+for i=1:5 
+    QCALayoutAddNode(handles)
+end

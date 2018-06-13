@@ -202,11 +202,24 @@ classdef ThreeDotCell < QCACell
             obj.LayoutBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];
             obj.LayoutBox.YData=[obj.CenterPosition(2)-.75;obj.CenterPosition(2)-.75;obj.CenterPosition(2)+.75;obj.CenterPosition(2)+.75];
             if nargin>1
+                if strcmp(obj.Type,'Node')
                 obj.LayoutBox.FaceColor = varargin{1};
-                obj.LayoutBox.EdgeColor= varargin{1};                
+                obj.LayoutBox.EdgeColor= varargin{1}; 
+                else
+                obj.LayoutBox.FaceColor = varargin{1};
+                obj.LayoutBox.EdgeColor= 'green'; 
+                obj.LayoutBox.LineWidth = 2;
+                    
+                end
             else
-            obj.LayoutBox.FaceColor='red';
-            obj.LayoutBox.EdgeColor='red';
+                if strcmp(obj.Type,'Node')
+                    obj.LayoutBox.FaceColor='red';
+                    obj.LayoutBox.EdgeColor='red';
+                else
+                    obj.LayoutBox.FaceColor='green';
+                    obj.LayoutBox.EdgeColor='black';
+                    obj.LayoutBox.LineWidth = 2;
+                end
             end
             
             obj.LayoutBox.UserData = obj.CellID; %this will allow access for later use
@@ -221,9 +234,7 @@ classdef ThreeDotCell < QCACell
             obj.SelectBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];
             obj.SelectBox.YData=[obj.CenterPosition(2)-.75;obj.CenterPosition(2)-.75;obj.CenterPosition(2)+.75;obj.CenterPosition(2)+.75];
             obj.SelectBox.FaceColor=[1 1 1];
-            obj.SelectBox.UserData = obj.CellID;
-            
-            
+            obj.SelectBox.UserData = obj.CellID;            
         end
         
         
@@ -240,29 +251,47 @@ classdef ThreeDotCell < QCACell
             y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
             l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
             
-
-
+            
+            
             
             %Electron Sites
             c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor, [1 1 1],'Points',25);
             c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor, [1 1 1],'Points',25);
             c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor, [1 1 1],'Points',25);
-           
-            %Electrons Position Probability
-            scalefactor = 0.90;
-            if obj.Polarization < 0
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1 - abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                
-            elseif obj.Polarization == 0
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                
-            elseif obj.Polarization > 0
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1- abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-            end
             
-
+            %Electrons Position Probability
+            
+            if strcmp(obj.Type,'Node')
+                
+                scalefactor = 0.90;
+                if obj.Polarization < 0
+                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1 - abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                    e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                    
+                elseif obj.Polarization == 0
+                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                    
+                elseif obj.Polarization > 0
+                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1- abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                    e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
+                end
+                
+            elseif strcmp(obj.Type,'Driver')
+                
+                scalefactor = 0.90;
+                if obj.Polarization < 0
+                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1 - abs(obj.Polarization))*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
+                    e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
+                    
+                elseif obj.Polarization == 0
+                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
+                    
+                elseif obj.Polarization > 0
+                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1- abs(obj.Polarization))*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
+                    e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
+                end
+                
+            end
 
             
             

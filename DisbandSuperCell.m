@@ -4,7 +4,7 @@ function DisbandSuperCell( handles )
 myCircuit = getappdata(gcf,'myCircuit');
 % myCircuit.Mode = 'Simulation';
 
-mode = myCircuit.Mode
+mode = myCircuit.Mode;
 
 
 newCircuit = QCACircuit;
@@ -50,8 +50,8 @@ for i=1:length(myCircuit.Device)
 end
 newCircuit.Mode = myCircuit.Mode;
 myCircuit=newCircuit;
-myCircuit.Device
-myCircuit.GetCellIDs(myCircuit)
+myCircuit.Device;
+myCircuit.GetCellIDs(myCircuit);
 
 switch mode
     case 'Simulation'
