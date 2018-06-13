@@ -154,7 +154,7 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
-            cla;
+            
             hold on
             CellIndex = length(obj.Device);
             for CellIndex = 1:length(obj.Device)
@@ -469,6 +469,20 @@ classdef QCACircuit
             nt=315;
             time_array = linspace(0,2,nt); %right now this will do 2 periods
             
+            %draw gradient before cells
+            nx = 125; % number of x points
+            
+            t_Tc = linspace(-5, 5, nt); % for gradient ploting purposes
+            x_lambda = linspace(-2, 12, nx); % for gradient plotting purposes
+            
+            Ezt = zeros(nx, nt);
+            
+            for tidx = 1:nt
+                Ezt(:, tidx) = (+0.5* cos( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) -0.5)*signal.Amplitude;
+            end
+            
+            
+            
             
             Frame(nt) = struct('cdata',[],'colormap',[]);
             v = VideoWriter('sinusoidEField.mp4','MPEG-4');
@@ -500,10 +514,24 @@ classdef QCACircuit
                 three = obj.Device{3}.ElectricField;
                 twelve = obj.Device{12}.ElectricField;
                 diff = abs(twelve-three);
-%                 disp(['t: ', num2str(t), ' diff: ', num2str(diff)])
+                disp(['t: ', num2str(t), ' diff: ', num2str(diff)])
                 
                 %visualize
-                obj.CircuitDraw(currentaxes);
+                
+                
+                Eplot = repmat(Ezt(:,t),[1,nt]);
+                
+                
+                pcolor(x_lambda' * ones(1, nt), ones(nx, 1)* t_Tc, Eplot)
+                colormap cool;
+                shading interp;
+                colorbar;
+                
+                
+                
+                
+                
+                obj = obj.CircuitDraw(currentaxes);
                 drawnow
                 %save it
                 Frame(t) = getframe(gcf);
@@ -555,6 +583,100 @@ classdef QCACircuit
             
             CellIds = ids;
         end
+        
+        
+        
+        %Gradient attempt
+        function obj = CircuitDrawWithEField(obj, signal, targetAxes)
+            cla;
+            hold on
+            
+            
+            
+
+            
+            
+            CellIndex = length(obj.Device);
+            for CellIndex = 1:length(obj.Device)
+                
+                if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
+                    
+                    %check to see if there is a color for the SC
+                    if strcmp(obj.Device{CellIndex}.BoxColor,'')                        
+                        
+                        %We make a cell array of all colors that have been
+                        %used
+                        colors={};
+                        for j=1:length(obj.Device)
+                            if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
+                                colors{end+1} = obj.Device{j}.BoxColor;                                
+                            end
+                            
+                        end
+                        
+                        %compare each color to a randomly generated color
+                        %we want to make sure that the new color is not too
+                        %similar to the used colors.  Therefore, we will
+                        %use vector geometry to ensure the "angle" between
+                        %each color, represented as a 3d vector, is
+                        %sufficiently large
+                        if length(colors)>0 %there is a colors list
+                            theta=0;
+                            angles=[];
+                            colorcomp=zeros(1,length(colors));%want all elements to be ones
+                            
+                            while sum(colorcomp)<length(colors)
+                                
+                                color=[rand rand rand];
+                                for i=1:length(colors)
+                                    color1=color;
+                                    color2=colors{i};
+                                    theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
+                                    angles(i)=theta;
+                                    colorcomp(i)=(theta>15); %as long as the angle is >20 degrees, the color is permissible
+                                    
+                                end
+                                
+                                
+                            end
+                            min(angles);
+                            obj.Device{CellIndex}.BoxColor=color;
+                        else
+                            obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
+                        end
+                            
+                    else
+                        %don't make a new color
+                    end
+                    
+                    for subnode = 1:length(obj.Device{CellIndex}.Device)
+                        
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
+                        Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
+                    end
+                else
+                    
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+                    obj.Device{CellIndex}.SelectBox.Selected = 'off';
+                    obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
+                    
+                    Select(obj.Device{CellIndex}.SelectBox);
+                    
+                end
+                
+            end
+            
+            hold off
+            grid on
+        end
+        
+        
         
     end
     
