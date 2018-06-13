@@ -38,4 +38,3 @@ myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
 setappdata(gcf,'myCircuit',myCircuit);
 
 end
-
