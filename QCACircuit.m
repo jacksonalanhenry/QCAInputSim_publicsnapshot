@@ -469,24 +469,6 @@ classdef QCACircuit
             
         end
         
-        function cell_obj = getCellArray(obj, CellIDArray)
-            %this function returns an array of QCACell objects given a list
-            %of IDs
-            
-            for idx = 1:length(CellIDArray)
-                if floor(CellIDArray(idx)) ~= CellIDArray(idx)
-                    superID = floor(CellIDArray(idx));
-                    subID = round((CellIDArray(idx)-superID)*100);
-                    cell_obj{idx} = obj.Device{superID}.Device{subID};
-                    
-                else
-                    cell_obj{idx} = obj.Device{CellIDArray(idx)};
-                end
-                
-            end
-            
-        end
-        
         function obj = pipeline(obj,signal,currentaxes)
             %give this function a signal(or field) obj
             
@@ -524,7 +506,7 @@ classdef QCACircuit
                 three = obj.Device{3}.ElectricField;
                 twelve = obj.Device{12}.ElectricField;
                 diff = abs(twelve-three);
-                disp(['t: ', num2str(t), ' diff: ', num2str(diff)])
+%                 disp(['t: ', num2str(t), ' diff: ', num2str(diff)])
                 
                 %visualize
                 obj.CircuitDraw(currentaxes);
@@ -541,6 +523,24 @@ classdef QCACircuit
             close(v);
             
             disp('Complete!')
+            
+        end
+        
+        function cell_obj = getCellArray(obj, CellIDArray)
+            %this function returns an array of QCACell objects given a list
+            %of IDs
+            
+            for idx = 1:length(CellIDArray)
+                if floor(CellIDArray(idx)) ~= CellIDArray(idx)
+                    superID = floor(CellIDArray(idx));
+                    subID = round((CellIDArray(idx)-superID)*100);
+                    cell_obj{idx} = obj.Device{superID}.Device{subID};
+                    
+                else
+                    cell_obj{idx} = obj.Device{CellIDArray(idx)};
+                end
+                
+            end
             
         end
         
