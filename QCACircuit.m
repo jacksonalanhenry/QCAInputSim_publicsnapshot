@@ -51,7 +51,7 @@ classdef QCACircuit
                 end
             end
             compare = (obj.Device{n_old+1}.CellID==ids);
-            ids = obj.GetCellIDs(obj.Device)
+            ids = obj.GetCellIDs(obj.Device);
             
             newIDs = obj.GetCellIDs(obj.Device);
             if isa(newcell, 'QCASuperCell')
@@ -95,26 +95,25 @@ classdef QCACircuit
             cellpositions = cellpositions';
             
             cellIDToplevelnodes = floor(cellIDArray);
-            
-            
-            
+  
 
             %now go through list of CellID's to find neighbors
 
             
-            for idx = 1:length(obj.Device)
-                idx;
+            idx = 1;
+            while idx <=length(cellIDToplevelnodes)
+                
                 cellIDToplevelnodes(idx);
                 length(obj.Device);
                 
-                if(isa(obj.Device{idx}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
-                    superCellID = obj.Device{idx}.CellID;
+                if(isa(obj.Device{cellIDToplevelnodes(idx)}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
+                    superCellID = obj.Device{cellIDToplevelnodes(idx)}.CellID;
                     
-                    for subnode = 1:length(obj.Device{idx}.Device)
+                    for subnode = 1:length(obj.Device{cellIDToplevelnodes(idx)}.Device)
                         
                         
-                        c = obj.Device{idx}.Device{subnode}.CellID;
-                        
+                        c = obj.Device{cellIDToplevelnodes(idx)}.Device{subnode}.CellID;
+%                         cellpositions(:,idx+subnode-1)
                         %shift and find magnitudes
                         shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
                         shifted = shifted.^2;
@@ -125,14 +124,15 @@ classdef QCACircuit
 
                         
                         
-                        %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-                        obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
+%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                        obj.Device{cellIDToplevelnodes(idx)}.Device{subnode}.NeighborList = neighbors;
+                        idx = idx + 1;   
                     end
                     
                     
                 else
                     %shift and find magnitudes
-                    
+                   
                     
                     
                     shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
@@ -141,17 +141,18 @@ classdef QCACircuit
                     shifted = shifted.^(.5);
                     
                     %give me the cellid's of the node within a certain limit
-                    id = obj.Device{idx}.CellID;
+                    id = obj.Device{cellIDToplevelnodes(idx)}.CellID;
                     neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
 
                     
                     
-                    c= obj.Device{idx}.CellID;
                     
-                    %                     disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-                    obj.Device{idx}.NeighborList = neighbors;
+%                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
+                    obj.Device{cellIDToplevelnodes(idx)}.NeighborList = neighbors;
+                    
                     
                 end
+                idx = idx + 1;
                 
                 
                 
@@ -369,21 +370,24 @@ classdef QCACircuit
                                     id = obj.Device{supernode}.Device{subnode}.CellID;
                                     nl = obj.Device{supernode}.Device{subnode}.NeighborList;
                                     pol = obj.Device{supernode}.Device{subnode}.Polarization;
-                                    
+%                                     disp(['id: ', num2str(id),' nl: ', num2str(nl) ]) %,' pol: ', num2str(pol)
+
                                     if ~isempty(nl)
                                         
                                         %get Neighbor Objects
+                                        
                                         nl_obj = obj.getCellArray(nl);
                                         
                                         %get hamiltonian for current cell
-                                        hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj)
+                                        hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj);
+                                        
                                         obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
                                         
                                         %calculate polarization
                                         obj.Device{supernode}.Device{subnode} = obj.Device{supernode}.Device{subnode}.Calc_Polarization_Activation();
                                         
                                         NewPols(subnode) = obj.Device{supernode}.Device{subnode}.Polarization;
-                                        %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+%                                         disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
                                     end
                                 end
                                 
@@ -600,8 +604,7 @@ classdef QCACircuit
             
             idx=1;
             while idx <= length(CellIDArray)
-                                    idx
-                    CellIDArray(idx)
+                                    
                 if floor(CellIDArray(idx)) ~= CellIDArray(idx) %must be a supercell
 
                     superID = floor(CellIDArray(idx));
