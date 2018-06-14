@@ -124,7 +124,7 @@ classdef QCACircuit
 
                         
                         
-%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                        disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
                         obj.Device{cellIDToplevelnodes(idx)}.Device{subnode}.NeighborList = neighbors;
                         idx = idx + 1;   
                     end
@@ -147,7 +147,7 @@ classdef QCACircuit
                     
                     
                     
-%                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
+                    disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
                     obj.Device{cellIDToplevelnodes(idx)}.NeighborList = neighbors;
                     
                     
@@ -360,7 +360,7 @@ classdef QCACircuit
                             OldPols = NewPols;
                             
                             supernode = floor(obj.Device{idx}.Device{1}.CellID);
-                            
+                            obj.Device;
                             for subnode = 1:length(obj.Device{supernode}.Device)
                                 
                                 if( strcmp(obj.Device{supernode}.Device{subnode}.Type, 'Driver') )
@@ -380,7 +380,7 @@ classdef QCACircuit
                                         
                                         %get hamiltonian for current cell
                                         hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj);
-                                        
+
                                         obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
                                         
                                         %calculate polarization
@@ -602,21 +602,49 @@ classdef QCACircuit
             %this function returns an array of QCACell objects given a list
             %of IDs
             
-            idx=1;
-            while idx <= length(CellIDArray)
-                                    
-                if floor(CellIDArray(idx)) ~= CellIDArray(idx) %must be a supercell
-
-                    superID = floor(CellIDArray(idx));
-                    subID = round((CellIDArray(idx)-superID)*100);
-                    cell_obj{idx} = obj.Device{superID}.Device{subID};
+            cell_obj = {};
+            
+%             CellIDArray
+%             obj.Device
+            for i=1:length(obj.Device)        
+                if isa(obj.Device,'QCASuperCell')    
+                    for j=1:length(obj.Device{i}.Device)
+                        for k=1:length(CellIDArray)
+                            if CellIDArray(k) == obj.Device{i}.Device{j}.CellID
+                                cell_obj{end+1} = obj.Device{i}.Device{j};
+                            end
+                        end
+                    end
                     
                 else
-                    cell_obj{idx} = obj.Device{CellIDArray(idx)};
+                    
+                    for k=1:length(CellIDArray)
+                        if CellIDArray(k) == obj.Device{i}.CellID
+                            cell_obj{end+1} = obj.Device{i};
+                        end
+                    end
+                                
                 end
-                idx=idx+1;
-                
             end
+            CellIDArray;
+            cell_obj;
+%             idx=1;
+%             while idx <= length(CellIDArray)
+%                                     
+% 
+%                 if floor(CellIDArray(idx)) ~= CellIDArray(idx) %must be a supercell
+% 
+%                     superID = floor(CellIDArray(idx));
+%                     subID = round((CellIDArray(idx)-superID)*100);
+% %                     cell_obj{idx} = obj.Device{superID}.Device{subID};
+%                     
+%                 else
+% 
+%                     cell_obj{idx} = obj.Device{CellIDArray(idx)};
+%                 end
+%                 idx=idx+1;
+%                 
+%             end
             
         end
         
