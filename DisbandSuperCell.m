@@ -50,8 +50,8 @@ for i=1:length(myCircuit.Device)
 end
 newCircuit.Mode = myCircuit.Mode;
 myCircuit=newCircuit;
-myCircuit.Device;
-myCircuit.GetCellIDs(myCircuit);
+myCircuit.Device
+
 
 switch mode
     case 'Simulation'

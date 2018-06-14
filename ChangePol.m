@@ -26,7 +26,10 @@ end
 
 myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
 
+
 setappdata(gcf,'myCircuit',myCircuit);
+
+Simulate(handles);
 
 end
 

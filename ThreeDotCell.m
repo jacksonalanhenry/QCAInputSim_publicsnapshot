@@ -80,8 +80,10 @@ classdef ThreeDotCell < QCACell
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
-            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
             
+            
+            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
+%             disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
         end
         
         function V_neighbors = neighborPotential(obj, obj2) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
@@ -107,7 +109,7 @@ classdef ThreeDotCell < QCACell
             
             objDotpotential = zeros(size(obj.DotPosition,1),1);
             
-            for x = 1:size(neighborList,2)
+            for x = 1:length(neighborList)
                 
 %                 disp([num2str(obj.CellID) '---' num2str(neighborList{x}.CellID)])
                 objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x});
@@ -115,21 +117,25 @@ classdef ThreeDotCell < QCACell
             
             gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];
             
+            obj.CellID;
             hamiltonian = -diag(objDotpotential) + gammaMatrix;
             
             h = abs(obj.DotPosition(2,3)-obj.DotPosition(1,3)); %Field over entire height of cell
             x = abs(obj.DotPosition(3,1)-obj.DotPosition(1,1));
             y = abs(obj.DotPosition(3,2)-obj.DotPosition(1,2));
-            length = [x,y,0];
+            lengthh = [x,y,0];
             
             
-            inputFieldBias = -obj.ElectricField*length';
+            inputFieldBias = -obj.ElectricField*lengthh';
             
             
             hamiltonian(2,2) = hamiltonian(2,2) + -obj.ElectricField(1,3)*h; %add clock E
             hamiltonian(1,1) = hamiltonian(1,1) + (-inputFieldBias)/2;%add input field to 0 dot
             hamiltonian(3,3) = hamiltonian(3,3) + inputFieldBias/2;%add input field to 1 dot
             
+%             disp(['hamiltonian and neighbor list of ' num2str(obj.CellID) ' are '])
+%             obj.NeighborList
+%             hamiltonian
             
         end
         
@@ -139,7 +145,7 @@ classdef ThreeDotCell < QCACell
             else
                 %relax
                 %testing getHamiltonian.
-                
+
                 [V, EE] = eig(obj.Hamiltonian);
                 psi = V(:,1); %ground state
                 
@@ -252,6 +258,17 @@ classdef ThreeDotCell < QCACell
             l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
             
             text(obj.CenterPosition(1), obj.CenterPosition(2)-a, num2str(obj.CellID), 'HorizontalAlignment', 'center')
+            
+            %extra circle
+%             c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
+            
+% %             if obj.CellID >= 10
+%             th = 0:pi/50:2*pi;
+%             xunit = 2.25 * cos(th) + obj.CenterPosition(1);
+%             yunit = 2.25 * sin(th) + obj.CenterPosition(2);
+%             h = plot(xunit, yunit);
+% %             end
+            
             
             
             %Electron Sites

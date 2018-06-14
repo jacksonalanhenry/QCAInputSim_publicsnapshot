@@ -69,6 +69,7 @@ end
 handles.makeSC.Value=0;
 
 
+
 setappdata(gcf,'myCircuit',myCircuit);
 
 
