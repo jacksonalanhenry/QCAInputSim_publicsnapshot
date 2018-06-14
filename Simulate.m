@@ -8,6 +8,7 @@ function Simulate(handles)
 
     myCircuit=myCircuit.GenerateNeighborList();
     
+<<<<<<< HEAD
 eps0 = 8.854E-12;
 a=1e-9;
 q=1;
@@ -25,12 +26,11 @@ clockfield=[0 0 clk]*E0;
         end
         myCircuit.Device{i}
     end
-    
-    
+
+
     myCircuit=myCircuit.Relax2GroundState();
     myCircuit=myCircuit.CircuitDraw(gca);
 
-
-    
+ 
     setappdata(gcf,'myCircuit',myCircuit);
 end
