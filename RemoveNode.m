@@ -76,7 +76,7 @@ end
 
 % myCircuit = myCircuit.GenerateNeighborList() STILL NEED TO FIX
 % GENERATE NEIGHBOR LIST
-
+myCircuit.GetCellIDs(myCircuit)
 
 setappdata(gcf,'myCircuit',myCircuit);
 end

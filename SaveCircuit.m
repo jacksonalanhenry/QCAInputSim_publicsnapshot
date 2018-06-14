@@ -6,6 +6,7 @@ function SaveCircuit(f,handles)
     Path = getappdata(gcf,'Path');
     
     cd('C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder');
+%     cd('\Circuits folder');
     Circuit=getappdata(f, 'myCircuit' );
     File = uiputfile('*.mat');
     

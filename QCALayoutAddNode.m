@@ -69,6 +69,8 @@ end
 handles.makeSC.Value=0;
 
 
+myCircuit.GetCellIDs(myCircuit)
+
 setappdata(gcf,'myCircuit',myCircuit);
 
 

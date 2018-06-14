@@ -93,20 +93,22 @@ classdef QCACircuit
             cellpositions = cellpositions';
             cellIDToplevelnodes = floor(cellIDArray);
             
+            
+            
             %now go through list of CellID's to find neighbors
             idx = 1;
-            while idx <= length(cellIDArray)
+            for idx = 1:length(obj.Device)
                 idx;
-                ID=cellIDToplevelnodes(idx);
-                lengthof=length(obj.Device);
+                cellIDToplevelnodes(idx);
+                length(obj.Device);
                 
-                if(isa(obj.Device{cellIDToplevelnodes(idx)}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
-                    superCellID = obj.Device{cellIDToplevelnodes(idx)}.CellID;
+                if(isa(obj.Device{idx}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
+                    superCellID = obj.Device{idx}.CellID;
                     
-                    for subnode = 1:length(obj.Device{superCellID}.Device)
+                    for subnode = 1:length(obj.Device{idx}.Device)
                         
                         
-                        c = obj.Device{superCellID}.Device{subnode}.CellID;
+                        c = obj.Device{idx}.Device{subnode}.CellID;
                         
                         %shift and find magnitudes
                         shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
@@ -114,14 +116,11 @@ classdef QCACircuit
                         shifted = sum(shifted,1).^(.5);
                         
                         %give me the cellid's of the node within a certain limit
-                        neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
+                        neighbors = cellIDArray(shifted < 5.01 & shifted > 0)
                         
                         
                         %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-                        obj.Device{superCellID}.Device{subnode}.NeighborList = neighbors;
-                        
-                        
-                        idx = idx+1;
+                        obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
                     end
                     
                     
@@ -132,15 +131,14 @@ classdef QCACircuit
                     shifted = sum(shifted,1);
                     
                     %give me the cellid's of the node within a certain limit
-                    neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
+                    neighbors = cellIDArray(shifted < 5.01 & shifted > 0)
                     
                     
-                    c= obj.Device{cellIDToplevelnodes(idx)}.CellID;
+                    c= obj.Device{idx}.CellID;
                     
                     %                     disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-                    obj.Device{cellIDToplevelnodes(idx)}.NeighborList = neighbors;
+                    obj.Device{idx}.NeighborList = neighbors;
                     
-                    idx = idx+1;
                 end
                 
                 
@@ -411,7 +409,7 @@ classdef QCACircuit
                                     nl_obj = obj.getCellArray(nl);
                                     
                                     %get hamiltonian for current cell
-                                    hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj);
+                                    hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj)
                                     obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
                                     
                                     %calculate polarization
@@ -439,8 +437,9 @@ classdef QCACircuit
                         pol = obj.Device{idx}.Polarization;
                         
                         %get Neighbor Objects
+%                         disp('good')
                         nl_obj = obj.getCellArray(nl);
-                        
+%                         disp('job')
                         %get hamiltonian for current cell
                         hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
                         obj.Device{idx}.Hamiltonian = hamiltonian;
