@@ -161,7 +161,7 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
-            cla;
+%             cla;
             hold on
             CellIndex = length(obj.Device);
             for CellIndex = 1:length(obj.Device)
@@ -437,7 +437,8 @@ classdef QCACircuit
             
             nt=315;
             time_array = linspace(0,2,nt); %right now this will do 2 periods
-            
+
+
             %draw gradient before cells
             nx = 125; % number of x points
             
@@ -447,7 +448,7 @@ classdef QCACircuit
             Ezt = zeros(nx, nt);
             
             for tidx = 1:nt
-                Ezt(:, tidx) = (+0.5* cos( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) -0.5)*signal.Amplitude;
+                Ezt(:, tidx) = (+0.5* cos( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) -0.4)*signal.Amplitude;
             end
             
             fileID = fopen('SimulationResults.txt','w');
@@ -457,7 +458,7 @@ classdef QCACircuit
            
             %iterate through circuit and print neighbor lists
             idx = 1;
-            length(obj.Device)
+            
             while idx <= length(obj.Device) 
                 
                 if(isa(obj.Device{idx}, 'QCASuperCell'))
