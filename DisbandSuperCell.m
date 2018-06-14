@@ -51,7 +51,7 @@ end
 newCircuit.Mode = myCircuit.Mode;
 myCircuit=newCircuit;
 myCircuit.Device
-myCircuit.GetCellIDs(myCircuit)
+
 
 switch mode
     case 'Simulation'

@@ -28,6 +28,7 @@ classdef QCACircuit
         function obj = addNode( obj, newcell )
             n_old = length(obj.Device);
             ids=[];
+            
             if length(obj.Device)
                 ids = obj.GetCellIDs(obj.Device);
             end
@@ -41,8 +42,8 @@ classdef QCACircuit
                 for i=1:n_old  %ensuring that CellIDs cannot be repeated
                     
                     
-                    compare = (obj.Device{n_old+1}.CellID==ids);
-                    maxID = max(ids);
+                    compare = (obj.Device{n_old+1}.CellID==floor(ids));
+                    maxID = floor(max(ids));
                     if sum(compare)>0
                         obj.Device{n_old+1}.CellID = maxID +1;
                     end
@@ -50,7 +51,7 @@ classdef QCACircuit
                 end
             end
             compare = (obj.Device{n_old+1}.CellID==ids);
-            ids = obj.GetCellIDs(obj.Device);
+            ids = obj.GetCellIDs(obj.Device)
             
             newIDs = obj.GetCellIDs(obj.Device);
             if isa(newcell, 'QCASuperCell')
@@ -100,7 +101,7 @@ classdef QCACircuit
 
             %now go through list of CellID's to find neighbors
 
-            idx = 1;
+            
             for idx = 1:length(obj.Device)
                 idx;
                 cellIDToplevelnodes(idx);
@@ -140,6 +141,7 @@ classdef QCACircuit
                     shifted = shifted.^(.5);
                     
                     %give me the cellid's of the node within a certain limit
+                    id = obj.Device{idx}.CellID;
                     neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
 
                     
@@ -368,19 +370,21 @@ classdef QCACircuit
                                     nl = obj.Device{supernode}.Device{subnode}.NeighborList;
                                     pol = obj.Device{supernode}.Device{subnode}.Polarization;
                                     
-                                    %get Neighbor Objects
-                                    nl_obj = obj.getCellArray(nl);
-                                    
-                                    %get hamiltonian for current cell
-                                    hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj)
-                                    obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
-                                    
-                                    %calculate polarization
-                                    obj.Device{supernode}.Device{subnode} = obj.Device{supernode}.Device{subnode}.Calc_Polarization_Activation();
-                                    
-                                    NewPols(subnode) = obj.Device{supernode}.Device{subnode}.Polarization;
-                                    %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
-                                    
+                                    if ~isempty(nl)
+                                        
+                                        %get Neighbor Objects
+                                        nl_obj = obj.getCellArray(nl);
+                                        
+                                        %get hamiltonian for current cell
+                                        hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj)
+                                        obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
+                                        
+                                        %calculate polarization
+                                        obj.Device{supernode}.Device{subnode} = obj.Device{supernode}.Device{subnode}.Calc_Polarization_Activation();
+                                        
+                                        NewPols(subnode) = obj.Device{supernode}.Device{subnode}.Polarization;
+                                        %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+                                    end
                                 end
                                 
                             end
@@ -399,24 +403,27 @@ classdef QCACircuit
                         nl = obj.Device{idx}.NeighborList;
                         pol = obj.Device{idx}.Polarization;
                         
-                        %get Neighbor Objects
-%                         disp('good')
-                        nl_obj = obj.getCellArray(nl);
-%                         disp('job')
-                        %get hamiltonian for current cell
-                        hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
-                        obj.Device{idx}.Hamiltonian = hamiltonian;
-                        
-                        %calculate polarization
-                        obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
-                        
-                        if(isa(obj.Device{idx}, 'QCASuperCell'))
-                            NewCircuitPols(idx) = 0;
-                        else
-                            NewCircuitPols(idx) = obj.Device{idx}.Polarization;
+                        if ~isempty(nl)
+                            
+                            %get Neighbor Objects
+                            %                         disp('good')
+                            nl_obj = obj.getCellArray(nl);
+
+                            %                         disp('job')
+                            %get hamiltonian for current cell
+                            hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
+                            obj.Device{idx}.Hamiltonian = hamiltonian;
+                            
+                            %calculate polarization
+                            obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
+                            
+                            if(isa(obj.Device{idx}, 'QCASuperCell'))
+                                NewCircuitPols(idx) = 0;
+                            else
+                                NewCircuitPols(idx) = obj.Device{idx}.Polarization;
+                            end
+                            %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
                         end
-                        %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
-                        
                         idx = idx+1;
                     end
                     
@@ -519,7 +526,7 @@ classdef QCACircuit
                 
                 
                 %data output
-                disp(['t: ', num2str(t)])
+                disp(['t: ', num2str(t)]);
                 
                 fprintf(fileID, '%i:', t);
 
@@ -590,8 +597,12 @@ classdef QCACircuit
             %this function returns an array of QCACell objects given a list
             %of IDs
             
-            for idx = 1:length(CellIDArray)
-                if floor(CellIDArray(idx)) ~= CellIDArray(idx)
+            idx=1;
+            while idx <= length(CellIDArray)
+                                    idx
+                    CellIDArray(idx)
+                if floor(CellIDArray(idx)) ~= CellIDArray(idx) %must be a supercell
+
                     superID = floor(CellIDArray(idx));
                     subID = round((CellIDArray(idx)-superID)*100);
                     cell_obj{idx} = obj.Device{superID}.Device{subID};
@@ -599,6 +610,7 @@ classdef QCACircuit
                 else
                     cell_obj{idx} = obj.Device{CellIDArray(idx)};
                 end
+                idx=idx+1;
                 
             end
             
@@ -608,10 +620,11 @@ classdef QCACircuit
             %returns just the CellIDs given a list of objects.
             
             CellIds=[];
-            
+
             idx = 1;
+            
             while idx <= length(cells)
-                if( isa(cells{idx}, 'QCASuperCell') )
+                if isa(cells{idx}, 'QCASuperCell') 
                     
                     for sub = 1:length(cells{idx}.Device)
                         CellIds(end+1) = cells{idx}.Device{sub}.CellID;

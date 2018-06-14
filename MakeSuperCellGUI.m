@@ -92,7 +92,7 @@ end
             myCircuit=myCircuit.LayoutDraw(gca);
     end
     
-    myCircuit.GetCellIDs(myCircuit)
+
     
     setappdata(gcf,'myCircuit',myCircuit);
     
