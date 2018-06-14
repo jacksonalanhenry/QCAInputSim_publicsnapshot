@@ -251,7 +251,7 @@ classdef ThreeDotCell < QCACell
             y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
             l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
             
-            
+            text(obj.CenterPosition(1), obj.CenterPosition(2)-a, num2str(obj.CellID), 'HorizontalAlignment', 'center')
             
             
             %Electron Sites

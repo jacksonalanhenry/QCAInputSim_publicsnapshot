@@ -16,9 +16,12 @@ function Simulate(handles)
 %         end
 %         
 %     end
-%     myCircuit=myCircuit.Relax2GroundState();
-%     myCircuit=myCircuit.CircuitDraw(gca);
 
-    
+
+
+    myCircuit=myCircuit.Relax2GroundState();
+    myCircuit=myCircuit.CircuitDraw(gca);
+
+ 
     setappdata(gcf,'myCircuit',myCircuit);
 end

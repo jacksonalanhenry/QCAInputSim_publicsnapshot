@@ -29,7 +29,7 @@ classdef QCACircuit
             n_old = length(obj.Device);
             ids=[];
             if length(obj.Device)
-                ids = GetCellIDs(obj,obj);
+                ids = obj.GetCellIDs(obj.Device);
             end
             
             obj.Device{n_old+1} = newcell;
@@ -50,9 +50,9 @@ classdef QCACircuit
                 end
             end
             compare = (obj.Device{n_old+1}.CellID==ids);
-            ids = GetCellIDs(obj,obj);
+            ids = obj.GetCellIDs(obj.Device);
             
-            newIDs = GetCellIDs(obj,obj);
+            newIDs = obj.GetCellIDs(obj.Device);
             if isa(newcell, 'QCASuperCell')
                 newcell = obj.Device{n_old+1}; %call just recently added supercell, newcell
                 
@@ -70,30 +70,36 @@ classdef QCACircuit
         function obj = GenerateNeighborList( obj )
             %this function steps through each cell and assigns the neighborList for each
             
-            
             %All CellID Array (including subcells)
             cellIDArray = [];
+            cellpositions=[];
+           
             
-            idx = 1;
-            for node = 1:length(obj.Device) %step through all the node/supernodes
-                
-                if(isa(obj.Device{node}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
-                    for subnode = 1:length(obj.Device{node}.Device) %step through all subnodes
-                        cellIDArray(idx) = obj.Device{node}.Device{subnode}.CellID;
-                        cellpositions(idx,:) = obj.Device{node}.Device{subnode}.CenterPosition;
-                        idx = idx + 1;
+            node = 1;
+            while node <= length(obj.Device)
+               if(isa(obj.Device{node}, 'QCASuperCell')) 
+                    for subnode = 1:length(obj.Device{node}.Device) 
+                        cellpositions(end+1,:) = obj.Device{node}.Device{subnode}.CenterPosition;
+                        
                     end
-                else
-                    cellIDArray(idx) = obj.Device{node}.CellID; %add the node if it's not a supercell
-                    cellpositions(idx,:) = obj.Device{node}.CenterPosition;
-                    idx = idx + 1;
+                    node = node+1;
+               else
+                    cellpositions(end+1,:) = obj.Device{node}.CenterPosition;
+                    node = node + 1;
                 end
+                
             end
             
+            cellIDArray = obj.GetCellIDs(obj.Device);
             cellpositions = cellpositions';
+            
             cellIDToplevelnodes = floor(cellIDArray);
             
-            %now go through list of CellID's to find neighbors
+            
+            
+            
+            
+            
             idx = 1;
             while idx <= length(cellIDArray)
                 idx;
@@ -114,7 +120,7 @@ classdef QCACircuit
                         shifted = sum(shifted,1).^(.5);
                         
                         %give me the cellid's of the node within a certain limit
-                        neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
+                        neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
                         
                         
                         %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
@@ -127,12 +133,16 @@ classdef QCACircuit
                     
                 else
                     %shift and find magnitudes
+                    
+                    
+                    
                     shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
                     shifted = shifted.^2;
                     shifted = sum(shifted,1);
+                    shifted = shifted.^(.5);
                     
                     %give me the cellid's of the node within a certain limit
-                    neighbors = cellIDArray(shifted < 5.01 & shifted > 0);
+                    neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
                     
                     
                     c= obj.Device{cellIDToplevelnodes(idx)}.CellID;
@@ -151,7 +161,7 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
-            
+            cla;
             hold on
             CellIndex = length(obj.Device);
             for CellIndex = 1:length(obj.Device)
@@ -176,32 +186,8 @@ classdef QCACircuit
                         color(1)= abs(sin(.4*obj.Device{j}.CellID-obj.Device{j}.CellID));
                         color(3)= abs(sin(colors*obj.Device{j}.CellID-(obj.Device{j}.CellID)^2))*abs(sin(colors*obj.Device{j}.CellID));
                         color(2)= abs(cos(colors*obj.Device{j}.CellID+obj.Device{j}.CellID*(obj.Device{j}.CellID-1)));
-                        %compare each color to a randomly generated color
-                        %we want to make sure that the new color is not too
-                        %similar to the used colors.  Therefore, we will
-                        %use vector geometry to ensure the "angle" between
-                        %each color, represented as a 3d vector, is
-                        %sufficiently large
-%                         if length(colors)>0 %there is a colors list
-%                             theta=0;
-%                             angles=[];
-%                             colorcomp=zeros(1,length(colors));%want all elements to be ones
-%                             
-%                             while sum(colorcomp)<length(colors)
-%                                 
-%                                 color=[rand rand rand];
-%                                 for i=1:length(colors)
-%                                     color1=color;
-%                                     color2=colors{i};
-%                                     theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
-%                                     angles(i)=theta;
-%                                     colorcomp(i)=(theta>15); %as long as the angle is >20 degrees, the color is permissible
-%                                     
-%                                 end
-%                                 
-%                                 
-%                             end
-%                             min(angles);
+                        
+                        
                             obj.Device{CellIndex}.BoxColor=color;
                         else
                             obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
@@ -264,30 +250,7 @@ classdef QCACircuit
                         color(1)= abs(sin(.4*obj.Device{j}.CellID-obj.Device{j}.CellID));
                         color(3)= abs(sin(colors*obj.Device{j}.CellID-(obj.Device{j}.CellID)^2))*abs(sin(colors*obj.Device{j}.CellID));
                         color(2)= abs(cos(colors*obj.Device{j}.CellID+obj.Device{j}.CellID*(obj.Device{j}.CellID-1)));
-                        %compare each color to a randomly generated color
-                        %we want to make sure that the new color is not too
-                        %similar to the used colors.  Therefore, we will
-                        %use vector geometry to ensure the "angle" between
-                        %each color, represented as a 3d vector, is
-                        %sufficiently large
-%                         if length(colors)>0 %there is a colors list
-%                             theta=0;
-%                             angles=[];
-%                             colorcomp=zeros(1,length(colors));%want all elements to be ones
-%                             
-%                             while sum(colorcomp)<length(colors)
-%                                 
-%                                 color=[rand rand rand];
-%                                 for i=1:length(colors)
-%                                     color1=color;
-%                                     color2=colors{i};
-%                                     theta = acos(dot(color,colors{i})/(norm(color)*norm(colors{i})))*180/pi; %computing angle b/t colors
-%                                     angles(i)=theta;
-%                                     colorcomp(i)=(theta>15); %as long as the angle is >20 degrees, the color is permissible
-%                                     
-%                                 end
-%                                 
-%                             end
+
                             
                             obj.Device{CellIndex}.BoxColor=color;
                         else
@@ -487,6 +450,44 @@ classdef QCACircuit
                 Ezt(:, tidx) = (+0.5* cos( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) -0.5)*signal.Amplitude;
             end
             
+            fileID = fopen('SimulationResults.txt','w');
+            
+            formatSpec = 'Clock Amplitude: %.2f \tWavelength: %i \tPeriod: %i\n';
+            fprintf(fileID,formatSpec,signal.Amplitude,signal.Wavelength,signal.Period);
+           
+            %iterate through circuit and print neighbor lists
+            idx = 1;
+            length(obj.Device)
+            while idx <= length(obj.Device) 
+                
+                if(isa(obj.Device{idx}, 'QCASuperCell'))
+                    
+                    for sub = 1: length(obj.Device{idx}.Device)
+                        formatSpec = 'CellID: %.2f \t Neighbors: %s\n';
+                        nl = obj.Device{idx}.Device{sub}.NeighborList;
+                        nl = num2str(nl);
+                        if isempty(nl)
+                            nl = '**';
+                        end
+                        fprintf(fileID,formatSpec, obj.Device{idx}.Device{sub}.CellID,nl);
+                        
+                        
+                    end
+                    
+                    idx = idx + 1;
+                else
+                    formatSpec = 'CellID: %.2f \t Neighbors: %s\n';
+                    nl = obj.Device{idx}.NeighborList;
+                    nl = num2str(nl);
+                    if isempty(nl)
+                            nl = '**';
+                    end
+                    fprintf(fileID,formatSpec, obj.Device{idx}.CellID,nl);
+                    idx = idx +1;
+                end
+                
+            end
+
             
             
             
@@ -515,23 +516,53 @@ classdef QCACircuit
                 
                 
                 %relax2Groundstate
-                
                 obj = obj.Relax2GroundState();
-                three = obj.Device{3}.ElectricField;
-                twelve = obj.Device{12}.ElectricField;
-                diff = abs(twelve-three);
-                disp(['t: ', num2str(t), ' diff: ', num2str(diff)])
                 
+                
+                %data output
+                disp(['t: ', num2str(t)])
+                
+                fprintf(fileID, '%i:', t);
+
+                idx = 1;
+                while idx <= length(obj.Device)
+                    if(isa(obj.Device{idx}, 'QCASuperCell'))
+
+                        for sub = 1: length(obj.Device{idx}.Device)
+                            formatSpec = '%.2f ;%.2f; %.2f;';
+                            
+                            fprintf(fileID,formatSpec, obj.Device{idx}.Device{sub}.CellID,obj.Device{idx}.Device{sub}.Polarization,obj.Device{idx}.Device{sub}.Activation);
+
+                        end
+
+
+                        idx = idx + 1;
+                    else
+                        formatSpec = '%.2f ;%.2f; %.2f;';
+                            
+                        fprintf(fileID, formatSpec, obj.Device{idx}.CellID, obj.Device{idx}.Polarization, obj.Device{idx}.Activation);
+
+
+                    end
+                    idx = idx + 1;
+                end
+                
+                fprintf(fileID, '\n');
+
                 %visualize
-                
-                
                 Eplot = repmat(Ezt(:,t),[1,nt]);
-                
-                
+
+
                 pcolor(x_lambda' * ones(1, nt), ones(nx, 1)* t_Tc, Eplot)
                 colormap cool;
                 shading interp;
+                
+%                 caxis([0 signal.Amplitude])
                 colorbar;
+%                 h = colorbar;
+%                 set(h, 'ylim', [0 signal.Amplitude])
+                
+
                 
                 
                 
@@ -546,9 +577,11 @@ classdef QCACircuit
             end %time step loop
             
             
+            
             fig = figure;
             movie(fig,Frame,1)
             close(v);
+            fclose(fileID);
             
             disp('Complete!')
             
@@ -574,25 +607,29 @@ classdef QCACircuit
         
         function CellIds = GetCellIDs(obj,cells)
             %returns just the CellIDs given a list of objects.
-            ids=[];
-            for i=1:length(cells.Device)
-                if isa(cells,'QCASuperCell')
+            
+            CellIds=[];
+            
+            idx = 1;
+            while idx <= length(cells)
+                if( isa(cells{idx}, 'QCASuperCell') )
                     
-                    for j=1:length(cells.Device)
-                        ids(end+1)=cells.Device{i}.Device{j}.CellID;
+                    for sub = 1:length(cells{idx}.Device)
+                        CellIds(end+1) = cells{idx}.Device{sub}.CellID;
+                        
                     end
-                else
                     
-                    ids(end+1)=cells.Device{i}.CellID;
+                    idx = idx + 1;
+                else
+                    CellIds(end+1) = cells{idx}.CellID;
+                    idx = idx + 1;
                 end
+                
             end
             
-            CellIds = ids;
         end
         
         
-        
-       
         
         
     end
