@@ -35,7 +35,7 @@ clockfield=[0 0 clk]*E0;
     
     myCircuit=myCircuit.CircuitDraw(gca);
 
- myCircuit.Device{2}.NeighborList;
+%  myCircuit.Device{2}.NeighborList;
 
  
     setappdata(gcf,'myCircuit',myCircuit);

@@ -10,7 +10,7 @@ function ResetCells(handles)
                     
                         myCircuit.Device{i}.Device{j}.Polarization = 0;
                         myCircuit.Device{i}.Device{j}.Activation = 1;
-                
+                        myCircuit.Device{i}.Device{j}.NeighborList=[];
                     end
                 end
                 
@@ -18,6 +18,7 @@ function ResetCells(handles)
                 if strcmp( myCircuit.Device{i}.Type,'Node')
                     myCircuit.Device{i}.Polarization = 0;
                     myCircuit.Device{i}.Activation = 1;
+                    myCircuit.Device{i}.NeighborList=[];
                 end
             end
             

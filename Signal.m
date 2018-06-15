@@ -100,9 +100,6 @@ classdef Signal
         end
         
         
-        
-
-        
     end
     
 end

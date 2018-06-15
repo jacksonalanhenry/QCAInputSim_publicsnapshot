@@ -114,7 +114,10 @@ p.ButtonDownFcn=@dragObject;
                         centerPosList{j};
                         
                         k = centerPosList{j} + totalDiff;
+                        
+                        k(3)=0;
                         centerPosList{j} = k;
+                        
                         myCircuit.Device{j}.CenterPosition = centerPosList{j};
                     end
                     
@@ -148,7 +151,7 @@ p.ButtonDownFcn=@dragObject;
                     end
                 end
                 
-                myCircuit.GetCellIDs(myCircuit);
+%                 myCircuit.GetCellIDs(myCircuit);
                 
                 
                 centerPosList=cell(length(myCircuit.Device{pick}));
@@ -196,6 +199,7 @@ p.ButtonDownFcn=@dragObject;
                         centerPosList{j};
                         
                         k = centerPosList{j} + totalDiff;
+                        k(3)=0;
                         centerPosList{j} = k;
                         myCircuit.Device{pick}.Device{j}.CenterPosition = centerPosList{j};
                     end
