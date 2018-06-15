@@ -77,7 +77,7 @@ if button
         myCircuit=myCircuit.addNode(SuperCell);
         
 %         myCircuit.GetCellIDs(myCircuit)
-        myCircuit.Device
+        myCircuit.Device;
 %        myCircuit.Device{4}
         
 %         setappdata(gcf,'myCircuit',myCircuit);

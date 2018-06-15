@@ -358,8 +358,8 @@ classdef QCACircuit
                         while (subnodeTolerance > 0.001)
                             OldPols = NewPols;
                             
-                            supernode = floor(obj.Device{idx}.Device{1}.CellID)
-                            obj.Device
+                            supernode = floor(obj.Device{idx}.Device{1}.CellID);
+                            obj.Device;
                             for subnode = 1:length(obj.Device{supernode}.Device)
                                 
                                 if( strcmp(obj.Device{supernode}.Device{subnode}.Type, 'Driver') )

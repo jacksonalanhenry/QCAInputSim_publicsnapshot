@@ -31,7 +31,8 @@ clockfield=[0 0 clk]*E0;
    
     
 
-    myCircuit=myCircuit.Relax2GroundState();
+    myCircuit=myCircuit.Relax2GroundState();   
+    
     myCircuit=myCircuit.CircuitDraw(gca);
 
  myCircuit.Device{2}.NeighborList;
