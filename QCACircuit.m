@@ -25,7 +25,7 @@ classdef QCACircuit
             
         end
         
-        function obj = addNode( obj, newcell )
+git         function obj = addNode( obj, newcell )
             n_old = length(obj.Device);
             ids=[];
             
