@@ -95,26 +95,25 @@ git         function obj = addNode( obj, newcell )
             cellpositions = cellpositions';
             
             cellIDToplevelnodes = floor(cellIDArray);
-            
-            
-            
+  
 
             %now go through list of CellID's to find neighbors
 
             
-            for idx = 1:length(obj.Device)
-                idx;
+            idx = 1;
+            while idx <=length(cellIDToplevelnodes)
+                
                 cellIDToplevelnodes(idx);
                 length(obj.Device);
                 
-                if(isa(obj.Device{idx}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
-                    superCellID = obj.Device{idx}.CellID;
+                if(isa(obj.Device{cellIDToplevelnodes(idx)}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
+                    superCellID = obj.Device{cellIDToplevelnodes(idx)}.CellID;
                     
-                    for subnode = 1:length(obj.Device{idx}.Device)
+                    for subnode = 1:length(obj.Device{cellIDToplevelnodes(idx)}.Device)
                         
                         
-                        c = obj.Device{idx}.Device{subnode}.CellID;
-                        
+                        c = obj.Device{cellIDToplevelnodes(idx)}.Device{subnode}.CellID;
+%                         cellpositions(:,idx+subnode-1)
                         %shift and find magnitudes
                         shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
                         shifted = shifted.^2;
@@ -125,14 +124,15 @@ git         function obj = addNode( obj, newcell )
 
                         
                         
-                        %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-                        obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
+                        disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                        obj.Device{cellIDToplevelnodes(idx)}.Device{subnode}.NeighborList = neighbors;
+                        idx = idx + 1;   
                     end
                     
                     
                 else
                     %shift and find magnitudes
-                    
+                   
                     
                     
                     shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
@@ -141,17 +141,18 @@ git         function obj = addNode( obj, newcell )
                     shifted = shifted.^(.5);
                     
                     %give me the cellid's of the node within a certain limit
-                    id = obj.Device{idx}.CellID;
+                    id = obj.Device{cellIDToplevelnodes(idx)}.CellID;
                     neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
 
                     
                     
-                    c= obj.Device{idx}.CellID;
                     
-                    %                     disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-                    obj.Device{idx}.NeighborList = neighbors;
+                    disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
+                    obj.Device{cellIDToplevelnodes(idx)}.NeighborList = neighbors;
+                    
                     
                 end
+                idx = idx + 1;
                 
                 
                 
@@ -161,7 +162,7 @@ git         function obj = addNode( obj, newcell )
         end
         
         function obj = CircuitDraw(obj, targetAxes)
-            cla;
+%             cla;
             hold on
             CellIndex = length(obj.Device);
             for CellIndex = 1:length(obj.Device)
@@ -369,21 +370,24 @@ git         function obj = addNode( obj, newcell )
                                     id = obj.Device{supernode}.Device{subnode}.CellID;
                                     nl = obj.Device{supernode}.Device{subnode}.NeighborList;
                                     pol = obj.Device{supernode}.Device{subnode}.Polarization;
-                                    
+%                                     disp(['id: ', num2str(id),' nl: ', num2str(nl) ]) %,' pol: ', num2str(pol)
+
                                     if ~isempty(nl)
                                         
                                         %get Neighbor Objects
+                                        
                                         nl_obj = obj.getCellArray(nl);
                                         
                                         %get hamiltonian for current cell
                                         hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj);
+
                                         obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
                                         
                                         %calculate polarization
                                         obj.Device{supernode}.Device{subnode} = obj.Device{supernode}.Device{subnode}.Calc_Polarization_Activation();
                                         
                                         NewPols(subnode) = obj.Device{supernode}.Device{subnode}.Polarization;
-                                        %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+%                                         disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
                                     end
                                 end
                                 
@@ -443,7 +447,8 @@ git         function obj = addNode( obj, newcell )
             
             nt=315;
             time_array = linspace(0,2,nt); %right now this will do 2 periods
-            
+
+
             %draw gradient before cells
             nx = 125; % number of x points
             
@@ -453,7 +458,7 @@ git         function obj = addNode( obj, newcell )
             Ezt = zeros(nx, nt);
             
             for tidx = 1:nt
-                Ezt(:, tidx) = (+0.5* cos( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) -0.5)*signal.Amplitude;
+                Ezt(:, tidx) = (+0.5* cos( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) -0.4)*signal.Amplitude;
             end
             
             fileID = fopen('SimulationResults.txt','w');
@@ -463,7 +468,7 @@ git         function obj = addNode( obj, newcell )
            
             %iterate through circuit and print neighbor lists
             idx = 1;
-            length(obj.Device)
+            
             while idx <= length(obj.Device) 
                 
                 if(isa(obj.Device{idx}, 'QCASuperCell'))

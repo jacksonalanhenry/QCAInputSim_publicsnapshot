@@ -87,7 +87,7 @@ classdef Signal
                     %THIS FUNCTION ONLY ASSIGNS z Field
 
                     EField = [0,0,0];
-                    EField(3)=+0.5 *cos(2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) ) -0.5;
+                    EField(3)=+0.5 *cos(2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) ) -0.4;
                     EField(3) = EField(3)*obj.Amplitude;
 
                 else
