@@ -126,12 +126,13 @@ classdef QCACircuit
                         
                         %give me the cellid's of the node within a certain limit
                         neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
-
+ 
                         
                         
 %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
                         obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
                            
+
                     end
                     
                     
@@ -149,10 +150,20 @@ classdef QCACircuit
                     id = obj.Device{idx}.CellID;
                     neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
 
+%                     y=[];
+%                     q=obj.getCellArray(neighbors);
+%                     for i = 1:length(neighbors)
+%                             if abs(obj.Device{cellIDToplevelnodes(idx)}.CenterPosition(1) - q{i}.CenterPosition(1))>1.5
+%                                 disp('he')
+%                             else
+%                                 
+%                             end
+%                     end
                     
                     
                     
 %                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
+
                     obj.Device{idx}.NeighborList = neighbors;
                     
                     
@@ -483,7 +494,7 @@ classdef QCACircuit
             Ezt = zeros(nx, nt);
             
             for tidx = 1:nt
-                Ezt(:, tidx) = (+0.5* cos( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) -0.4)*signal.Amplitude;
+                Ezt(:, tidx) = (+0.5* cos(( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) + (pi/2) ) -0.4)*signal.Amplitude;
             end
             
             fileID = fopen('SimulationResults.txt','w');
