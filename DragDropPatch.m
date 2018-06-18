@@ -121,7 +121,32 @@ p.ButtonDownFcn=@dragObject;
                         myCircuit.Device{j}.CenterPosition = centerPosList{j};
                     end
                     
-                    
+                    if isa(myCircuit.Device{j},'QCASuperCell')
+                        sel=[];
+                        for k=1:length(myCircuit.Device{j}.Device) 
+                            if strcmp(myCircuit.Device{j}.Device{k}.LayoutBox.Selected,'on')
+                                sel(end+1)=1;
+                            else
+                                sel(end+1)=0;
+                            end
+                        end
+                        
+                        if sum(sel)
+                            for q=1:length(myCircuit.Device{j}.Device)
+                                centerPosList{j} = myCircuit.Device{j}.Device{q}.LayoutCenterPosition;%list all their coordinates
+                                
+                                totalDiff;
+                                centerPosList{j};
+                                
+                                k = centerPosList{j} + totalDiff;
+                                
+                                k(3)=0;
+                                centerPosList{j} = k;
+%                                 centerPosList{j}
+                                myCircuit.Device{j}.Device{q}.CenterPosition = centerPosList{j};
+                            end
+                        end
+                    end
                 end 
                 
                                 
@@ -134,6 +159,9 @@ p.ButtonDownFcn=@dragObject;
 
             else    %is a supercell.  We will move the entire cell if one of them is moved
                 
+                
+                realPick = p.UserData;
+                realPick= floor((realPick-floor(realPick))*100+.1);
                 
                 newID = floor(ID);
                 pick=1;
@@ -151,7 +179,6 @@ p.ButtonDownFcn=@dragObject;
                     end
                 end
                 
-%                 myCircuit.GetCellIDs(myCircuit);
                 
                 
                 centerPosList=cell(length(myCircuit.Device{pick}));
@@ -159,11 +186,12 @@ p.ButtonDownFcn=@dragObject;
                 
                 
                 
+                
                 for j = 1:length(myCircuit.Device{pick}.Device) %assign all the center positions to a cell array
                     
                     centerPosList{j} = myCircuit.Device{pick}.Device{j}.LayoutCenterPosition;
                     
-                    if strcmp(myCircuit.Device{pick}.Device{j}.LayoutBox.Selected,'on') %the selected cell will determine how the others change
+                    if strcmp(myCircuit.Device{pick}.Device{j}.LayoutBox.Selected,'on') && j==realPick %the selected cell will determine how the others change
                         xcoor=centerPosList{j}(1);
                         
                         
@@ -201,22 +229,67 @@ p.ButtonDownFcn=@dragObject;
                         k = centerPosList{j} + totalDiff;
                         k(3)=0;
                         centerPosList{j} = k;
+                        k;
                         myCircuit.Device{pick}.Device{j}.CenterPosition = centerPosList{j};
+                        
+                        
                     end
                     
                     
                 end %found the selected cell
                 
-                for i=1:length(myCircuit.Device{pick}.Device)
-                    if strcmp(myCircuit.Device{pick}.Device{i}.LayoutBox.Selected,'off')
-                        centerPosList{i};
+
+                
+                
+                
+                
+                
+                for j = 1:length(myCircuit.Device) %assign all the center positions to a cell array
+                    
+                    
+                    
+                    if ~isa(myCircuit.Device{j},'QCASuperCell') &&  strcmp(myCircuit.Device{j}.LayoutBox.Selected,'on')  %find which other cells are selected
+                        
+                        centerPosList{j} = myCircuit.Device{j}.LayoutCenterPosition;%list all their coordinates
+                        
                         totalDiff;
-                        k = centerPosList{i} + totalDiff;
-                        centerPosList{i} = k(1,:);
-                        centerPosList{i};
-                        myCircuit.Device{pick}.Device{i}.CenterPosition = centerPosList{i};
+                        centerPosList{j};
+                        
+                        k = centerPosList{j} + totalDiff;
+                        
+                        k(3)=0;
+                        centerPosList{j} = k;
+                        
+                        myCircuit.Device{j}.CenterPosition = centerPosList{j};
                     end
-                end
+                    
+                    if isa(myCircuit.Device{j},'QCASuperCell')
+                        sel=[];
+                        for k=1:length(myCircuit.Device{j}.Device) 
+                            if strcmp(myCircuit.Device{j}.Device{k}.LayoutBox.Selected,'on')
+                                sel(end+1)=1;
+                            else
+                                sel(end+1)=0;
+                            end
+                        end
+                        
+                        if sum(sel)
+                            for q=1:length(myCircuit.Device{j}.Device)
+                                centerPosList{j} = myCircuit.Device{j}.Device{q}.LayoutCenterPosition;%list all their coordinates
+                                
+                                totalDiff;
+                                centerPosList{j};
+                                
+                                k = centerPosList{j} + totalDiff;
+                                
+                                k(3)=0;
+                                centerPosList{j} = k;
+                                
+                                myCircuit.Device{j}.Device{q}.CenterPosition = centerPosList{j};
+                            end
+                        end
+                    end
+                end                 
                 
                 
                 p.ButtonDownFcn=@callSel; 
@@ -243,7 +316,11 @@ p.ButtonDownFcn=@dragObject;
             
             
             set(dragging,'XData',get(dragging,'XData') + posDiff(1,1));
-            set(dragging,'YData',get(dragging,'YData') + posDiff(1,2));            
+            set(dragging,'YData',get(dragging,'YData') + posDiff(1,2));    
+            
+            
+            
+            
         end
     end
 

@@ -129,7 +129,7 @@ classdef QCACircuit
 
                         
                         
-                        disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
                         obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
                            
                     end
@@ -152,7 +152,7 @@ classdef QCACircuit
                     
                     
                     
-                    disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
+%                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
                     obj.Device{idx}.NeighborList = neighbors;
                     
                     
@@ -270,7 +270,7 @@ classdef QCACircuit
                             
                             obj.Device{CellIndex}.BoxColor=color;
                         else
-                            obj.Device{CellIndex}.BoxColor=[0 0 0]; %the color will remain the same for the same super cell
+                            obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
                         end
                         
                     else
@@ -356,11 +356,12 @@ classdef QCACircuit
             end
             fprintf('\n');
             NewCircuitPols = ones(1,length(obj.Device));
-            converganceTolerance = 1;
+            converganceTolerance = 1; 
             sub = 1;
             
-            
-            while (converganceTolerance > 0.001)
+            it=1;
+            while (converganceTolerance > 0.0000001)
+                
                 OldCircuitPols = NewCircuitPols;
                 
                 idx = 1;
@@ -414,7 +415,7 @@ classdef QCACircuit
                                 
                             end
                             
-                            deltaPols = OldPols - NewPols;
+                            deltaPols = abs(OldPols) - abs(NewPols);
                             subnodeTolerance = max(abs(deltaPols));
                             super = super + 1;
                         end
@@ -435,6 +436,7 @@ classdef QCACircuit
                             nl_obj = obj.getCellArray(nl);
 
                             %                         disp('job')
+                            
                             %get hamiltonian for current cell
                             hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
                             obj.Device{idx}.Hamiltonian = hamiltonian;
@@ -455,12 +457,14 @@ classdef QCACircuit
                     
                 end
                 
-                deltaCircuitPols = OldCircuitPols - NewCircuitPols;
+                deltaCircuitPols = abs(OldCircuitPols) - abs(NewCircuitPols);
                 converganceTolerance = max(abs(deltaCircuitPols));
                 
                 sub=sub+1;
+                it=it+1;
             end
-            
+            converganceTolerance;
+            it;
         end
         
         function obj = pipeline(obj,signal,currentaxes)

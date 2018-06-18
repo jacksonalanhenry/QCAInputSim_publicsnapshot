@@ -109,6 +109,7 @@ classdef ThreeDotCell < QCACell
             
             objDotpotential = zeros(size(obj.DotPosition,1),1);
             
+            
             for x = 1:length(neighborList)
                 
 %                 disp([num2str(obj.CellID) '---' num2str(neighborList{x}.CellID)])
@@ -264,12 +265,12 @@ classdef ThreeDotCell < QCACell
             %extra circle
 %             c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
             
-% %             if obj.CellID >= 10
+%             if obj.CellID == 6
 %             th = 0:pi/50:2*pi;
 %             xunit = 2.25 * cos(th) + obj.CenterPosition(1);
 %             yunit = 2.25 * sin(th) + obj.CenterPosition(2);
 %             h = plot(xunit, yunit);
-% %             end
+%             end
             
             
             
