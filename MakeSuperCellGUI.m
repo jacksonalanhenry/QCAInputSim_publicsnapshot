@@ -57,33 +57,21 @@ if button
         end
         
         
-        %         myCircuit.Device = newCircuit;
-        
-        
-        
-        %         myCircuit.Device = setdiff(myCircuit.Device,SuperCell.Device);
-        
-        %         a=myCircuit.GetCellIDs(myCircuit)
-        %         b=myCircuit.GetCellIDs(SuperCell)
-        
-        %         ids = setdiff(a,100*b);
-        %         newCircuit={};
-        %         for i=1:length(ids)
-        %             newCircuit{end+1} = myCircuit.Device{i};
-        %         end
-        %
         myCircuit.Device = newCircuit;
        
         myCircuit=myCircuit.addNode(SuperCell);
         
-%         myCircuit.GetCellIDs(myCircuit)
-        myCircuit.Device
-%        myCircuit.Device{4}
+%         myCircuit.GetCellIDs(myCircuit.Device)
+        myCircuit.Device;
+
         
 %         setappdata(gcf,'myCircuit',myCircuit);
 %         myCircuit=myCircuit.CircuitDraw(gca);
     end
 end
+
+myCircuit.Device;
+
     handles.makeSC.Value=0;
     switch mode
         case 'Simulation'

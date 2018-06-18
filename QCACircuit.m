@@ -25,7 +25,7 @@ classdef QCACircuit
             
         end
         
-        function obj = addNode( obj, newcell )
+         function obj = addNode( obj, newcell )
             n_old = length(obj.Device);
             ids=[];
             
@@ -77,16 +77,16 @@ classdef QCACircuit
            
             
             node = 1;
-            while node <= length(obj.Device)
+            for node=1:length(obj.Device)
                if(isa(obj.Device{node}, 'QCASuperCell')) 
                     for subnode = 1:length(obj.Device{node}.Device) 
                         cellpositions(end+1,:) = obj.Device{node}.Device{subnode}.CenterPosition;
                         
                     end
-                    node = node+1;
+                    
                else
                     cellpositions(end+1,:) = obj.Device{node}.CenterPosition;
-                    node = node + 1;
+                    
                 end
                 
             end
@@ -100,22 +100,27 @@ classdef QCACircuit
             %now go through list of CellID's to find neighbors
 
             
-            idx = 1;
-            while idx <=length(cellIDToplevelnodes)
+            
+            for idx=1:length(obj.Device)
+                idx;
+%                 cellIDToplevelnodes(idx);
+%                 max(cellIDToplevelnodes);
                 
-                cellIDToplevelnodes(idx);
-                length(obj.Device);
+                leng = length(obj.Device);
                 
-                if(isa(obj.Device{cellIDToplevelnodes(idx)}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
-                    superCellID = obj.Device{cellIDToplevelnodes(idx)}.CellID;
+                
+                if(isa(obj.Device{idx}, 'QCASuperCell')) %if supernode overwrite supernode ID with first subnode
+                    superCellID = obj.Device{idx}.CellID;
                     
-                    for subnode = 1:length(obj.Device{cellIDToplevelnodes(idx)}.Device)
+                    len=length(obj.Device{idx}.Device);
+                    
+                    for subnode = 1:length(obj.Device{idx}.Device)
                         
-                        
-                        c = obj.Device{cellIDToplevelnodes(idx)}.Device{subnode}.CellID;
-%                         cellpositions(:,idx+subnode-1)
+                        subnode;
+                        c = obj.Device{idx}.Device{subnode}.CellID;
+                        cellpositions(:,idx+subnode-1);
                         %shift and find magnitudes
-                        shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
+                        shifted = cellpositions - repmat(cellpositions(:,idx+subnode-1),1,length(cellIDArray));
                         shifted = shifted.^2;
                         shifted = sum(shifted,1).^(.5);
                         
@@ -124,9 +129,10 @@ classdef QCACircuit
  
                         
                         
-%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-                        obj.Device{cellIDToplevelnodes(idx)}.Device{subnode}.NeighborList = neighbors;
-                        idx = idx + 1;   
+                        disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                        obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
+                           
+
                     end
                     
                     
@@ -141,7 +147,7 @@ classdef QCACircuit
                     shifted = shifted.^(.5);
                     
                     %give me the cellid's of the node within a certain limit
-                    id = obj.Device{cellIDToplevelnodes(idx)}.CellID;
+                    id = obj.Device{idx}.CellID;
                     neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
 
 %                     y=[];
@@ -155,13 +161,13 @@ classdef QCACircuit
 %                     end
                     
                     
-                    
-%                     disp(['id: ' num2str(id) ' y: ' num2str(y)])
-                    obj.Device{cellIDToplevelnodes(idx)}.NeighborList = neighbors;
+
+                    disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
+                    obj.Device{idx}.NeighborList = neighbors;
                     
                     
                 end
-                idx = idx + 1;
+                
                 
                 
                 
@@ -171,7 +177,7 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
-%             cla;
+            cla;
             hold on
             CellIndex = length(obj.Device);
             for CellIndex = 1:length(obj.Device)
@@ -187,15 +193,20 @@ classdef QCACircuit
                         for j=1:length(obj.Device)
                             if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
 %                                 colors{end+1} = obj.Device{j}.BoxColor;
-                                colors =  colors+1
+                                colors =  colors+1;
                             end
                             
                         end
+                        
                         if colors>0;
+                            id = floor(obj.Device{CellIndex}.Device{1}.CellID);
                             
-                        color(1)= abs(sin(.4*obj.Device{j}.CellID-obj.Device{j}.CellID));
-                        color(3)= abs(sin(colors*obj.Device{j}.CellID-(obj.Device{j}.CellID)^2))*abs(sin(colors*obj.Device{j}.CellID));
-                        color(2)= abs(cos(colors*obj.Device{j}.CellID+obj.Device{j}.CellID*(obj.Device{j}.CellID-1)));
+                            
+                        color(1)= abs(sin(.4*id*now/100000-id));
+                        
+                        color(3)= abs(sin(colors*id-(id^2))*abs(cos(id)));
+                        
+                        color(2)= abs(cos(colors*id + id*(id-1)*now/100000));
                         
                         
                             obj.Device{CellIndex}.BoxColor=color;
@@ -252,14 +263,19 @@ classdef QCACircuit
                         for j=1:length(obj.Device)
                             if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
 %                                 colors{end+1} = obj.Device{j}.BoxColor;
-                                colors =  colors+1
+                                colors =  colors+1;
                             end
                             
                         end
                         if colors>0;
-                        color(1)= abs(sin(.4*obj.Device{j}.CellID-obj.Device{j}.CellID));
-                        color(3)= abs(sin(colors*obj.Device{j}.CellID-(obj.Device{j}.CellID)^2))*abs(sin(colors*obj.Device{j}.CellID));
-                        color(2)= abs(cos(colors*obj.Device{j}.CellID+obj.Device{j}.CellID*(obj.Device{j}.CellID-1)));
+                            id = floor(obj.Device{CellIndex}.Device{1}.CellID);
+                            
+                            
+                        color(1)= abs(sin(.4*id*now/100000-id));
+                        
+                        color(3)= abs(sin(colors*id-(id^2))*abs(cos(id)));
+                        
+                        color(2)= abs(cos(colors*id + id*(id-1)*now/100000));
 
                             
                             obj.Device{CellIndex}.BoxColor=color;
@@ -344,10 +360,16 @@ classdef QCACircuit
         
         function obj = Relax2GroundState(obj)
             %Iterate to Selfconsistency
-            
+            disp('ORDER OF RELAXING')
+            for i=1:length(obj.Device)
+               fprintf('Cell %d  ...   ',obj.Device{i}.CellID); 
+            end
+            fprintf('\n');
             NewCircuitPols = ones(1,length(obj.Device));
             converganceTolerance = 1;
             sub = 1;
+            
+            
             while (converganceTolerance > 0.001)
                 OldCircuitPols = NewCircuitPols;
                 
@@ -368,18 +390,18 @@ classdef QCACircuit
                         while (subnodeTolerance > 0.001)
                             OldPols = NewPols;
                             
-                            supernode = floor(obj.Device{idx}.Device{1}.CellID);
-                            obj.Device;
-                            for subnode = 1:length(obj.Device{supernode}.Device)
+%                             supernode = floor(obj.Device{idx}.Device{1}.CellID)
+                            L=length(obj.Device);
+                            for subnode = 1:length(obj.Device{idx}.Device)
                                 
-                                if( strcmp(obj.Device{supernode}.Device{subnode}.Type, 'Driver') )
+                                if( strcmp(obj.Device{idx}.Device{subnode}.Type, 'Driver') )
                                     %don't relax
                                 else
                                     
-                                    id = obj.Device{supernode}.Device{subnode}.CellID;
-                                    nl = obj.Device{supernode}.Device{subnode}.NeighborList;
-                                    pol = obj.Device{supernode}.Device{subnode}.Polarization;
-%                                     disp(['id: ', num2str(id),' nl: ', num2str(nl) ]) %,' pol: ', num2str(pol)
+                                    id = obj.Device{idx}.Device{subnode}.CellID;
+                                    nl = obj.Device{idx}.Device{subnode}.NeighborList;
+                                    pol = obj.Device{idx}.Device{subnode}.Polarization;
+%                                     disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
 
                                     if ~isempty(nl)
                                         
@@ -388,14 +410,14 @@ classdef QCACircuit
                                         nl_obj = obj.getCellArray(nl);
                                         
                                         %get hamiltonian for current cell
-                                        hamiltonian = obj.Device{supernode}.Device{subnode}.GetHamiltonian(nl_obj);
+                                        hamiltonian = obj.Device{idx}.Device{subnode}.GetHamiltonian(nl_obj);
 
-                                        obj.Device{supernode}.Device{subnode}.Hamiltonian = hamiltonian;
+                                        obj.Device{idx}.Device{subnode}.Hamiltonian = hamiltonian;
                                         
                                         %calculate polarization
-                                        obj.Device{supernode}.Device{subnode} = obj.Device{supernode}.Device{subnode}.Calc_Polarization_Activation();
+                                        obj.Device{idx}.Device{subnode} = obj.Device{idx}.Device{subnode}.Calc_Polarization_Activation();
                                         
-                                        NewPols(subnode) = obj.Device{supernode}.Device{subnode}.Polarization;
+                                        NewPols(subnode) = obj.Device{idx}.Device{subnode}.Polarization;
 %                                         disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
                                     end
                                 end
@@ -435,7 +457,7 @@ classdef QCACircuit
                             else
                                 NewCircuitPols(idx) = obj.Device{idx}.Polarization;
                             end
-                            %disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+%                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
                         end
                         idx = idx+1;
                     end
@@ -614,7 +636,7 @@ classdef QCACircuit
             cell_obj = {};
             
 %             CellIDArray
-%             obj.Device
+            
             for i=1:length(obj.Device)        
                 if isa(obj.Device,'QCASuperCell')    
                     for j=1:length(obj.Device{i}.Device)
@@ -681,9 +703,6 @@ classdef QCACircuit
             end
             
         end
-        
-        
-        
         
     end
     
