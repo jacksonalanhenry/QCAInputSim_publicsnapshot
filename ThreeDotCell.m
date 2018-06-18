@@ -248,6 +248,8 @@ classdef ThreeDotCell < QCACell
             targetAxes = [];
             a= obj.CharacteristicLength;
             r= obj.CenterPosition;
+            act = obj.Activation;
+            pol = obj.Polarization;
             radiusfactor = 0.2;
             
 
@@ -276,40 +278,23 @@ classdef ThreeDotCell < QCACell
             c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor, [1 1 1],'Points',25);
             c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor, [1 1 1],'Points',25);
             
-            %Electrons Position Probability
             
+            %electron color for driver/node
             if strcmp(obj.Type,'Node')
-                
-                scalefactor = 0.90;
-                if obj.Polarization < 0
-                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1 - abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                    e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                    
-                elseif obj.Polarization == 0
-                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                    
-                elseif obj.Polarization > 0
-                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1- abs(obj.Polarization))*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                    e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [1 0 0],'EdgeColor', [1,1,1],'Points',25);
-                end
-                
+                electronColor = [1 0 0];
             elseif strcmp(obj.Type,'Driver')
-                
-                scalefactor = 0.90;
-                if obj.Polarization < 0
-                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1 - abs(obj.Polarization))*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
-                    e2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
-                    
-                elseif obj.Polarization == 0
-                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
-                    
-                elseif obj.Polarization > 0
-                    e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor * (1- abs(obj.Polarization))*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
-                    e3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor * abs(obj.Polarization)*scalefactor, [0 1 0],'EdgeColor', [1,1,1],'Points',25);
-                end
-                
+                electronColor = [0 1 0];
             end
-
+            
+            %Electrons Position Probability
+            q0 = (act/2)*(1-pol);   
+            qN = 1 - act;
+            q1 = (act/2)*(1+pol);
+            
+            scalefactor = 0.90;
+            e0 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, q0*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
+            eN = circle(obj.CenterPosition(1), obj.CenterPosition(2),      qN*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
+            e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
             
             
             if length(varargin)==1

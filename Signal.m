@@ -87,8 +87,12 @@ classdef Signal
                     %THIS FUNCTION ONLY ASSIGNS z Field
 
                     EField = [0,0,0];
-                    EField(3)=+0.5 *cos(2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) ) -0.4;
-                    EField(3) = EField(3)*obj.Amplitude;
+                    EField(3)=(+0.5 *cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ (pi/2) ) -0.49)*obj.Amplitude;
+                    
+                    ef = EField(3);
+                    x  = centerposition(1);
+%                     disp(['x: ', num2str(x), ' ef: ', num2str(ef)])%'t: ', num2str(time),
+                    
 
                 else
                     error('Incorrect data input size.')
