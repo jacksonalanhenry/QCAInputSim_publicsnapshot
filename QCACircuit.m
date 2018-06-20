@@ -426,7 +426,7 @@ classdef QCACircuit
                                         NewPols(subnode) = obj.Device{idx}.Device{subnode}.Polarization;
                                         
                                         
-                                        disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+%                                         disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
                                     end
                                 end
                                 
@@ -434,7 +434,7 @@ classdef QCACircuit
                             
                             deltaPols = abs(OldPols) - abs(NewPols);
                             subnodeTolerance = max(abs(deltaPols));
-                            super = super + 1
+                            super = super + 1;
                         end
                         
                         idx=idx+1;
@@ -467,7 +467,7 @@ classdef QCACircuit
                                 NewCircuitPols(idx) = obj.Device{idx}.Polarization;
                             end
                             
-                            disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
+%                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
 
                         end
                         idx = idx+1;
@@ -482,8 +482,7 @@ classdef QCACircuit
                 sub=sub+1;
                 it=it+1;
             end
-            converganceTolerance;
-            it;
+            
         end
         
         function obj = pipeline(obj,signal,currentaxes)
@@ -498,7 +497,6 @@ classdef QCACircuit
             nx = 125; % number of x points
             
             t_Tc = linspace(-2,2, nt); % for gradient ploting purposes
-            %x_lambda = linspace(-2, 12, nx); % for gradient plotting purposes
             x_lambda = linspace(-1, length(obj.Device)+1, nx); % for gradient plotting purposes
 
             
@@ -506,9 +504,8 @@ classdef QCACircuit
             
             for tidx = 1:nt
                 Ezt(:, tidx) = (+0.5* cos(( 2*pi*(x_lambda         /signal.Wavelength - time_array(tidx)/signal.Period ) ) + (3.1-pi) ) )*signal.Amplitude;
-                %EField(3)=     (+0.5 *cos(( 2*pi*(centerposition(1)/obj.Wavelength    - time            /obj.Period ) )    + (pi/2)+1.4 ) -0.49)*obj.Amplitude; -0.49
             end
-            %
+            
             
             
             fileID = fopen('SimulationResults.txt','w');
@@ -575,10 +572,6 @@ classdef QCACircuit
                     
                 end
                 
-%                 if t == 70
-%                     while 1
-%                     end
-%                 end
                 
                 %relax2Groundstate
                 obj = obj.Relax2GroundState();
@@ -636,13 +629,6 @@ classdef QCACircuit
                 Frame(t) = getframe(gcf);
                 writeVideo(v,Frame(t));
                
-%                 if(t > 45)
-%                     
-%                     
-%                     pause
-%                     
-%                 end
-
                     
                 
             end %time step loop
@@ -683,8 +669,6 @@ classdef QCACircuit
             
             cell_obj = {};
             
-%             CellIDArray
-            
             for i=1:length(obj.Device)        
                 if isa(obj.Device,'QCASuperCell')    
                     for j=1:length(obj.Device{i}.Device)
@@ -705,25 +689,6 @@ classdef QCACircuit
                                 
                 end
             end
-            CellIDArray;
-            cell_obj;
-%             idx=1;
-%             while idx <= length(CellIDArray)
-%                                     
-% 
-%                 if floor(CellIDArray(idx)) ~= CellIDArray(idx) %must be a supercell
-% 
-%                     superID = floor(CellIDArray(idx));
-%                     subID = round((CellIDArray(idx)-superID)*100);
-% %                     cell_obj{idx} = obj.Device{superID}.Device{subID};
-%                     
-%                 else
-% 
-%                     cell_obj{idx} = obj.Device{CellIDArray(idx)};
-%                 end
-%                 idx=idx+1;
-%                 
-%             end
             
         end
         
