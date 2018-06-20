@@ -17,7 +17,7 @@ classdef QCACell
                          %      relative to cell center
         CharacteristicLength = 1; % [nm]
         
-        Gamma = 0.03; % [eV]
+        Gamma = 0.1; % [eV]
         
         ElectricField = [0, 0, 0]; %Electric Field [V/nm]
         
