@@ -8,7 +8,7 @@ newCircuit = {};
 
 mode = myCircuit.Mode;
 
-cells2del=[];
+cells2del=[];%cells we will delete
 
 switch mode
     case 'Simulation'
@@ -30,16 +30,18 @@ switch mode
             
         end
         
-        for j=1:length(cells2del)
+        for j=1:length(cells2del) %empty each of the locations in the device list
             myCircuit.Device{cells2del(j)}={};
         end
         
         for i=1:length(myCircuit.Device)
             if ~isempty(myCircuit.Device{i})
-                newCircuit{end+1}=myCircuit.Device{i};
+                newCircuit{end+1}=myCircuit.Device{i}; %new circuit gets all the remaining cells
             end
         end
+        
         myCircuit.Device = newCircuit;
+        
         myCircuit = myCircuit.CircuitDraw(gca);
         
     case 'Layout'

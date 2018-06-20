@@ -32,7 +32,3 @@ setappdata(gcf,'myCircuit',myCircuit);
 Simulate(handles);
 
 end
-
-
-
-

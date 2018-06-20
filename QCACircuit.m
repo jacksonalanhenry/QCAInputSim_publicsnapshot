@@ -361,17 +361,20 @@ classdef QCACircuit
         
         function obj = Relax2GroundState(obj)
             %Iterate to Selfconsistency
-            disp('ORDER OF RELAXING')
-            for i=1:length(obj.Device)
-               fprintf('Cell %d  ...   ',obj.Device{i}.CellID); 
-            end
-            fprintf('\n');
+            
+%             disp('ORDER OF RELAXING')
+%             for i=1:length(obj.Device)
+%                fprintf('Cell %d  ...   ',obj.Device{i}.CellID); 
+%             end
+%             fprintf('\n');
+            
+            
             NewCircuitPols = ones(1,length(obj.Device));
             converganceTolerance = 1; 
             sub = 1;
             
             it=1;
-            while (converganceTolerance > 0.0000001)
+            while (converganceTolerance > 0.000001)
                 
                 OldCircuitPols = NewCircuitPols;
                 
@@ -389,10 +392,12 @@ classdef QCACircuit
                         subnodeTolerance = 1;
                         super = 1;
                         
-                        while (subnodeTolerance > 0.001)
+                        while (subnodeTolerance > 0.00001)
                             OldPols = NewPols;
                             
 %                             supernode = floor(obj.Device{idx}.Device{1}.CellID)
+                            
+                            
                             L=length(obj.Device);
                             for subnode = 1:length(obj.Device{idx}.Device)
                                 
@@ -403,8 +408,8 @@ classdef QCACircuit
                                     id = obj.Device{idx}.Device{subnode}.CellID;
                                     nl = obj.Device{idx}.Device{subnode}.NeighborList;
                                     pol = obj.Device{idx}.Device{subnode}.Polarization;
-%                                     disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
-
+%                                                                         disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
+                                    
                                     if ~isempty(nl)
                                         
                                         %get Neighbor Objects
@@ -413,14 +418,16 @@ classdef QCACircuit
                                         
                                         %get hamiltonian for current cell
                                         hamiltonian = obj.Device{idx}.Device{subnode}.GetHamiltonian(nl_obj);
-
+                                        
                                         obj.Device{idx}.Device{subnode}.Hamiltonian = hamiltonian;
                                         
                                         %calculate polarization
                                         obj.Device{idx}.Device{subnode} = obj.Device{idx}.Device{subnode}.Calc_Polarization_Activation();
                                         
                                         NewPols(subnode) = obj.Device{idx}.Device{subnode}.Polarization;
-%                                         disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+                                        
+                                        
+                                        disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
                                     end
                                 end
                                 
@@ -460,14 +467,16 @@ classdef QCACircuit
                             else
                                 NewCircuitPols(idx) = obj.Device{idx}.Polarization;
                             end
-%                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
+                            
+                            disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
+
                         end
                         idx = idx+1;
                     end
                     
                     
                 end
-                
+                fprintf('\n');
                 deltaCircuitPols = abs(OldCircuitPols) - abs(NewCircuitPols);
                 converganceTolerance = max(abs(deltaCircuitPols));
                 

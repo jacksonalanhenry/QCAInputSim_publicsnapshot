@@ -23,10 +23,9 @@ function ChangeClockField(handles)
             
         end
 %         myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
-        myCircuit.Device
+        myCircuit.Device;
         
         setappdata(gcf,'myCircuit',myCircuit);  
         Simulate(handles);
 
 end
-
