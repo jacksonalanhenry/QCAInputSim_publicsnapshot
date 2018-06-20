@@ -41,8 +41,6 @@ classdef QCASuperCell
             hold off
         end
         
-
-        
     end
     
 end

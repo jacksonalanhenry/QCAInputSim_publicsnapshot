@@ -3,38 +3,78 @@ function myCircuit=ChangeX(handles)
 %   Detailed explanation goes here
 myCircuit=getappdata(gcf,'myCircuit');
 
-for i=1:length(myCircuit.Device)
-    if isa(myCircuit.Device{i},'QCASuperCell')
+mode = myCircuit.Mode;
+
+switch mode
+    
+    case 'Simulation'
         
-        for j=1:length(myCircuit.Device{i}.Device)
-            
-            
-            if strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on')
-                for k=1:length(myCircuit.Device{i}.Device)
-                    
+        for i=1:length(myCircuit.Device)
+            if isa(myCircuit.Device{i},'QCASuperCell')
                 
-                    myCircuit.Device{i}.Device{k}.CenterPosition(1)=myCircuit.Device{i}.Device{k}.CenterPosition(1)+str2num(get(handles.changex,'String'));
+                for j=1:length(myCircuit.Device{i}.Device)
+                    
+                    
+                    if strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on')
+                        for k=1:length(myCircuit.Device{i}.Device)
+                            
+                            
+                            myCircuit.Device{i}.Device{k}.CenterPosition(1)=myCircuit.Device{i}.Device{k}.CenterPosition(1)+str2num(get(handles.changex,'String'));
+                        end
+                        
+                    end
                 end
-            
+                
+                
+                
+                
+            else
+                if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')%is it selected?
+                    
+                    myCircuit.Device{i}.CenterPosition(1)=myCircuit.Device{i}.CenterPosition(1)+str2num(get(handles.changex,'String'));
+                    %change the X coordinate by the user's input value
+                    
+                end
             end
         end
         
         
+        myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
         
+    case 'Layout'
         
-    else
-        if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')%is it selected?
-            
-            myCircuit.Device{i}.CenterPosition(1)=myCircuit.Device{i}.CenterPosition(1)+str2num(get(handles.changex,'String'));
-            %change the X coordinate by the user's input value
-            
+        for i=1:length(myCircuit.Device)
+            if isa(myCircuit.Device{i},'QCASuperCell')
+                
+                for j=1:length(myCircuit.Device{i}.Device)
+                    
+                    
+                    if strcmp(myCircuit.Device{i}.Device{j}.Layout.Selected,'on')
+                        for k=1:length(myCircuit.Device{i}.Device)
+                            
+                            
+                            myCircuit.Device{i}.Device{k}.CenterPosition(1)=myCircuit.Device{i}.Device{k}.CenterPosition(1)+str2num(get(handles.changex,'String'));
+                        end
+                        
+                    end
+                end
+                
+                
+                
+                
+            else
+                if strcmp(myCircuit.Device{i}.LayoutBox.Selected,'on')%is it selected?
+                    
+                    myCircuit.Device{i}.CenterPosition(1)=myCircuit.Device{i}.CenterPosition(1)+str2num(get(handles.changex,'String'));
+                    %change the X coordinate by the user's input value
+                    
+                end
+            end
         end
-    end
-end
-
-cla;
-myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
-
-setappdata(gcf,'myCircuit',myCircuit);
-
+        
+        
+        myCircuit = myCircuit.LayoutDraw(handles.LayoutWindow);
+        
+        setappdata(gcf,'myCircuit',myCircuit);
+        
 end
