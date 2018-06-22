@@ -210,19 +210,19 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
-%             cla;
+            cla; %KEEP CLA WE NEED IT
             hold on
             CellIndex = length(obj.Device);
             
             snapmode = obj.SnapToGrid;
             
             switch snapmode %snapping to grid mode
-                case 'off'
+                case 'off' %do nothing extra
             
-                case 'on'
+                case 'on' %begin snapping each cell to the grid, skipping every .5
                     coord = {};
                     
-                    for i=1:length(obj.Device)
+                    for i=1:length(obj.Device)  %fill cell with all center positions
                         if isa(obj.Device{i},'QCASuperCell')
                             
                             
@@ -278,7 +278,7 @@ classdef QCACircuit
                     
                     
                     it=1;
-                    for i=1:length(obj.Device)
+                    for i=1:length(obj.Device) %replace the cell center positions with the new snapped center positions
                         if isa(obj.Device{i},'QCASuperCell')
                             for j=1:length(obj.Device{i}.Device)
                                 
@@ -293,7 +293,7 @@ classdef QCACircuit
                         end
                         
                     end
-            end
+            end %end snap to grid
             
             for CellIndex = 1:length(obj.Device)
                 
@@ -774,9 +774,7 @@ classdef QCACircuit
            
             
         end
-        
-        
-        
+         
         
         function cell_obj = getCellArray(obj, CellIDArray)
             %this function returns an array of QCACell objects given a list
