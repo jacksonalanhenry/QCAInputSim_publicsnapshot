@@ -75,6 +75,9 @@ switch mode
         
         myCircuit = myCircuit.LayoutDraw(handles.LayoutWindow);
         
-        setappdata(gcf,'myCircuit',myCircuit);
         
+        
+end
+
+setappdata(gcf,'myCircuit',myCircuit);
 end

@@ -8,7 +8,7 @@ classdef QCACircuit
         RefinedDevice = {};
         GroundState = [];
         Mode='Simulation';
-        
+        SnapToGrid = 'off'
     end
     
     methods
@@ -85,9 +85,9 @@ classdef QCACircuit
                     end
                     
                else
-                    cellpositions(end+1,:) = obj.Device{node}.CenterPosition;
+                   cellpositions(end+1,:) = obj.Device{node}.CenterPosition;
                     
-                end
+               end
                 
             end
             
@@ -100,9 +100,12 @@ classdef QCACircuit
             %now go through list of CellID's to find neighbors
 
             
-            
+            it = 1;
             for idx=1:length(obj.Device)
                 idx;
+                
+                
+                
 %                 cellIDToplevelnodes(idx);
 %                 max(cellIDToplevelnodes);
                 
@@ -119,36 +122,49 @@ classdef QCACircuit
                         subnode;
                         c = obj.Device{idx}.Device{subnode}.CellID;
                         cellpositions(:,idx+subnode-1);
-                        %shift and find magnitudes
-                        shifted = cellpositions - repmat(cellpositions(:,idx+subnode-1),1,length(cellIDArray));
+                        %shift and find magnitudes  idx+subnode-1
+                        shifted = cellpositions - repmat(cellpositions(:,it),1,length(cellIDArray));
                         shifted = shifted.^2;
-                        shifted = sum(shifted,1).^(.5);
+                        shifted = sum(shifted,1);
+                        shifted = shifted.^(.5);
+                        
                         
                         %give me the cellid's of the node within a certain limit
-                        neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
+                        neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1);
  
                         
                         
 %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-                        obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
+                        
+%                             newNeighbors=[];
+%                             first = neighbors
+%                            for i=1:length(neighbors)
+%                                if neighbors(i) ~= obj.Device{idx}.Device{subnode}.CellID
+%                                     newNeighbors(end+1) = neighbors(i);
+%                                end
+%                            end
+%                            
+%                            
+%                            neighbors = newNeighbors
                            
-
+                           obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
+                           it = it+1;
                     end
-                    
+%                     idx = idx+length(obj.Device{idx}.Device);
                     
                 else
                     %shift and find magnitudes
                    
                     
                     
-                    shifted = cellpositions - repmat(cellpositions(:,idx),1,length(cellIDArray));
+                    shifted = cellpositions - repmat(cellpositions(:,it),1,length(cellIDArray));
                     shifted = shifted.^2;
                     shifted = sum(shifted,1);
                     shifted = shifted.^(.5);
                     
                     %give me the cellid's of the node within a certain limit
                     id = obj.Device{idx}.CellID;
-                    neighbors = cellIDArray(shifted < 2.25 & shifted > 0);
+                    neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1);
 
 %                     y=[];
 %                     q=obj.getCellArray(neighbors);
@@ -164,8 +180,22 @@ classdef QCACircuit
                     
 %                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
 
+                        %SOMETHING IS STILL WRONG WITH GENERATE NEIGHBOR
+                        %LIST
+                        
+%                             newNeighbors=[];
+%                             first = neighbors
+%                            for i=1:length(neighbors)
+%                                if neighbors(i) ~= obj.Device{idx}.CellID
+%                                     newNeighbors(end+1) = neighbors(i);
+%                                end
+%                            end
+%                            
+%                            
+%                            neighbors = newNeighbors
+
                     obj.Device{idx}.NeighborList = neighbors;
-                    
+                    it = it+1;
                     
                 end
                 
@@ -181,6 +211,88 @@ classdef QCACircuit
             cla;
             hold on
             CellIndex = length(obj.Device);
+            
+            snapmode = obj.SnapToGrid;
+            
+            switch snapmode %snapping to grid mode
+                case 'off'
+            
+                case 'on'
+                    coord = {};
+                    
+                    for i=1:length(obj.Device)
+                        if isa(obj.Device{i},'QCASuperCell')
+                            
+                            
+                            for j=1:length(obj.Device{i}.Device)
+                                coord{end+1} = obj.Device{i}.Device{j}.CenterPosition;
+                                
+                            end
+                            
+                            
+                        else
+                            coord{end+1} = obj.Device{i}.CenterPosition;
+                        end
+                        
+                    end
+                    
+                    
+                    for i=1:length(coord)
+                        
+                        
+                        diffx=coord{i}(1)-floor(coord{i}(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
+                        diffy=coord{i}(2)-floor(coord{i}(2)); %this is priming the snap to grid functionality
+                        
+                        
+                        
+                        
+                        
+                        %determining how each x,y will be rounded to floor, .5 or
+                        %up to the next integer
+                        if diffx<.25
+                            coord{i}(1)=floor(coord{i}(1));
+                        end
+                        if diffx>=.25 && diffx<=.75
+                            coord{i}(1)=floor(coord{i}(1))+.5;
+                        end
+                        if diffx>.75
+                            coord{i}(1)=floor(coord{i}(1))+1;
+                        end
+                        
+                        
+                        if diffy<.25
+                            coord{i}(2)=floor(coord{i}(2));
+                        end
+                        if diffy>=.25 && diffy<=.75
+                            coord{i}(2)=floor(coord{i}(2))+.5;
+                        end
+                        if diffy>.75
+                            coord{i}(2)=floor(coord{i}(2))+1;
+                        end
+                        
+                        
+                        
+                    end
+                    
+                    
+                    it=1;
+                    for i=1:length(obj.Device)
+                        if isa(obj.Device{i},'QCASuperCell')
+                            for j=1:length(obj.Device{i}.Device)
+                                
+                                obj.Device{i}.Device{j}.CenterPosition = coord{it};
+                                it=it+1;
+                            end
+                            
+                            
+                        else
+                            obj.Device{i}.CenterPosition = coord{it};
+                            it = it+1;
+                        end
+                        
+                    end
+            end
+            
             for CellIndex = 1:length(obj.Device)
                 
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
@@ -307,8 +419,7 @@ classdef QCACircuit
             end
             obj.Mode = 'Layout';
     end
-
-        
+ 
         %reference this based on CellId
         function sref = subsref(obj,s)
             % obj(index) is the same as obj.Device(index)
@@ -360,7 +471,7 @@ classdef QCACircuit
         end
         
         function obj = Relax2GroundState(obj)
-            %Iterate to Selfconsistency
+            %Iterate to Self consistency
             
 %             disp('ORDER OF RELAXING')
 %             for i=1:length(obj.Device)
@@ -427,7 +538,7 @@ classdef QCACircuit
                                         NewPols(subnode) = obj.Device{idx}.Device{subnode}.Polarization;
                                         
                                         
-                                        disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+%                                         disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
                                     end
                                 end
                                 
@@ -468,7 +579,7 @@ classdef QCACircuit
                                 NewCircuitPols(idx) = obj.Device{idx}.Polarization;
                             end
                             
-                            disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
+%                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
 
                         end
                         idx = idx+1;
@@ -476,7 +587,7 @@ classdef QCACircuit
                     
                     
                 end
-                fprintf('\n');
+%                 fprintf('\n');
                 deltaCircuitPols = abs(OldCircuitPols) - abs(NewCircuitPols);
                 converganceTolerance = max(abs(deltaCircuitPols));
                 
@@ -652,7 +763,7 @@ classdef QCACircuit
 %             CellIDArray
             
             for i=1:length(obj.Device)        
-                if isa(obj.Device,'QCASuperCell')    
+                if isa(obj.Device{i},'QCASuperCell')    
                     for j=1:length(obj.Device{i}.Device)
                         for k=1:length(CellIDArray)
                             if CellIDArray(k) == obj.Device{i}.Device{j}.CellID
@@ -718,7 +829,33 @@ classdef QCACircuit
             
         end
         
+    
     end
-    
-    
+
 end
+
+
+
+
+% format for iterating through circuit
+% for i=1:length(obj.Device)
+%     if isa(obj.Device{i},'QCASuperCell')
+%         Sel=0;
+%         for j=1:length(obj.Device{i}.Device)
+%             nl = obj.GenerateNeighborList();
+%             
+%             
+%             
+%             
+%         end
+%         if Sel
+%             
+%         end
+%         
+%     else
+%         
+
+%     end
+% end
+
+

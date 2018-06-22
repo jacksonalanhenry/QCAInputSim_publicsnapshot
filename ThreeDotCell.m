@@ -134,10 +134,10 @@ classdef ThreeDotCell < QCACell
             hamiltonian(1,1) = hamiltonian(1,1) + (-inputFieldBias)/2;%add input field to 0 dot
             hamiltonian(3,3) = hamiltonian(3,3) + inputFieldBias/2;%add input field to 1 dot
             
-%             disp(['hamiltonian and neighbor list of ' num2str(obj.CellID) ' are '])
-%             obj.NeighborList
+%             disp(['neighbor list of ' num2str(obj.CellID) ' is:     ' num2str(obj.NeighborList)]) 
+%             disp('and the hamiltonian is ')
 %             hamiltonian
-            
+%             disp('-----------------------------------------------------------------------------')
         end
         
         function obj = Calc_Polarization_Activation(obj)
