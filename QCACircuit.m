@@ -180,6 +180,7 @@ classdef QCACircuit
                     
 %                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
 
+
                         %SOMETHING IS STILL WRONG WITH GENERATE NEIGHBOR
                         %LIST
                         
@@ -193,6 +194,7 @@ classdef QCACircuit
 %                            
 %                            
 %                            neighbors = newNeighbors
+
 
                     obj.Device{idx}.NeighborList = neighbors;
                     it = it+1;
@@ -208,7 +210,7 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
-            cla;
+%             cla;
             hold on
             CellIndex = length(obj.Device);
             
@@ -471,15 +473,16 @@ classdef QCACircuit
         end
         
         function obj = Relax2GroundState(obj)
+
             %Iterate to Self consistency
             
+
 %             disp('ORDER OF RELAXING')
 %             for i=1:length(obj.Device)
 %                fprintf('Cell %d  ...   ',obj.Device{i}.CellID); 
 %             end
 %             fprintf('\n');
-            
-            
+
             NewCircuitPols = ones(1,length(obj.Device));
             converganceTolerance = 1; 
             sub = 1;
@@ -594,8 +597,7 @@ classdef QCACircuit
                 sub=sub+1;
                 it=it+1;
             end
-            converganceTolerance;
-            it;
+            
         end
         
         function obj = pipeline(obj,signal,currentaxes)
@@ -605,17 +607,21 @@ classdef QCACircuit
             time_array = linspace(0,2,nt); %right now this will do 2 periods
 
 
+            %THIS NEEDS TO MOVE
             %draw gradient before cells
             nx = 125; % number of x points
             
-            t_Tc = linspace(-5, 5, nt); % for gradient ploting purposes
-            x_lambda = linspace(-2, 12, nx); % for gradient plotting purposes
+            t_Tc = linspace(-2,2, nt); % for gradient ploting purposes
+            x_lambda = linspace(-1, length(obj.Device)+1, nx); % for gradient plotting purposes
+
             
             Ezt = zeros(nx, nt);
             
             for tidx = 1:nt
-                Ezt(:, tidx) = (+0.5* cos(( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) + (pi/2) ) -0.4)*signal.Amplitude;
+                Ezt(:, tidx) = (+0.5* cos(( 2*pi*(x_lambda         /signal.Wavelength - time_array(tidx)/signal.Period ) ) + (3.1-pi) ) )*signal.Amplitude;
             end
+            
+            
             
             fileID = fopen('SimulationResults.txt','w');
             
@@ -657,7 +663,7 @@ classdef QCACircuit
 
             
             
-            
+            %THESE NEED TO MOVE
             Frame(nt) = struct('cdata',[],'colormap',[]);
             v = VideoWriter('sinusoidEField.mp4','MPEG-4');
             open(v);
@@ -689,25 +695,28 @@ classdef QCACircuit
                 %data output
                 disp(['t: ', num2str(t)]);
                 
-                fprintf(fileID, '%i:', t);
+                fprintf(fileID, '%i; ', t);
 
                 idx = 1;
                 while idx <= length(obj.Device)
                     if(isa(obj.Device{idx}, 'QCASuperCell'))
 
                         for sub = 1: length(obj.Device{idx}.Device)
-                            formatSpec = '%.2f ;%.2f; %.2f;';
+                            formatSpec = '%.2f ;%.2f; %.2f; %.4f; ';
+                            ef = obj.Device{idx}.Device{sub}.ElectricField;
+                            efz = ef(3);
                             
-                            fprintf(fileID,formatSpec, obj.Device{idx}.Device{sub}.CellID,obj.Device{idx}.Device{sub}.Polarization,obj.Device{idx}.Device{sub}.Activation);
+                            fprintf(fileID,formatSpec, obj.Device{idx}.Device{sub}.CellID,obj.Device{idx}.Device{sub}.Polarization,obj.Device{idx}.Device{sub}.Activation, efz);
 
                         end
 
 
                         idx = idx + 1;
                     else
-                        formatSpec = '%.2f ;%.2f; %.2f;';
-                            
-                        fprintf(fileID, formatSpec, obj.Device{idx}.CellID, obj.Device{idx}.Polarization, obj.Device{idx}.Activation);
+                        formatSpec = '%.2f ;%.2f; %.2f; %.4f; ';
+                        ef = obj.Device{idx}.ElectricField;
+                        efz = ef(3);    
+                        fprintf(fileID, formatSpec, obj.Device{idx}.CellID, obj.Device{idx}.Polarization, obj.Device{idx}.Activation,efz);
 
 
                     end
@@ -716,7 +725,7 @@ classdef QCACircuit
                 
                 fprintf(fileID, '\n');
 
-                %visualize
+                %THIS NEEDS TO MOVE
                 Eplot = repmat(Ezt(:,t),[1,nt]);
 
 
@@ -728,23 +737,20 @@ classdef QCACircuit
                 colorbar;
 %                 h = colorbar;
 %                 set(h, 'ylim', [0 signal.Amplitude])
-                
 
-                
-                
-                
-                
-                
                 obj = obj.CircuitDraw(currentaxes);
                 drawnow
                 %save it
                 Frame(t) = getframe(gcf);
                 writeVideo(v,Frame(t));
+               
+                    
                 
             end %time step loop
             
             
             
+            %THIS NEEDS TO MOVE
             fig = figure;
             movie(fig,Frame,1)
             close(v);
@@ -754,13 +760,29 @@ classdef QCACircuit
             
         end
         
+        
+        function obj = PipelineVisualization(obj, signal, currentaxes)
+            %this function takes in a file and visualizes the simulation.
+            %This should be used in conjuction with pipeline()
+            
+            % draw the circuit at each time step.
+            % things we care about for this: The signal info to construct
+            % the gradient, and the cells positions, pol and act at each time step 
+            
+            
+           
+           
+            
+        end
+        
+        
+        
+        
         function cell_obj = getCellArray(obj, CellIDArray)
             %this function returns an array of QCACell objects given a list
             %of IDs
             
             cell_obj = {};
-            
-%             CellIDArray
             
             for i=1:length(obj.Device)        
                 if isa(obj.Device{i},'QCASuperCell')    
@@ -782,25 +804,6 @@ classdef QCACircuit
                                 
                 end
             end
-            CellIDArray;
-            cell_obj;
-%             idx=1;
-%             while idx <= length(CellIDArray)
-%                                     
-% 
-%                 if floor(CellIDArray(idx)) ~= CellIDArray(idx) %must be a supercell
-% 
-%                     superID = floor(CellIDArray(idx));
-%                     subID = round((CellIDArray(idx)-superID)*100);
-% %                     cell_obj{idx} = obj.Device{superID}.Device{subID};
-%                     
-%                 else
-% 
-%                     cell_obj{idx} = obj.Device{CellIDArray(idx)};
-%                 end
-%                 idx=idx+1;
-%                 
-%             end
             
         end
         
