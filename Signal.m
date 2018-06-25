@@ -33,6 +33,7 @@ classdef Signal
                         else
                             error('Incorrect data input type.')
                         end
+                        
                     case 2 % S = Signal( Amplitude, wavelength )
                         if( isnumeric(varargin{1}) && isnumeric(varargin{2}) )
                             obj.Amplitude = varargin{1};
@@ -44,7 +45,8 @@ classdef Signal
                         else
                             error('Incorrect data input type.')
                         end
-                     case 3 % S = Signal( Amplitude, wavelength )
+                        
+                     case 3 % S = Signal( Amplitude, wavelength , Period )
                         if( isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3}) )
                             obj.Amplitude = varargin{1};
                             obj.wavelength = varargin{2};

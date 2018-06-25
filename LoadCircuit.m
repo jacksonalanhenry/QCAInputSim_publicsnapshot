@@ -30,11 +30,7 @@ else
     myCircuit=getappdata(gcf,'myCircuit');
     setappdata(gcf,'myCircuit',myCircuit);
     
-
-    
 end
-
-
 
 
 end

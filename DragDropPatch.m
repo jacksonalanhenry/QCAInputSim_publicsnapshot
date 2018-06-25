@@ -122,6 +122,9 @@ selectedPos=[];
                 newPos=newPos(1,:); %the final position of the dragged object
                 totalDiff = newPos - [xcoor ycoor 0];%how much each cell will change
                 
+                
+                
+                
                 diffx=totalDiff(1)-floor(totalDiff(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
                 diffy=totalDiff(2)-floor(totalDiff(2)); %this is priming the snap to grid functionality
                 
@@ -137,6 +140,7 @@ selectedPos=[];
                 if diffx>.75
                     totalDiff(1)=floor(totalDiff(1))+1;
                 end
+                
                 
                 if diffy<.25
                     totalDiff(2)=floor(totalDiff(2));
@@ -158,16 +162,26 @@ selectedPos=[];
                         
                         centerPosList{j} = myCircuit.Device{j}.LayoutCenterPosition;%list all their coordinates
                         
+                        
+                        
                         totalDiff;
                         centerPosList{j};
                         
                         k = centerPosList{j} + totalDiff;
                         
                         k(3)=0;
-                        centerPosList{j} = k; 
+                        centerPosList{j} = k;
+                        
+                        
+                        
+                        
+                        
+                        
                         
                         myCircuit.Device{j}.CenterPosition = centerPosList{j}; %reassigning center positions for redrawing
                     end
+                    
+                    
                     
                     if isa(myCircuit.Device{j},'QCASuperCell') %dragging a whole SuperCell regardless of how many are selected (>1)
                         sel=[];

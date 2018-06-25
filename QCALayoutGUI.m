@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 14-Jun-2018 09:45:47
+% Last Modified by GUIDE v2.5 22-Jun-2018 09:57:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,12 +56,13 @@ function QCALayoutGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 % Update handles structure
-guidata(hObject, handles);
+guidata(hObject, handles)
 myCircuit = QCACircuit();
 setappdata(gcf, 'myCircuit', myCircuit);
 Path.home = pwd;
 Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder'; %this needs to change!!!
 setappdata(gcf,'Path',Path);
+
 
 
 % UIWAIT makes QCALayoutGUI wait for user response (see UIRESUME)
@@ -165,7 +166,7 @@ NewCircuit(gcf,handles);
 
 
 
-
+%not being used currently
 function changex_Callback(hObject, eventdata, handles)
 % hObject    handle to changex (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -188,7 +189,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
+%not being used currently
 function changey_Callback(hObject, eventdata, handles)
 % hObject    handle to changey (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -327,3 +328,44 @@ function chngClock_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
+function chngPos_Callback(hObject, eventdata, handles)
+% hObject    handle to chngPos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of chngPos as text
+%        str2double(get(hObject,'String')) returns contents of chngPos as a double
+ChangeCellPos(handles);
+
+% --- Executes during object creation, after setting all properties.
+function chngPos_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to chngPos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in snap2grid.
+function snap2grid_Callback(hObject, eventdata, handles)
+% hObject    handle to snap2grid (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+SnapToGrid(handles);
+
+
+% --- Executes on button press in autoSnap.
+function autoSnap_Callback(hObject, eventdata, handles)
+% hObject    handle to autoSnap (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of autoSnap
+AutoSnap(handles);

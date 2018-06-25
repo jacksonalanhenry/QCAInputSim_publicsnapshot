@@ -33,6 +33,10 @@ p.ButtonDownFcn=@selObject;
                         %check mode layout or simulation
                         setappdata(gcf,'myCircuit',myCircuit);
                         DragDropPatch(gcf,p,gca);
+                        
+                   else
+                       setappdata(gcf,'myCircuit',myCircuit)
+                       DragDropNEW();
                    end
                    
                    
