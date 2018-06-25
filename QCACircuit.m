@@ -210,7 +210,7 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
-            cla; %KEEP CLA WE NEED IT
+            %cla; %KEEP CLA WE NEED IT
             hold on
             CellIndex = length(obj.Device);
             
@@ -486,16 +486,13 @@ classdef QCACircuit
             NewCircuitPols = ones(1,length(obj.Device));
             converganceTolerance = 1; 
             sub = 1;
-            
+            chi = 0.65;
             it=1;
             while (converganceTolerance > 0.000001)
                 
                 OldCircuitPols = NewCircuitPols;
                 
                 idx = 1;
-                %randomize order
-                %                 randarray = linspace(1,length(obj.Device),length(obj.Device));
-                %                 randarray = randarray(randperm(length(randarray)))
                 
                 while idx <= length(obj.Device)
                     
@@ -505,6 +502,7 @@ classdef QCACircuit
                         NewPols = ones(1,length(obj.Device{idx}.Device));
                         subnodeTolerance = 1;
                         super = 1;
+                        
                         
                         while (subnodeTolerance > 0.00001)
                             OldPols = NewPols;
@@ -522,7 +520,7 @@ classdef QCACircuit
                                     id = obj.Device{idx}.Device{subnode}.CellID;
                                     nl = obj.Device{idx}.Device{subnode}.NeighborList;
                                     pol = obj.Device{idx}.Device{subnode}.Polarization;
-%                                                                         disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
+%                                   disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
                                     
                                     if ~isempty(nl)
                                         
@@ -535,8 +533,15 @@ classdef QCACircuit
                                         
                                         obj.Device{idx}.Device{subnode}.Hamiltonian = hamiltonian;
                                         
+                                        [V, EE] = eig(hamiltonian);
+                                        newpsi = V(:,1);
+
+                                        normpsi = (1-chi)*obj.Device{idx}.Device{subnode}.Wavefunction + chi*newpsi;
+                                        normpsi = normalize_psi_1D(normpsi');
+                                        
+                                        
                                         %calculate polarization
-                                        obj.Device{idx}.Device{subnode} = obj.Device{idx}.Device{subnode}.Calc_Polarization_Activation();
+                                        obj.Device{idx}.Device{subnode} = obj.Device{idx}.Device{subnode}.Calc_Polarization_Activation(normpsi');
                                         
                                         NewPols(subnode) = obj.Device{idx}.Device{subnode}.Polarization;
                                         
@@ -563,18 +568,31 @@ classdef QCACircuit
                         
                         if ~isempty(nl)
                             
+                            
+
                             %get Neighbor Objects
-                            %                         disp('good')
                             nl_obj = obj.getCellArray(nl);
 
-                            %                         disp('job')
                             
                             %get hamiltonian for current cell
                             hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
                             obj.Device{idx}.Hamiltonian = hamiltonian;
                             
+                            %get the new groundstate, average and normalize
+                            %the current groundstate and the new
+                            %groundstate then calculate pol with that psi
+                            [V, EE] = eig(hamiltonian);
+                            newpsi = V(:,1);
+                            
+                            
+                            
+                            normpsi = (1-chi)*obj.Device{idx}.Wavefunction + chi*newpsi;
+                            normpsi = normalize_psi_1D(normpsi');
+                            
+                            
+                            
                             %calculate polarization
-                            obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
+                            obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation(normpsi');
                             
                             if(isa(obj.Device{idx}, 'QCASuperCell'))
                                 NewCircuitPols(idx) = 0;
@@ -698,6 +716,7 @@ classdef QCACircuit
                 %relax2Groundstate
                 obj = obj.Relax2GroundState();
                 
+
                 
                 %data output
                 disp(['t: ', num2str(t)]);
