@@ -24,6 +24,7 @@ classdef ThreeDotCell < QCACell
         Polarization = 0;
         Activation = 1;
         Hamiltonian = zeros(3);
+        Wavefunction = zeros(3,1);
         SelectBox;
         LayoutBox;
         
@@ -149,6 +150,7 @@ classdef ThreeDotCell < QCACell
 
                 [V, EE] = eig(obj.Hamiltonian);
                 psi = V(:,1); %ground state
+                obj.Wavefunction = psi;
                 
                 % Polarization is the expectation value of sigma_z
                 obj.Polarization = psi' * obj.Z * psi;

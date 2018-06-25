@@ -509,6 +509,13 @@ classdef QCACircuit
             
             
             fileID = fopen('SimulationResults.txt','w');
+            file = 'simResults.mat';
+            m = matfile(file, 'Writable', true);
+            save(file, 'signal', '-v7.3');
+            save(file, 'obj', '-append', '-v7.3');
+            m.pols = [];%zeros(nt,length(obj.Device));
+            m.acts = [];%zeros(nt,length(obj.Device));
+            m.efields = [];%zeros(nt,length(obj.Device));
             
             formatSpec = 'Clock Amplitude: %.2f \tWavelength: %i \tPeriod: %i\n';
             fprintf(fileID,formatSpec,signal.Amplitude,signal.Wavelength,signal.Period);
@@ -581,6 +588,8 @@ classdef QCACircuit
                 disp(['t: ', num2str(t)]);
                 
                 fprintf(fileID, '%i; ', t);
+                
+                  
 
                 idx = 1;
                 while idx <= length(obj.Device)
@@ -591,6 +600,11 @@ classdef QCACircuit
                             ef = obj.Device{idx}.Device{sub}.ElectricField;
                             efz = ef(3);
                             
+                            
+                            m.pols(end+1,t) = obj.Device{idx}.Device{sub}.Polarization;
+                            m.acts(t,end+1) = obj.Device{idx}.Device{sub}.Activation;
+                            m.efields = efz;
+                            
                             fprintf(fileID,formatSpec, obj.Device{idx}.Device{sub}.CellID,obj.Device{idx}.Device{sub}.Polarization,obj.Device{idx}.Device{sub}.Activation, efz);
 
                         end
@@ -600,9 +614,17 @@ classdef QCACircuit
                     else
                         formatSpec = '%.2f ;%.2f; %.2f; %.4f; ';
                         ef = obj.Device{idx}.ElectricField;
-                        efz = ef(3);    
+                        efz = ef(3);
+                        
+                        
+                        m.pols(t,end+1) = obj.Device{idx}.Polarization;
+                        m.acts(t,end+1) = obj.Device{idx}.Activation;
+                        m.efields(t,end+1) = efz;
+                        
+                        
                         fprintf(fileID, formatSpec, obj.Device{idx}.CellID, obj.Device{idx}.Polarization, obj.Device{idx}.Activation,efz);
-
+                        
+                        
 
                     end
                     idx = idx + 1;
@@ -629,7 +651,7 @@ classdef QCACircuit
                 Frame(t) = getframe(gcf);
                 writeVideo(v,Frame(t));
                
-                    
+                
                 
             end %time step loop
             
@@ -645,21 +667,7 @@ classdef QCACircuit
             
         end
         
-        
-        function obj = PipelineVisualization(obj, signal, currentaxes)
-            %this function takes in a file and visualizes the simulation.
-            %This should be used in conjuction with pipeline()
-            
-            % draw the circuit at each time step.
-            % things we care about for this: The signal info to construct
-            % the gradient, and the cells positions, pol and act at each time step 
-            
-            
-           
-           
-            
-        end
-        
+                
         
         
         
