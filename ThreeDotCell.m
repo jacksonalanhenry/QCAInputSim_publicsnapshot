@@ -24,6 +24,7 @@ classdef ThreeDotCell < QCACell
         Polarization = 0;
         Activation = 1;
         Hamiltonian = zeros(3);
+        Wavefunction = zeros(3,1);
         SelectBox;
         LayoutBox;
         
@@ -142,23 +143,41 @@ classdef ThreeDotCell < QCACell
 %             disp('-----------------------------------------------------------------------------')
         end
         
-        function obj = Calc_Polarization_Activation(obj)
-            if( strcmp(obj.Type , 'Driver' ))
-                %don't try to relax this cell
-            else
-                %relax
-                %testing getHamiltonian.
-
-                [V, EE] = eig(obj.Hamiltonian);
-                psi = V(:,1); %ground state
-                
-                % Polarization is the expectation value of sigma_z
-                obj.Polarization = psi' * obj.Z * psi;
-%                 disp(['P of cell ' num2str(obj.CellID) ' is ' num2str(obj.Polarization)])
-                obj.Activation = 1 - psi' * obj.Pnn * psi;
-%                 disp(['A of cell ' num2str(obj.CellID) ' is ' num2str(obj.Activation)])
-            end
+        function obj = Calc_Polarization_Activation(obj, varargin)
             
+            if length(varargin) == 1
+                
+                if( strcmp(obj.Type , 'Driver' ))
+                    %don't try to relax this cell
+                else
+                    normpsi = varargin{1};
+                    obj.Polarization = normpsi' * obj.Z * normpsi;
+                    obj.Activation = 1 - normpsi' * obj.Pnn * normpsi;
+                    
+                    obj.Wavefunction = normpsi;
+                end
+            else
+                
+            
+                if( strcmp(obj.Type , 'Driver' ))
+                    %don't try to relax this cell
+                else
+                    %relax
+                    %testing getHamiltonian.
+                    
+                    [V, EE] = eig(obj.Hamiltonian);
+                    psi = V(:,1); %ground state
+                    obj.Wavefunction = psi;
+                    
+                    % Polarization is the expectation value of sigma_z
+                    obj.Polarization = psi' * obj.Z * psi;
+                    %disp(['P of cell ' num2str(obj.CellID) ' is ' num2str(obj.Polarization)])
+                    obj.Activation = 1 - psi' * obj.Pnn * psi;
+                    %disp(['A of cell ' num2str(obj.CellID) ' is ' num2str(obj.Activation)])
+                end
+                
+                
+            end
         end
         
         function obj = ThreeDotColorDraw(obj, varargin)

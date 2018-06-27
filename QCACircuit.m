@@ -183,169 +183,186 @@ classdef QCACircuit
             
         end
         
-        function obj = CircuitDraw(obj, targetAxes)
+
+        function obj = CircuitDraw(obj,targetaxis, varargin)
+            %cla; %DONT NEED IT ANYMORE YEEEEEEEEEEEEEEEEEEEEEEET
+            
+            
             
             if strcmp(obj.Simulating,'off')
                 cla;
             end
             
             obj = obj.AntiOverlap();
-            
+
             hold on
             CellIndex = length(obj.Device);
-            
             snapmode = obj.SnapToGrid;
             
-            switch snapmode %snapping to grid mode
-                case 'off' %do nothing extra
-                        
-                    
-                    
-                case 'on' %begin snapping each cell to the grid, skipping every .5
-                    coord = {};
-                    
-                    for i=1:length(obj.Device)  %fill cell with all center positions
-                        if isa(obj.Device{i},'QCASuperCell')
-                            
-                            
-                            for j=1:length(obj.Device{i}.Device)
-                                coord{end+1} = obj.Device{i}.Device{j}.CenterPosition;
-                                
-                            end
-                            
-                            
-                        else
-                            coord{end+1} = obj.Device{i}.CenterPosition;
-                        end
-                        
-                    end                    
-                    
-                    for i=1:length(coord)
-
-                        
-                        diffx=coord{i}(1)-floor(coord{i}(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
-                        diffy=coord{i}(2)-floor(coord{i}(2)); %this is priming the snap to grid functionality
-                        
-                        
-
-                        
-                        %determining how each x,y will be rounded to floor, .5 or
-                        %up to the next integer
-                        if diffx<.25
-                            coord{i}(1)=floor(coord{i}(1));
-                        end
-                        if diffx>=.25 && diffx<=.75
-                            coord{i}(1)=floor(coord{i}(1))+.5;
-                        end
-                        if diffx>.75
-                            coord{i}(1)=floor(coord{i}(1))+1;
-                        end
-                        
-                        
-                        if diffy<.25
-                            coord{i}(2)=floor(coord{i}(2));
-                        end
-                        if diffy>=.25 && diffy<=.75
-                            coord{i}(2)=floor(coord{i}(2))+.5;
-                        end
-                        if diffy>.75
-                            coord{i}(2)=floor(coord{i}(2))+1;
-                        end
-                        
-                        
-                        
-                    end
-                    
-                    
-                    it=1;
-                    for i=1:length(obj.Device) %replace the cell center positions with the new snapped center positions
-                        if isa(obj.Device{i},'QCASuperCell')
-                            for j=1:length(obj.Device{i}.Device)
-                                
-                                obj.Device{i}.Device{j}.CenterPosition = coord{it};
-                                it=it+1;
-                            end
-                            
-                            
-                        else
-                            obj.Device{i}.CenterPosition = coord{it};
-                            it = it+1;
-                        end
-                        
-                    end
-            end %end snap to grid
-            
-            
-            
-                   
-            
-
+            if length(varargin) == 1
+                polact = varargin{1};
+                pols = polact(1,:);
+                acts = polact(2,:);
                 
+                it = 1;
+                % format for iterating through circuit
+                for idx=1:length(obj.Device)
+                    if isa(obj.Device{idx},'QCASuperCell')
+                        for sub=1:length(obj.Device{idx}.Device)
+                            %assign pol and act
+                            obj.Device{idx}.Device{sub}.Polarization = pols(it);
+                            obj.Device{idx}.Device{sub}.Activation = acts(it);
+                            it = it + 1;
+                        end
 
-            
-            
-            for CellIndex = 1:length(obj.Device)
-                
-                if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
-                    
-                    %check to see if there is a color for the SC
-                    if strcmp(obj.Device{CellIndex}.BoxColor,'')                        
-                        
-                        %We make a cell array of all colors that have been
-                        %used
-                        colors=0;
-                        for j=1:length(obj.Device)
-                            if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
-%                                 colors{end+1} = obj.Device{j}.BoxColor;
-                                colors =  colors+1;
-                            end
-                            
-                        end
-                        
-                        if colors>0;
-                            id = floor(obj.Device{CellIndex}.Device{1}.CellID);
-                            
-                            
-                        color(1)= abs(sin(.4*id*now/100000-id));
-                        
-                        color(3)= abs(sin(colors*id-(id^2))*abs(cos(id)));
-                        
-                        color(2)= abs(cos(colors*id + id*(id-1)*now/100000));
-                        
-                        
-                            obj.Device{CellIndex}.BoxColor=color;
-                        else
-                            obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
-                        end
-                            
                     else
-                        %don't make a new color
+                        %assign pol and act
+                        obj.Device{idx}.Polarization = pols(it);
+                        obj.Device{idx}.Activation = acts(it);
+                        it = it + 1;
                     end
-                    
-                    for subnode = 1:length(obj.Device{CellIndex}.Device)
-                        
-                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
-                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
-                        obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
-                        obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
-                        obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor;
-                        obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
-                        Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
-                    end
-                else
-                    
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
-                    obj.Device{CellIndex}.SelectBox.Selected = 'off';
-                    obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
-                    
-                    Select(obj.Device{CellIndex}.SelectBox);
-                    
-                    
                 end
+                
+                
+            elseif length(varargin) > 1
+                error('Too many arguments')
+                
+                
+            end
+             %normal functionality
+
+                switch snapmode %snapping to grid mode
+                    case 'off' %do nothing extra
+                        
+                    case 'on' %begin snapping each cell to the grid, skipping every .5
+                        coord = {};
+                        
+                        for i=1:length(obj.Device)  %fill cell with all center positions
+                            if isa(obj.Device{i},'QCASuperCell')
+                                
+                                
+                                for j=1:length(obj.Device{i}.Device)
+                                    coord{end+1} = obj.Device{i}.Device{j}.CenterPosition;
+                                    
+                                end
+                                
+                                
+                            else
+                                coord{end+1} = obj.Device{i}.CenterPosition;
+                            end
+                            
+                        end
+                        
+                        
+                        for i=1:length(coord)
+                            
+                            
+                            diffx=coord{i}(1)-floor(coord{i}(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
+                            diffy=coord{i}(2)-floor(coord{i}(2)); %this is priming the snap to grid functionality
+                            
+                            %determining how each x,y will be rounded to floor, .5 or
+                            %up to the next integer
+                            if diffx<.25
+                                coord{i}(1)=floor(coord{i}(1));
+                            end
+                            if diffx>=.25 && diffx<=.75
+                                coord{i}(1)=floor(coord{i}(1))+.5;
+                            end
+                            if diffx>.75
+                                coord{i}(1)=floor(coord{i}(1))+1;
+                            end
+                            
+                            
+                            if diffy<.25
+                                coord{i}(2)=floor(coord{i}(2));
+                            end
+                            if diffy>=.25 && diffy<=.75
+                                coord{i}(2)=floor(coord{i}(2))+.5;
+                            end
+                            if diffy>.75
+                                coord{i}(2)=floor(coord{i}(2))+1;
+                            end
+                        end
+                        
+                        
+                        it=1;
+                        for i=1:length(obj.Device) %replace the cell center positions with the new snapped center positions
+                            if isa(obj.Device{i},'QCASuperCell')
+                                for j=1:length(obj.Device{i}.Device)
+                                    
+                                    obj.Device{i}.Device{j}.CenterPosition = coord{it};
+                                    it=it+1;
+                                end
+                            else
+                                obj.Device{i}.CenterPosition = coord{it};
+                                it = it+1;
+                            end
+                            
+                        end
+
+
+                end %end snap to grid
+
+                
+                for CellIndex = 1:length(obj.Device)
+                    
+                    if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
+                        
+                        %check to see if there is a color for the SC
+                        if strcmp(obj.Device{CellIndex}.BoxColor,'')
+                            
+                            %We make a cell array of all colors that have been
+                            %used
+                            colors=0;
+                            for j=1:length(obj.Device)
+                                if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
+                                    %                                 colors{end+1} = obj.Device{j}.BoxColor;
+                                    colors =  colors+1;
+                                end
+                                
+                            end
+                            
+                            if colors>0;
+                                id = floor(obj.Device{CellIndex}.Device{1}.CellID);
+                                
+                                color(1)= abs(sin(.4*id*now/100000-id));
+                                color(3)= abs(sin(colors*id-(id^2))*abs(cos(id)));
+                                color(2)= abs(cos(colors*id + id*(id-1)*now/100000));
+                                
+                                obj.Device{CellIndex}.BoxColor=color;
+                            else
+                                obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
+                            end
+                            
+                        else
+                            %don't make a new color
+                        end
+                        
+                        for subnode = 1:length(obj.Device{CellIndex}.Device)
+                            
+                            obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
+                            obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
+                            obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
+                            obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
+                            obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor;
+                            obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
+                            Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
+                        end
+                    else
+                        
+                        obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
+                        obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+                        obj.Device{CellIndex}.SelectBox.Selected = 'off';
+                        obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
+                        
+                        Select(obj.Device{CellIndex}.SelectBox);
+                        
+                    end
+                    
                 obj.Mode = 'Simulation';
             end
             RightClickThings();   %uicontextmenu available upon drawing
+
             hold off
             grid on
         end
@@ -525,16 +542,13 @@ classdef QCACircuit
             NewCircuitPols = ones(1,length(obj.Device));
             converganceTolerance = 1; 
             sub = 1;
-            
+            chi = 0.8;
             it=1;
             while (converganceTolerance > 0.000001)
                 
                 OldCircuitPols = NewCircuitPols;
                 
                 idx = 1;
-                %randomize order
-                %                 randarray = linspace(1,length(obj.Device),length(obj.Device));
-                %                 randarray = randarray(randperm(length(randarray)))
                 
                 while idx <= length(obj.Device)
                     
@@ -544,6 +558,7 @@ classdef QCACircuit
                         NewPols = ones(1,length(obj.Device{idx}.Device));
                         subnodeTolerance = 1;
                         super = 1;
+                        
                         
                         while (subnodeTolerance > 0.00001)
                             OldPols = NewPols;
@@ -561,7 +576,7 @@ classdef QCACircuit
                                     id = obj.Device{idx}.Device{subnode}.CellID;
                                     nl = obj.Device{idx}.Device{subnode}.NeighborList;
                                     pol = obj.Device{idx}.Device{subnode}.Polarization;
-%                                                                         disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
+%                                   disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
                                     
                                     if ~isempty(nl)
                                         
@@ -574,8 +589,15 @@ classdef QCACircuit
                                         
                                         obj.Device{idx}.Device{subnode}.Hamiltonian = hamiltonian;
                                         
+                                        [V, EE] = eig(hamiltonian);
+                                        newpsi = V(:,1);
+
+                                        normpsi = (1-chi)*obj.Device{idx}.Device{subnode}.Wavefunction + chi*newpsi;
+                                        normpsi = normalize_psi_1D(normpsi');
+                                        
+                                        
                                         %calculate polarization
-                                        obj.Device{idx}.Device{subnode} = obj.Device{idx}.Device{subnode}.Calc_Polarization_Activation();
+                                        obj.Device{idx}.Device{subnode} = obj.Device{idx}.Device{subnode}.Calc_Polarization_Activation(normpsi');
                                         
                                         NewPols(subnode) = obj.Device{idx}.Device{subnode}.Polarization;
                                         
@@ -602,18 +624,31 @@ classdef QCACircuit
                         
                         if ~isempty(nl)
                             
+                            
+
                             %get Neighbor Objects
-                            %                         disp('good')
                             nl_obj = obj.getCellArray(nl);
 
-                            %                         disp('job')
                             
                             %get hamiltonian for current cell
                             hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
                             obj.Device{idx}.Hamiltonian = hamiltonian;
                             
+                            %get the new groundstate, average and normalize
+                            %the current groundstate and the new
+                            %groundstate then calculate pol with that psi
+                            [V, EE] = eig(hamiltonian);
+                            newpsi = V(:,1);
+                            
+                            
+                            
+                            normpsi = (1-chi)*obj.Device{idx}.Wavefunction + chi*newpsi;
+                            normpsi = normalize_psi_1D(normpsi');
+                            
+                            
+                            
                             %calculate polarization
-                            obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation();
+                            obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation(normpsi');
                             
                             if(isa(obj.Device{idx}, 'QCASuperCell'))
                                 NewCircuitPols(idx) = 0;
@@ -649,66 +684,17 @@ classdef QCACircuit
             time_array = linspace(0,2,nt); %right now this will do 2 periods
 
 
-            %THIS NEEDS TO MOVE
-            %draw gradient before cells
-            nx = 125; % number of x points
             
-            t_Tc = linspace(-2,2, nt); % for gradient ploting purposes
-            x_lambda = linspace(-1, length(obj.Device)+1, nx); % for gradient plotting purposes
+            file = 'simResults.mat';
+            m = matfile(file, 'Writable', true);
+            save(file, 'signal', '-v7.3');
+            save(file, 'obj', '-append');
+            m.pols = [];%zeros(nt,length(obj.Device));
+            m.acts = [];%zeros(nt,length(obj.Device));
+            m.efields = [];%zeros(nt,length(obj.Device));
+            m.nt = nt;
+            
 
-            
-            Ezt = zeros(nx, nt);
-            
-            for tidx = 1:nt
-                Ezt(:, tidx) = (+0.5* cos(( 2*pi*(x_lambda         /signal.Wavelength - time_array(tidx)/signal.Period ) ) + (3.1-pi) ) )*signal.Amplitude;
-            end
-            
-            
-            
-            fileID = fopen('SimulationResults.txt','w');
-            
-            formatSpec = 'Clock Amplitude: %.2f \tWavelength: %i \tPeriod: %i\n';
-            fprintf(fileID,formatSpec,signal.Amplitude,signal.Wavelength,signal.Period);
-           
-            %iterate through circuit and print neighbor lists
-            idx = 1;
-            
-            while idx <= length(obj.Device) 
-                
-                if(isa(obj.Device{idx}, 'QCASuperCell'))
-                    
-                    for sub = 1: length(obj.Device{idx}.Device)
-                        formatSpec = 'CellID: %.2f \t Neighbors: %s\n';
-                        nl = obj.Device{idx}.Device{sub}.NeighborList;
-                        nl = num2str(nl);
-                        if isempty(nl)
-                            nl = '**';
-                        end
-                        fprintf(fileID,formatSpec, obj.Device{idx}.Device{sub}.CellID,nl);
-                        
-                        
-                    end
-                    
-                    idx = idx + 1;
-                else
-                    formatSpec = 'CellID: %.2f \t Neighbors: %s\n';
-                    nl = obj.Device{idx}.NeighborList;
-                    nl = num2str(nl);
-                    if isempty(nl)
-                            nl = '**';
-                    end
-                    fprintf(fileID,formatSpec, obj.Device{idx}.CellID,nl);
-                    idx = idx +1;
-                end
-                
-            end
-
-            
-            
-            %THESE NEED TO MOVE
-            Frame(nt) = struct('cdata',[],'colormap',[]);
-            v = VideoWriter('sinusoidEField.mp4','MPEG-4');
-            open(v);
             
             for t = 1:nt %time step
                 
@@ -733,101 +719,53 @@ classdef QCACircuit
                 %relax2Groundstate
                 obj = obj.Relax2GroundState();
                 
+
                 
                 %data output
-                disp(['t: ', num2str(t)]);
-                
-                fprintf(fileID, '%i; ', t);
-
-                idx = 1;
-                while idx <= length(obj.Device)
-                    if(isa(obj.Device{idx}, 'QCASuperCell'))
-
-                        for sub = 1: length(obj.Device{idx}.Device)
-                            formatSpec = '%.2f ;%.2f; %.2f; %.4f; ';
+                it = 1;
+                for idx=1:length(obj.Device)
+                    
+                    if isa(obj.Device{idx},'QCASuperCell')
+                        
+                        for sub=1:length(obj.Device{idx}.Device)
+                            %do a thing
                             ef = obj.Device{idx}.Device{sub}.ElectricField;
                             efz = ef(3);
                             
-                            fprintf(fileID,formatSpec, obj.Device{idx}.Device{sub}.CellID,obj.Device{idx}.Device{sub}.Polarization,obj.Device{idx}.Device{sub}.Activation, efz);
-
+                            m.pols(t,it) = obj.Device{idx}.Device{sub}.Polarization;
+                            m.acts(t,it) = obj.Device{idx}.Device{sub}.Activation;
+                            m.efields(t,it) = efz;
+                            
+                            it = it + 1;
                         end
-
-
-                        idx = idx + 1;
+                        
+                        
                     else
-                        formatSpec = '%.2f ;%.2f; %.2f; %.4f; ';
+                        %do a thing
                         ef = obj.Device{idx}.ElectricField;
-                        efz = ef(3);    
-                        fprintf(fileID, formatSpec, obj.Device{idx}.CellID, obj.Device{idx}.Polarization, obj.Device{idx}.Activation,efz);
-
-
+                        efz = ef(3);
+                        
+                        m.pols(t,it) = obj.Device{idx}.Polarization;
+                        m.acts(t,it) = obj.Device{idx}.Activation;
+                        m.efields(t,it) = efz;
+                        it = it + 1;
                     end
-                    idx = idx + 1;
                 end
-                
-                fprintf(fileID, '\n');
 
-                %THIS NEEDS TO MOVE
-                Eplot = repmat(Ezt(:,t),[1,nt]);
-
-                
-                cla;
-                
-                
-                pcolor(x_lambda' * ones(1, nt), ones(nx, 1)* t_Tc, Eplot)
-                colormap cool;
-                shading interp;
-                
-%                 caxis([0 signal.Amplitude])
-
-
-
-                
-                
-                
-                
-                colorbar;
-%                 h = colorbar;
-%                 set(h, 'ylim', [0 signal.Amplitude])
-
-                obj = obj.CircuitDraw(currentaxes);
-                drawnow
-                %save it
-                Frame(t) = getframe(gcf);
-                writeVideo(v,Frame(t));
                
-                    
+                disp(['t: ', num2str(t)]);
                 
             end %time step loop
             
             
             
-            %THIS NEEDS TO MOVE
-            fig = figure;
-            movie(fig,Frame,1)
-            close(v);
-            fclose(fileID);
             
             disp('Complete!')
             
            obj.Simulating = 'off'; 
         end
         
-        
-        function obj = PipelineVisualization(obj, signal, currentaxes)
-            %this function takes in a file and visualizes the simulation.
-            %This should be used in conjuction with pipeline()
-            
-            % draw the circuit at each time step.
-            % things we care about for this: The signal info to construct
-            % the gradient, and the cells positions, pol and act at each time step 
-            
-            
-           
-           
-            
-        end
-         
+
         
         function cell_obj = getCellArray(obj, CellIDArray)
             %this function returns an array of QCACell objects given a list
@@ -898,7 +836,7 @@ end
 %         for j=1:length(obj.Device{i}.Device)
 %             nl = obj.GenerateNeighborList();
 %             
-%             
+%             %do a thing
 %             
 %             
 %         end
@@ -907,6 +845,7 @@ end
 %         end
 %         
 %     else
-%         
+%         %do a thing
+%
 %     end
 % end
