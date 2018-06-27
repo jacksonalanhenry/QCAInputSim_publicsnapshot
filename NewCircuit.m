@@ -4,6 +4,10 @@ a=gca;
 myCircuit = getappdata(f,'myCircuit');
 cla;%clear the axes
 
+copies = getappdata(f,'Copies');
+
+copies={};
+
 
 myCircuit.Device{1}={};%empty first node
 
@@ -14,6 +18,6 @@ myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
 handles.layoutchange.Value=0;
 
 setappdata(f,'myCircuit',myCircuit);
-
+setappdata(f,'Copies',copies);
 
 end

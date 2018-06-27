@@ -2,10 +2,10 @@ function Simulate(handles)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
-    ResetCells(handles); 
+    ResetCells(); 
     myCircuit = getappdata(gcf,'myCircuit');
    
-    handles.layoutchange.Value=0;
+%     handles.layoutchange.Value=0;
 
     
     %regenerate neighbor list once we hit the simulate button
@@ -16,7 +16,7 @@ eps0 = 8.854E-12;%set constants
 a=1e-9;
 q=1;
 E0 = q^2 * (1.602e-19) / (4*pi*eps0*a)* (1-1/sqrt(2));
-clk= str2num(get(handles.chngClock,'String'));
+clk= -5.5;%str2num(get(handles.chngClock,'String'));
 clockfield=[0 0 clk]*E0;    
     
 

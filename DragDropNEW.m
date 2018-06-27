@@ -1,15 +1,17 @@
-function DragDropNEW(varargin)
+function DragDropNEW()
 dragging = [];
 orPos = [];
 myOrPos=[];
 ID=0;
+
 % FOR THE GUI::: This function will allow drag and drop capability during
 
-n=nargin;
+
 
 
 f=gcf;
 a=gca;
+
 
 myCircuit = getappdata(f,'myCircuit');
 
@@ -40,7 +42,7 @@ for i=1:length(myCircuit.Device)
                 
                 selectedcells(end+1)=myCircuit.Device{i}.Device{j}.CellID;
                 
-%                 myCircuit.Device{i}.Device{j}.SelectBox.ButtonDownFcn = @dragObject;
+                myCircuit.Device{i}.Device{j}.SelectBox.ButtonDownFcn = @dragObject;
                 
                 selectedPos(:,end+1)=myCircuit.Device{i}.Device{j}.CenterPosition;
             end
@@ -53,7 +55,7 @@ for i=1:length(myCircuit.Device)
             selectedcells(end+1)=myCircuit.Device{i}.CellID;
             selectedPos(:,end+1)=myCircuit.Device{i}.CenterPosition;
             
-%             myCircuit.Device{i}.SelectBox.ButtonDownFcn = @dragObject; %every cell is draggable even in a group
+            myCircuit.Device{i}.SelectBox.ButtonDownFcn = @dragObject; %every cell is draggable even in a group
         end
     end
 end
@@ -70,6 +72,7 @@ cellList = myCircuit.getCellArray(selectedcells);
 
 loopit = length(cellList);
 
+%making all the ghost patches to move as we drag the cells
 for i=1:loopit
     if (selectedcells(i)-floor(selectedcells(i)))==0
     
@@ -175,12 +178,10 @@ end
             patchList={}; %empty the patch list since we don't need any of them anymore
             
 %             p.ButtonDownFcn=@callSel;
-            
+            myCircuit.Device{1}.SelectBox.Selected;
             myCircuit = myCircuit.CircuitDraw(gca); %redraw
             
-            if n==1
-                SnapToGrid(varagin{1});
-            end
+
             
             
             setappdata(gcf,'myCircuit',myCircuit);

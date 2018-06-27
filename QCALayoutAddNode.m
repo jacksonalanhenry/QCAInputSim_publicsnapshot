@@ -1,4 +1,4 @@
-function QCALayoutAddNode( handles )
+function QCALayoutAddNode()
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -58,15 +58,14 @@ mode = myCircuit.Mode;
 
 switch mode
     case 'Simulation'
-        myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
-        handles.layoutchange.Value=0;
+        myCircuit = myCircuit.CircuitDraw(gca);
+%         handles.layoutchange.Value=0;
 
     case 'Layout'
-        myCircuit = myCircuit.LayoutDraw(handles.LayoutWindow);
-        handles.layoutchange.Value=1;
+        myCircuit = myCircuit.LayoutDraw(gca);
+%         handles.layoutchange.Value=1;
 end
 
-handles.makeSC.Value=0;
 
 setappdata(gcf,'myCircuit',myCircuit);
 

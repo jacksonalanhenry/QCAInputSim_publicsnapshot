@@ -1,4 +1,4 @@
-function MakeSuperCellGUI(handles)
+function MakeSuperCellGUI()
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 myCircuit = getappdata(gcf,'myCircuit');
@@ -9,8 +9,7 @@ myCircuit = getappdata(gcf,'myCircuit');
 %     handles.layoutchange.Value=0;
 %     SwitchMode(handles);
 
-button = get(handles.makeSC,'Value');
-
+%which elements of the circuit will be made into a supercell
 SCParts=[];
 
 
@@ -18,12 +17,14 @@ mode = myCircuit.Mode;
 
 
 
-if button
+
     
     switch mode
         case 'Simulation'
+            %find out which ones will be put into the new supercell. Cannot
+            %add current supercell members to another supercell
             for i=1:length(myCircuit.Device)
-                if  ~isa(myCircuit.Device{i},'QCASuperCell') && strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
+                if  ~isa(myCircuit.Device{i},'QCASuperCell') && strcmp(myCircuit.Device{i}.SelectBox.Selected,'on') && strcmp(myCircuit.Device{i}.Type,'Node')
                     SCParts(end+1)=i; %need to call the cells to become part of the super cell
                 end
             end
@@ -37,18 +38,18 @@ if button
             
     end
     
-    
+    %filling supercell with all the devices
     if length(SCParts)>1
         SuperCell = QCASuperCell();
         
         for i=1:length(SCParts)
             
             SuperCell = SuperCell.addCell(myCircuit.Device{SCParts(i)});
-            myCircuit.Device{SCParts(i)}={};
+            myCircuit.Device{SCParts(i)}={};%emptying the circuit if that part was selected
             
         end
         
-        
+        %emptying the old circuit into the new circuit
         newCircuit={};
         for i=1:length(myCircuit.Device)
             if ~isempty(myCircuit.Device{i})
@@ -56,9 +57,10 @@ if button
             end
         end
         
-        
+        %the new circuit is now the current circuit
         myCircuit.Device = newCircuit;
        
+        %add the supercell onto the end of the new circuit
         myCircuit=myCircuit.addNode(SuperCell);
         
 %         myCircuit.GetCellIDs(myCircuit.Device)
@@ -68,11 +70,10 @@ if button
 %         setappdata(gcf,'myCircuit',myCircuit);
 %         myCircuit=myCircuit.CircuitDraw(gca);
     end
-end
+
 
 myCircuit.Device;
 
-    handles.makeSC.Value=0;
     switch mode
         case 'Simulation'
             myCircuit=myCircuit.CircuitDraw(gca);

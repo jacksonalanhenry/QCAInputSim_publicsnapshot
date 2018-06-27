@@ -17,7 +17,7 @@ switch mode
                     if strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on')
                         for k=1:length(myCircuit.Device{i}.Device)
                             myCircuit.Device{i}.Device{k}.CenterPosition(2)=myCircuit.Device{i}.Device{k}.CenterPosition(2)+str2num(get(handles.changey,'String'));
-                            
+                            %change the X coordinate by the user's input value
                         end
                     end
                 end

@@ -250,74 +250,75 @@ classdef ThreeDotCell < QCACell
         
         
         function obj = ThreeDotElectronDraw(obj, varargin)
-            targetAxes = [];
-            a= obj.CharacteristicLength;
-            r= obj.CenterPosition;
-            act = obj.Activation;
-            pol = obj.Polarization;
-            radiusfactor = 0.2;
             
-
- 
-            %Tunnel junctions
-            x_dist = [obj.CenterPosition(1), obj.CenterPosition(1)];
-            y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
-            l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
-            
-            text(obj.CenterPosition(1), obj.CenterPosition(2)-a, num2str(obj.CellID), 'HorizontalAlignment', 'center')
-            
-            %extra circle
-%             c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
-            
-%             if obj.CellID == 6
-%             th = 0:pi/50:2*pi;
-%             xunit = 2.25 * cos(th) + obj.CenterPosition(1);
-%             yunit = 2.25 * sin(th) + obj.CenterPosition(2);
-%             h = plot(xunit, yunit);
-%             end
-            
-            
-            
-            %Electron Sites
-            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor, [1 1 1],'Points',25);
-            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor, [1 1 1],'Points',25);
-            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor, [1 1 1],'Points',25);
-            
-            
-            %electron color for driver/node
-            if strcmp(obj.Type,'Node')
-                electronColor = [1 0 0];
-            elseif strcmp(obj.Type,'Driver')
-                electronColor = [0 1 0];
-            end
-            
-            %Electrons Position Probability
-            q0 = (act/2)*(1-pol);   
-            qN = 1 - act;
-            q1 = (act/2)*(1+pol);
-            
-            scalefactor = 0.90;
-            e0 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, q0*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
-            eN = circle(obj.CenterPosition(1), obj.CenterPosition(2),      qN*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
-            e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
-            
-            
-            if length(varargin)==1
-                targetAxes = varargin{1};
-                axes(targetAxes);
+                targetAxes = [];
+                a= obj.CharacteristicLength;
+                r= obj.CenterPosition;
+                act = obj.Activation;
+                pol = obj.Polarization;
+                radiusfactor = 0.2;
                 
                 
-            end
+                
+                %Tunnel junctions
+                x_dist = [obj.CenterPosition(1), obj.CenterPosition(1)];
+                y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
+                l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
+                
+                text(obj.CenterPosition(1), obj.CenterPosition(2)-a, num2str(obj.CellID), 'HorizontalAlignment', 'center')
+                
+                %extra circle
+                %             c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
+                
+                %             if obj.CellID == 6
+                %             th = 0:pi/50:2*pi;
+                %             xunit = 2.25 * cos(th) + obj.CenterPosition(1);
+                %             yunit = 2.25 * sin(th) + obj.CenterPosition(2);
+                %             h = plot(xunit, yunit);
+                %             end
+                
+                
+                
+                %Electron Sites
+                c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor, [1 1 1],'Points',25);
+                c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor, [1 1 1],'Points',25);
+                c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor, [1 1 1],'Points',25);
+                
+                
+                %electron color for driver/node
+                if strcmp(obj.Type,'Node')
+                    electronColor = [1 0 0];
+                elseif strcmp(obj.Type,'Driver')
+                    electronColor = [0 1 0];
+                end
+                
+                %Electrons Position Probability
+                q0 = (act/2)*(1-pol);
+                qN = 1 - act;
+                q1 = (act/2)*(1+pol);
+                
+                scalefactor = 0.90;
+                e0 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, q0*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
+                eN = circle(obj.CenterPosition(1), obj.CenterPosition(2),      qN*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
+                
+                
+                if length(varargin)==1
+                    targetAxes = varargin{1};
+                    axes(targetAxes);
+                    
+                    
+                end
+                
+                if length(varargin)==1
+                    hold off;
+                end
+                
             
-            if length(varargin)==1
-                hold off;
-            end
+            
             
         end
-        
-        
     end
-    
 end
 
 % make a neighbor list.

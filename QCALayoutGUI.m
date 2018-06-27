@@ -58,10 +58,14 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles)
 myCircuit = QCACircuit();
+myCircuit.CircuitDraw(gca);
+RightClickThings();
 setappdata(gcf, 'myCircuit', myCircuit);
 Path.home = pwd;
 Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder'; %this needs to change!!!
+
 setappdata(gcf,'Path',Path);
+
 
 
 
@@ -85,7 +89,7 @@ function addNodeButton_Callback(hObject, eventdata, handles)
 % hObject    handle to addNodeButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-QCALayoutAddNode(handles);
+QCALayoutAddNode();
 
 
 
@@ -109,7 +113,7 @@ function editText_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of editText as text
 %        str2double(get(hObject,'String')) returns contents of editText as a double
-QCALayoutAddNode(handles);
+QCALayoutAddNode();
 
 % --- Executes during object creation, after setting all properties.
 function editText_CreateFcn(hObject, eventdata, handles)
@@ -253,7 +257,7 @@ function makeSC_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of makeSC
 
-MakeSuperCellGUI(handles)
+MakeSuperCellGUI()
 
 
 % --- Executes on button press in disbandsupercell.
@@ -277,7 +281,7 @@ function removeNode_Callback(hObject, eventdata, handles)
 % hObject    handle to removeNode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-RemoveNode(handles);
+RemoveNode();
 
 
 % --- Executes on button press in addDriver.
@@ -285,7 +289,7 @@ function addDriver_Callback(hObject, eventdata, handles)
 % hObject    handle to addDriver (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-QCALayoutAddDriver(handles);
+QCALayoutAddDriver();
 
 
 % --- Executes on button press in add5Cells.
@@ -295,7 +299,7 @@ function add5Cells_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Add5Cells(handles);
 for i=1:5 
-    QCALayoutAddNode(handles)
+    QCALayoutAddNode()
 end
 
 
@@ -304,7 +308,7 @@ function resetButton_Callback(hObject, eventdata, handles)
 % hObject    handle to resetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-ResetCells(handles);
+ResetCells();
 
 
 

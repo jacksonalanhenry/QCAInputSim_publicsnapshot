@@ -9,6 +9,9 @@ classdef QCACircuit
         GroundState = [];
         Mode='Simulation';
         SnapToGrid = 'off'
+        Simulating = 'off'
+        
+        
     end
     
     methods
@@ -17,7 +20,7 @@ classdef QCACircuit
             if nargin > 0
                 placeholder = obj.Device;
                 obj.Device = {placeholder varargin};
-                
+                disp('big booling');
             else
                 % Nothing happens
                 
@@ -100,7 +103,7 @@ classdef QCACircuit
             %now go through list of CellID's to find neighbors
 
             
-            it = 1;
+            cellposit = 1;
             for idx=1:length(obj.Device)
                 idx;
                 
@@ -123,7 +126,7 @@ classdef QCACircuit
                         c = obj.Device{idx}.Device{subnode}.CellID;
                         cellpositions(:,idx+subnode-1);
                         %shift and find magnitudes  idx+subnode-1
-                        shifted = cellpositions - repmat(cellpositions(:,it),1,length(cellIDArray));
+                        shifted = cellpositions - repmat(cellpositions(:,cellposit),1,length(cellIDArray));
                         shifted = shifted.^2;
                         shifted = sum(shifted,1);
                         shifted = shifted.^(.5);
@@ -148,7 +151,7 @@ classdef QCACircuit
 %                            neighbors = newNeighbors
                            
                            obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
-                           it = it+1;
+                           cellposit = cellposit+1;
                     end
 %                     idx = idx+length(obj.Device{idx}.Device);
                     
@@ -157,7 +160,7 @@ classdef QCACircuit
                    
                     
                     
-                    shifted = cellpositions - repmat(cellpositions(:,it),1,length(cellIDArray));
+                    shifted = cellpositions - repmat(cellpositions(:,cellposit),1,length(cellIDArray));
                     shifted = shifted.^2;
                     shifted = sum(shifted,1);
                     shifted = shifted.^(.5);
@@ -166,38 +169,9 @@ classdef QCACircuit
                     id = obj.Device{idx}.CellID;
                     neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1);
 
-%                     y=[];
-%                     q=obj.getCellArray(neighbors);
-%                     for i = 1:length(neighbors)
-%                             if abs(obj.Device{cellIDToplevelnodes(idx)}.CenterPosition(1) - q{i}.CenterPosition(1))>1.5
-%                                 disp('he')
-%                             else
-%                                 
-%                             end
-%                     end
-                    
-                    
-                    
-%                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
-
-
-                        %SOMETHING IS STILL WRONG WITH GENERATE NEIGHBOR
-                        %LIST
-                        
-%                             newNeighbors=[];
-%                             first = neighbors
-%                            for i=1:length(neighbors)
-%                                if neighbors(i) ~= obj.Device{idx}.CellID
-%                                     newNeighbors(end+1) = neighbors(i);
-%                                end
-%                            end
-%                            
-%                            
-%                            neighbors = newNeighbors
-
 
                     obj.Device{idx}.NeighborList = neighbors;
-                    it = it+1;
+                    cellposit = cellposit+1;
                     
                 end
                 
@@ -210,7 +184,13 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj, targetAxes)
-            cla; %KEEP CLA WE NEED IT
+            
+            if strcmp(obj.Simulating,'off')
+                cla;
+            end
+            
+            obj = obj.AntiOverlap();
+            
             hold on
             CellIndex = length(obj.Device);
             
@@ -218,7 +198,9 @@ classdef QCACircuit
             
             switch snapmode %snapping to grid mode
                 case 'off' %do nothing extra
-            
+                        
+                    
+                    
                 case 'on' %begin snapping each cell to the grid, skipping every .5
                     coord = {};
                     
@@ -236,18 +218,16 @@ classdef QCACircuit
                             coord{end+1} = obj.Device{i}.CenterPosition;
                         end
                         
-                    end
-                    
+                    end                    
                     
                     for i=1:length(coord)
-                        
+
                         
                         diffx=coord{i}(1)-floor(coord{i}(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
                         diffy=coord{i}(2)-floor(coord{i}(2)); %this is priming the snap to grid functionality
                         
                         
-                        
-                        
+
                         
                         %determining how each x,y will be rounded to floor, .5 or
                         %up to the next integer
@@ -294,6 +274,15 @@ classdef QCACircuit
                         
                     end
             end %end snap to grid
+            
+            
+            
+                   
+            
+
+                
+
+            
             
             for CellIndex = 1:length(obj.Device)
                 
@@ -352,13 +341,63 @@ classdef QCACircuit
                     
                     Select(obj.Device{CellIndex}.SelectBox);
                     
+                    
                 end
                 obj.Mode = 'Simulation';
             end
-            
+            RightClickThings();   %uicontextmenu available upon drawing
             hold off
             grid on
         end
+        
+        function obj =  AntiOverlap(obj)
+%             clc;
+            IDList = obj.GetCellIDs(obj.Device);
+            cellList = obj.getCellArray(IDList);
+            
+            
+            
+          
+                diffs=[];
+                
+                for i=1:length(cellList)
+                    for j=length(cellList):-1:i+1
+                        if i~=j
+                            diffs(1,end+1) = cellList{i}.CenterPosition(1) - cellList{j}.CenterPosition(1);
+                            diffs(2,end) = cellList{i}.CenterPosition(2) - cellList{j}.CenterPosition(2);
+                            diffs(3,end) = cellList{i}.CellID;                            
+                            
+                        end
+                    end
+                end
+                
+                sizeof = size(diffs);
+                
+                notokay = 0;
+                for i=1:sizeof(2)
+                    if abs(diffs(1,i)) < .5 && abs(diffs(2,i)) < 1.5
+                        notokay = notokay +1;
+                        
+                    end
+                end
+                a=[];
+                ax=gca;
+                
+                if notokay
+                    a= annotation('textbox');
+                    a.String = {'WARNING: QCA Cells are overlapped','Fix immediately or error will occur upon simulation'};
+                    a.Parent = ax;
+                    a.EdgeColor = [1 1 1];
+                    a.FontSize = 12;
+                    a.Position = [ax.XLim(1) ax.YLim(2)*.7 40 0.4 ];
+                end
+                
+                if ~isempty(a) && ~notokay
+                    a.BeingDeleted = 'on'
+                    a.Position = [];
+                end
+        end
+            
         
         function obj = LayoutDraw(obj, targetAxes)
             cla;
@@ -601,6 +640,9 @@ classdef QCACircuit
         end
         
         function obj = pipeline(obj,signal,currentaxes)
+            
+            obj.Simulating = 'on';
+            
             %give this function a signal(or field) obj
             
             nt=315;
@@ -728,12 +770,22 @@ classdef QCACircuit
                 %THIS NEEDS TO MOVE
                 Eplot = repmat(Ezt(:,t),[1,nt]);
 
-
+                
+                cla;
+                
+                
                 pcolor(x_lambda' * ones(1, nt), ones(nx, 1)* t_Tc, Eplot)
                 colormap cool;
                 shading interp;
                 
 %                 caxis([0 signal.Amplitude])
+
+
+
+                
+                
+                
+                
                 colorbar;
 %                 h = colorbar;
 %                 set(h, 'ylim', [0 signal.Amplitude])
@@ -758,6 +810,7 @@ classdef QCACircuit
             
             disp('Complete!')
             
+           obj.Simulating = 'off'; 
         end
         
         
@@ -855,8 +908,5 @@ end
 %         
 %     else
 %         
-
 %     end
 % end
-
-

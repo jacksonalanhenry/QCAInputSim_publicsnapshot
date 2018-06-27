@@ -1,6 +1,7 @@
-function ResetCells(handles)
+function ResetCells()
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
+
     myCircuit = getappdata(gcf,'myCircuit');
     
         for i=1:length(myCircuit.Device)
@@ -23,7 +24,7 @@ function ResetCells(handles)
             end
             
         end
-        myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
+        myCircuit = myCircuit.CircuitDraw(gca);
         
         setappdata(gcf,'myCircuit',myCircuit);
 
