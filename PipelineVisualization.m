@@ -7,34 +7,39 @@ function PipelineVisualization( simresults, targetaxis )
 
 
 load(simresults);
-mycircuit = obj
+mycircuit = obj;
 
-
-
-%draw gradient before cells
-time_array = linspace(0,2,nt); %right now this will do 2 periods
-nx = 125;
-
-
-t_Tc = linspace(-2,2, nt); % for gradient ploting purposes
-x_lambda = linspace(-1, length(mycircuit.Device)+1, nx); % for gradient plotting purposes
-
-
-Ezt = zeros(nx, nt);
-
-for tidx = 1:nt
-    Ezt(:, tidx) = ( cos(( 2*pi*(x_lambda/signal.Wavelength - time_array(tidx)/signal.Period ) ) + (3.1-pi) ) )*signal.Amplitude;
-     
+%get all of the xpositions
+xit = 1;
+for i=1:length(obj.Device)
+    if isa(obj.Device{i},'QCASuperCell')
+        for j=1:length(obj.Device{i}.Device)
+            center = obj.Device{i}.Device{j}.CenterPosition;
+            xpos(xit) = center(1);
+            ypos(xit) = center(2);
+            xit = xit + 1;
+        end
+    else
+        center = obj.Device{i}.CenterPosition;
+        xpos(xit) = center(1);
+        ypos(xit) = center(2);
+        xit = xit + 1;
+    end
 end
 
+xmax = max(xpos);
+xmin = min(xpos);
+ymax = max(ypos);
+ymin = min(ypos);
 
 
-EztMax = max(Ezt(:));
-EztMin = min(Ezt(:));
+x = xmin:xmax;
+nx = 125;
+xq = linspace(xmin-1, xmax+1, nx);
+yq = linspace(ymin-2, ymax+2, nt);
 
 
 
-% mycircuit = mycircuit.CircuitDraw([pols(1,:); acts(1,:)]);
 
 %
 Frame(nt) = struct('cdata',[],'colormap',[]);
@@ -46,15 +51,17 @@ mycircuit.Simulating = 'on';
 for t = 1:size(pols,1)
     
     cla;
+    ef = efields(t,:);
+    interps = interp1(x,ef,xq,'pchip','extrap');
+    Eplot = repmat(interps,[nt,1]);
     
-    Eplot = repmat(Ezt(:,t),[1,nt]);
     
     
-    pcolor(x_lambda' * ones(1, nt), ones(nx, 1)* t_Tc, Eplot);
+    pcolor(xq' * ones(1, nt), ones(nx, 1)* yq, Eplot');
     colormap cool;
     shading interp;
     colorbar;
-    caxis([EztMin EztMax])
+    caxis([-signal.Amplitude signal.Amplitude])
     mycircuit = mycircuit.CircuitDraw(targetaxis, [pols(t,:); acts(t,:)]);
 
     
