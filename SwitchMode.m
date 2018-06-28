@@ -1,3 +1,6 @@
+
+%DELETE THIS FILE
+
 function SwitchMode(handles)
 myCircuit = getappdata(gcf,'myCircuit');
 

@@ -7,7 +7,7 @@ snap = get(handles.autoSnap,'Value');%use this for the switch
 
 
 switch snap
-    case  1 %Switch to layout mode, clear, draw, set app data
+    case  1 %clear, draw, set app data
         
         myCircuit.SnapToGrid='on';
         myCircuit = myCircuit.CircuitDraw(gca);
@@ -24,4 +24,3 @@ switch snap
         
 end
 end
-

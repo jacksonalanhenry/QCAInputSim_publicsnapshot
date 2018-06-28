@@ -359,7 +359,6 @@ classdef QCACircuit
                     
                 end
                 
-                obj.Mode = 'Simulation';
             end
             RightClickThings();   %uicontextmenu available upon drawing
             
@@ -439,68 +438,6 @@ classdef QCACircuit
             end
         end
         
-        
-        function obj = LayoutDraw(obj, targetAxes)
-            
-            hold on
-            CellIndex = length(obj.Device);
-            %              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
-            for CellIndex = 1:length(obj.Device)
-                if isa(obj.Device{CellIndex},'QCASuperCell')
-                    
-                    
-                    %check to see if there is a color for the SC
-                    if strcmp(obj.Device{CellIndex}.BoxColor,'')
-                        
-                        %We make a cell array of all colors that have been
-                        %used
-                        colors=0;
-                        for j=1:length(obj.Device)
-                            if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
-                                %                                 colors{end+1} = obj.Device{j}.BoxColor;
-                                colors =  colors+1;
-                            end
-                            
-                        end
-                        if colors>0;
-                            id = floor(obj.Device{CellIndex}.Device{1}.CellID);
-                            
-                            
-                            color(1)= abs(sin(.4*id*now/100000-id));
-                            
-                            color(3)= abs(sin(colors*id-(id^2))*abs(cos(id)));
-                            
-                            color(2)= abs(cos(colors*id + id*(id-1)*now/100000));
-                            
-                            
-                            obj.Device{CellIndex}.BoxColor=color;
-                        else
-                            obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
-                        end
-                        
-                    else
-                        %don't make a new color
-                    end
-                    
-                    
-                    for i=1:length(obj.Device{CellIndex}.Device)
-                        obj.Device{CellIndex}.Device{i}=obj.Device{CellIndex}.Device{i}.LayoutModeDraw(obj.Device{CellIndex}.BoxColor);
-                        Select(obj.Device{CellIndex}.Device{i}.LayoutBox);
-                    end
-                    
-                else
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.LayoutModeDraw();
-                    Select(obj.Device{CellIndex}.LayoutBox);
-                end
-                
-                
-                
-                
-                
-                hold off
-            end
-            obj.Mode = 'Layout';
-        end
         
         %reference this based on CellId
         function sref = subsref(obj,s)

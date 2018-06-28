@@ -26,8 +26,7 @@ classdef ThreeDotCell < QCACell
         Hamiltonian = zeros(3);
         Wavefunction = zeros(3,1);
         SelectBox;
-        LayoutBox;
-        Overlapping='off'
+        Overlapping='off';
         
     end
     
@@ -226,39 +225,7 @@ classdef ThreeDotCell < QCACell
             end
         end
         
-        
-        function obj = LayoutModeDraw(obj,varargin)
-            %drawing a patch to replace the three dot model
-            obj.LayoutBox=patch;
-            obj.LayoutBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];
-            obj.LayoutBox.YData=[obj.CenterPosition(2)-.75;obj.CenterPosition(2)-.75;obj.CenterPosition(2)+.75;obj.CenterPosition(2)+.75];
-            if nargin>1
-                if strcmp(obj.Type,'Node')
-                obj.LayoutBox.FaceColor = varargin{1};
-                obj.LayoutBox.EdgeColor= varargin{1}; 
-                else
-                obj.LayoutBox.FaceColor = varargin{1};
-                obj.LayoutBox.EdgeColor= 'green'; 
-                obj.LayoutBox.LineWidth = 2;
-                    
-                end
-            else
-                if strcmp(obj.Type,'Node')
-                    obj.LayoutBox.FaceColor='red';
-                    obj.LayoutBox.EdgeColor='red';
-                else
-                    obj.LayoutBox.FaceColor='green';
-                    obj.LayoutBox.EdgeColor='black';
-                    obj.LayoutBox.LineWidth = 2;
-                end
-            end
-            
-            obj.LayoutBox.UserData = obj.CellID; %this will allow access for later use
-            obj.LayoutCenterPosition = [obj.LayoutBox.XData(1)+.25, obj.LayoutBox.YData(1)+.75, 0];
-            
-  
-        end
-        
+                
                 
         function obj = BoxDraw(obj)
             obj.SelectBox=patch;
@@ -297,7 +264,8 @@ classdef ThreeDotCell < QCACell
                 y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
                 l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
                 
-                text(obj.CenterPosition(1), obj.CenterPosition(2)-a, num2str(obj.CellID), 'HorizontalAlignment', 'center')
+                text(obj.CenterPosition(1), obj.CenterPosition(2)+a, num2str(obj.CellID), 'HorizontalAlignment', 'center',...
+                    'FontSize',12);
                 
                 %extra circle
                 %             c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);

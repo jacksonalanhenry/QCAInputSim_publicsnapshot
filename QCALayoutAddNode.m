@@ -50,21 +50,14 @@ end
 % add node to circuit
 myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation newYlocation 0]));
 
-myCircuit.Device{length(myCircuit.Device)}.LayoutCenterPosition = [newXlocation newYlocation 0];
+myCircuit.Device{length(myCircuit.Device)}.CenterPosition = [newXlocation newYlocation 0];
 
 
 
-mode = myCircuit.Mode;
 
-switch mode
-    case 'Simulation'
         myCircuit = myCircuit.CircuitDraw(gca);
 %         handles.layoutchange.Value=0;
 
-    case 'Layout'
-        myCircuit = myCircuit.LayoutDraw(gca);
-%         handles.layoutchange.Value=1;
-end
 
 
 setappdata(gcf,'myCircuit',myCircuit);

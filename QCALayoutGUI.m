@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 27-Jun-2018 14:38:39
+% Last Modified by GUIDE v2.5 28-Jun-2018 09:38:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -265,7 +265,7 @@ function disbandsupercell_Callback(hObject, eventdata, handles)
 % hObject    handle to disbandsupercell (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-DisbandSuperCell(handles);
+DisbandSuperCell();
 
 
 % --- Executes on button press in simbutton.

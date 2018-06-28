@@ -1,7 +1,7 @@
 function QCALayoutAddDriver()
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
-    
+
 myCircuit = getappdata(gcf, 'myCircuit');
 
 % xloc=[];
@@ -12,7 +12,7 @@ if(isempty(myCircuit.Device))
     newYlocation = 0;
 else
     xs=[];
-
+    
     for i=1:length(myCircuit.Device)
         if isa(myCircuit.Device{i},'QCASuperCell')
             for j=1:length(myCircuit.Device{i}.Device)
@@ -39,18 +39,18 @@ else
         end
         
         
-    end    
+    end
     
     newXlocation = max(xs)+1;
-    newYlocation = min(ys);    
-
+    newYlocation = min(ys);
+    
 end
 
 
 % add node to circuit
 myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation newYlocation 0]));
 
-myCircuit.Device{length(myCircuit.Device)}.LayoutCenterPosition = [newXlocation newYlocation 0];
+myCircuit.Device{length(myCircuit.Device)}.CenterPosition = [newXlocation newYlocation 0];
 myCircuit.Device{length(myCircuit.Device)}.Type = 'Driver';
 
 
@@ -58,15 +58,11 @@ myCircuit.Device{length(myCircuit.Device)}.Type = 'Driver';
 % circuitDraw
 mode = myCircuit.Mode;
 
-switch mode
-    case 'Simulation'
-        myCircuit = myCircuit.CircuitDraw(gca);
-%         handles.layoutchange.Value=0;
 
-    case 'Layout'
-        myCircuit = myCircuit.LayoutDraw(gca);
-%         handles.layoutchange.Value=1;
-end
+myCircuit = myCircuit.CircuitDraw(gca);
+
+
+
 
 
 

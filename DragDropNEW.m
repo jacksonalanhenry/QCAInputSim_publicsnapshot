@@ -178,7 +178,6 @@ end
             patchList={}; %empty the patch list since we don't need any of them anymore
             
 %             p.ButtonDownFcn=@callSel;
-            myCircuit.Device{1}.SelectBox.Selected;
             myCircuit = myCircuit.CircuitDraw(gca); %redraw
             
 
