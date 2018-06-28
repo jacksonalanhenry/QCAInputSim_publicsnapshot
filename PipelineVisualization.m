@@ -7,7 +7,7 @@ function PipelineVisualization( simresults, targetaxis )
 
 
 load(simresults);
-mycircuit = obj;
+mycircuit = obj
 
 
 
@@ -41,7 +41,11 @@ Frame(nt) = struct('cdata',[],'colormap',[]);
 v = VideoWriter('sinusoidEField.mp4','MPEG-4');
 open(v);
 
+mycircuit.Simulating = 'on';
+
 for t = 1:size(pols,1)
+    
+    cla;
     
     Eplot = repmat(Ezt(:,t),[1,nt]);
     
@@ -62,6 +66,7 @@ for t = 1:size(pols,1)
     
 end
 
+mycircuit.Simulating = 'off';
 
 close(v);
 disp('Complete!')

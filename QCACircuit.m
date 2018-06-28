@@ -28,7 +28,7 @@ classdef QCACircuit
             
         end
         
-         function obj = addNode( obj, newcell )
+        function obj = addNode( obj, newcell )
             n_old = length(obj.Device);
             ids=[];
             
@@ -77,20 +77,20 @@ classdef QCACircuit
             %All CellID Array (including subcells)
             cellIDArray = [];
             cellpositions=[];
-           
+            
             
             node = 1;
             for node=1:length(obj.Device)
-               if(isa(obj.Device{node}, 'QCASuperCell')) 
-                    for subnode = 1:length(obj.Device{node}.Device) 
+                if(isa(obj.Device{node}, 'QCASuperCell'))
+                    for subnode = 1:length(obj.Device{node}.Device)
                         cellpositions(end+1,:) = obj.Device{node}.Device{subnode}.CenterPosition;
                         
                     end
                     
-               else
-                   cellpositions(end+1,:) = obj.Device{node}.CenterPosition;
+                else
+                    cellpositions(end+1,:) = obj.Device{node}.CenterPosition;
                     
-               end
+                end
                 
             end
             
@@ -98,10 +98,10 @@ classdef QCACircuit
             cellpositions = cellpositions';
             
             cellIDToplevelnodes = floor(cellIDArray);
-  
-
+            
+            
             %now go through list of CellID's to find neighbors
-
+            
             
             cellposit = 1;
             for idx=1:length(obj.Device)
@@ -109,8 +109,8 @@ classdef QCACircuit
                 
                 
                 
-%                 cellIDToplevelnodes(idx);
-%                 max(cellIDToplevelnodes);
+                %                 cellIDToplevelnodes(idx);
+                %                 max(cellIDToplevelnodes);
                 
                 leng = length(obj.Device);
                 
@@ -134,30 +134,30 @@ classdef QCACircuit
                         
                         %give me the cellid's of the node within a certain limit
                         neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1);
- 
                         
                         
-%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
                         
-%                             newNeighbors=[];
-%                             first = neighbors
-%                            for i=1:length(neighbors)
-%                                if neighbors(i) ~= obj.Device{idx}.Device{subnode}.CellID
-%                                     newNeighbors(end+1) = neighbors(i);
-%                                end
-%                            end
-%                            
-%                            
-%                            neighbors = newNeighbors
-                           
-                           obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
-                           cellposit = cellposit+1;
+                        %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                        
+                        %                             newNeighbors=[];
+                        %                             first = neighbors
+                        %                            for i=1:length(neighbors)
+                        %                                if neighbors(i) ~= obj.Device{idx}.Device{subnode}.CellID
+                        %                                     newNeighbors(end+1) = neighbors(i);
+                        %                                end
+                        %                            end
+                        %
+                        %
+                        %                            neighbors = newNeighbors
+                        
+                        obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
+                        cellposit = cellposit+1;
                     end
-%                     idx = idx+length(obj.Device{idx}.Device);
+                    %                     idx = idx+length(obj.Device{idx}.Device);
                     
                 else
                     %shift and find magnitudes
-                   
+                    
                     
                     
                     shifted = cellpositions - repmat(cellpositions(:,cellposit),1,length(cellIDArray));
@@ -168,8 +168,8 @@ classdef QCACircuit
                     %give me the cellid's of the node within a certain limit
                     id = obj.Device{idx}.CellID;
                     neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1);
-
-
+                    
+                    
                     obj.Device{idx}.NeighborList = neighbors;
                     cellposit = cellposit+1;
                     
@@ -183,18 +183,10 @@ classdef QCACircuit
             
         end
         
-
+        
         function obj = CircuitDraw(obj,targetaxis, varargin)
             %cla; %DONT NEED IT ANYMORE YEEEEEEEEEEEEEEEEEEEEEEET
             
-            
-            
-            if strcmp(obj.Simulating,'off')
-                cla;
-            end
-            
-            obj = obj.AntiOverlap();
-
             hold on
             CellIndex = length(obj.Device);
             snapmode = obj.SnapToGrid;
@@ -214,7 +206,7 @@ classdef QCACircuit
                             obj.Device{idx}.Device{sub}.Activation = acts(it);
                             it = it + 1;
                         end
-
+                        
                     else
                         %assign pol and act
                         obj.Device{idx}.Polarization = pols(it);
@@ -229,195 +221,227 @@ classdef QCACircuit
                 
                 
             end
-             %normal functionality
-
-                switch snapmode %snapping to grid mode
-                    case 'off' %do nothing extra
-                        
-                    case 'on' %begin snapping each cell to the grid, skipping every .5
-                        coord = {};
-                        
-                        for i=1:length(obj.Device)  %fill cell with all center positions
-                            if isa(obj.Device{i},'QCASuperCell')
-                                
-                                
-                                for j=1:length(obj.Device{i}.Device)
-                                    coord{end+1} = obj.Device{i}.Device{j}.CenterPosition;
-                                    
-                                end
-                                
-                                
-                            else
-                                coord{end+1} = obj.Device{i}.CenterPosition;
-                            end
-                            
-                        end
-                        
-                        
-                        for i=1:length(coord)
-                            
-                            
-                            diffx=coord{i}(1)-floor(coord{i}(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
-                            diffy=coord{i}(2)-floor(coord{i}(2)); %this is priming the snap to grid functionality
-                            
-                            %determining how each x,y will be rounded to floor, .5 or
-                            %up to the next integer
-                            if diffx<.25
-                                coord{i}(1)=floor(coord{i}(1));
-                            end
-                            if diffx>=.25 && diffx<=.75
-                                coord{i}(1)=floor(coord{i}(1))+.5;
-                            end
-                            if diffx>.75
-                                coord{i}(1)=floor(coord{i}(1))+1;
-                            end
-                            
-                            
-                            if diffy<.25
-                                coord{i}(2)=floor(coord{i}(2));
-                            end
-                            if diffy>=.25 && diffy<=.75
-                                coord{i}(2)=floor(coord{i}(2))+.5;
-                            end
-                            if diffy>.75
-                                coord{i}(2)=floor(coord{i}(2))+1;
-                            end
-                        end
-                        
-                        
-                        it=1;
-                        for i=1:length(obj.Device) %replace the cell center positions with the new snapped center positions
-                            if isa(obj.Device{i},'QCASuperCell')
-                                for j=1:length(obj.Device{i}.Device)
-                                    
-                                    obj.Device{i}.Device{j}.CenterPosition = coord{it};
-                                    it=it+1;
-                                end
-                            else
-                                obj.Device{i}.CenterPosition = coord{it};
-                                it = it+1;
-                            end
-                            
-                        end
-
-
-                end %end snap to grid
-
-                
-                for CellIndex = 1:length(obj.Device)
+            %normal functionality
+            
+            switch snapmode %snapping to grid mode
+                case 'off' %do nothing extra
                     
-                    if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
-                        
-                        %check to see if there is a color for the SC
-                        if strcmp(obj.Device{CellIndex}.BoxColor,'')
+                case 'on' %begin snapping each cell to the grid, skipping every .5
+                    coord = {};
+                    
+                    for i=1:length(obj.Device)  %fill cell with all center positions
+                        if isa(obj.Device{i},'QCASuperCell')
                             
-                            %We make a cell array of all colors that have been
-                            %used
-                            colors=0;
-                            for j=1:length(obj.Device)
-                                if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
-                                    %                                 colors{end+1} = obj.Device{j}.BoxColor;
-                                    colors =  colors+1;
-                                end
+                            
+                            for j=1:length(obj.Device{i}.Device)
+                                coord{end+1} = obj.Device{i}.Device{j}.CenterPosition;
                                 
                             end
                             
-                            if colors>0;
-                                id = floor(obj.Device{CellIndex}.Device{1}.CellID);
-                                
-                                color(1)= abs(sin(.4*id*now/100000-id));
-                                color(3)= abs(sin(colors*id-(id^2))*abs(cos(id)));
-                                color(2)= abs(cos(colors*id + id*(id-1)*now/100000));
-                                
-                                obj.Device{CellIndex}.BoxColor=color;
-                            else
-                                obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
-                            end
                             
                         else
-                            %don't make a new color
+                            coord{end+1} = obj.Device{i}.CenterPosition;
                         end
-                        
-                        for subnode = 1:length(obj.Device{CellIndex}.Device)
-                            
-                            obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
-                            obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
-                            obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
-                            obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
-                            obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor;
-                            obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
-                            Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
-                        end
-                    else
-                        
-                        obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
-                        obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
-                        obj.Device{CellIndex}.SelectBox.Selected = 'off';
-                        obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
-                        
-                        Select(obj.Device{CellIndex}.SelectBox);
                         
                     end
                     
+                    
+                    for i=1:length(coord)
+                        
+                        
+                        diffx=coord{i}(1)-floor(coord{i}(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
+                        diffy=coord{i}(2)-floor(coord{i}(2)); %this is priming the snap to grid functionality
+                        
+                        %determining how each x,y will be rounded to floor, .5 or
+                        %up to the next integer
+                        if diffx<.25
+                            coord{i}(1)=floor(coord{i}(1));
+                        end
+                        if diffx>=.25 && diffx<=.75
+                            coord{i}(1)=floor(coord{i}(1))+.5;
+                        end
+                        if diffx>.75
+                            coord{i}(1)=floor(coord{i}(1))+1;
+                        end
+                        
+                        
+                        if diffy<.25
+                            coord{i}(2)=floor(coord{i}(2));
+                        end
+                        if diffy>=.25 && diffy<=.75
+                            coord{i}(2)=floor(coord{i}(2))+.5;
+                        end
+                        if diffy>.75
+                            coord{i}(2)=floor(coord{i}(2))+1;
+                        end
+                    end
+                    
+                    
+                    it=1;
+                    for i=1:length(obj.Device) %replace the cell center positions with the new snapped center positions
+                        if isa(obj.Device{i},'QCASuperCell')
+                            for j=1:length(obj.Device{i}.Device)
+                                
+                                obj.Device{i}.Device{j}.CenterPosition = coord{it};
+                                it=it+1;
+                            end
+                        else
+                            obj.Device{i}.CenterPosition = coord{it};
+                            it = it+1;
+                        end
+                        
+                    end
+                    
+                    
+            end %end snap to grid
+            
+            
+            obj = obj.AntiOverlap();
+            
+            if strcmp(obj.Simulating,'off')
+                cla;
+                
+            end
+            
+            
+            for CellIndex = 1:length(obj.Device)
+                
+                if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
+                    
+                    %check to see if there is a color for the SC
+                    if strcmp(obj.Device{CellIndex}.BoxColor,'')
+                        
+                        %We make a cell array of all colors that have been
+                        %used
+                        colors=0;
+                        for j=1:length(obj.Device)
+                            if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
+                                %                                 colors{end+1} = obj.Device{j}.BoxColor;
+                                colors =  colors+1;
+                            end
+                            
+                        end
+                        
+                        if colors>0;
+                            id = floor(obj.Device{CellIndex}.Device{1}.CellID);
+                            
+                            color(1)= abs(sin(.4*id*now/100000-id));
+                            color(3)= abs(sin(colors*id-(id^2))*abs(cos(id)));
+                            color(2)= abs(cos(colors*id + id*(id-1)*now/100000));
+                            
+                            obj.Device{CellIndex}.BoxColor=color;
+                        else
+                            obj.Device{CellIndex}.BoxColor=[rand rand rand]; %the color will remain the same for the same super cell
+                        end
+                        
+                    else
+                        %don't make a new color
+                    end
+                    
+                    for subnode = 1:length(obj.Device{CellIndex}.Device)
+                        
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
+                        %                             obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor;
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
+                        Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
+                    end
+                else
+                    
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
+                    obj.Device{CellIndex}.SelectBox.Selected = 'off';
+                    %                         obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
+                    
+                    Select(obj.Device{CellIndex}.SelectBox);
+                    
+                end
+                
                 obj.Mode = 'Simulation';
             end
             RightClickThings();   %uicontextmenu available upon drawing
-
+            
             hold off
             grid on
         end
         
+        
         function obj =  AntiOverlap(obj)
-%             clc;
+            %             clc;
             IDList = obj.GetCellIDs(obj.Device);
             cellList = obj.getCellArray(IDList);
             
             
             
-          
-                diffs=[];
-                
-                for i=1:length(cellList)
-                    for j=length(cellList):-1:i+1
-                        if i~=j
-                            diffs(1,end+1) = cellList{i}.CenterPosition(1) - cellList{j}.CenterPosition(1);
-                            diffs(2,end) = cellList{i}.CenterPosition(2) - cellList{j}.CenterPosition(2);
-                            diffs(3,end) = cellList{i}.CellID;                            
-                            
-                        end
-                    end
-                end
-                
-                sizeof = size(diffs);
-                
-                notokay = 0;
-                for i=1:sizeof(2)
-                    if abs(diffs(1,i)) < .5 && abs(diffs(2,i)) < 1.5
-                        notokay = notokay +1;
+            
+            diffs=[];
+            
+            for i=1:length(cellList)
+                for j=1:length(cellList)%j=length(cellList):-1:i+1
+                    if i~=j
+                        diffs(1,end+1) = cellList{i}.CenterPosition(1) - cellList{j}.CenterPosition(1);
+                        diffs(2,end) = cellList{i}.CenterPosition(2) - cellList{j}.CenterPosition(2);
+                        diffs(3,end) = cellList{i}.CellID;
                         
                     end
                 end
-                a=[];
-                ax=gca;
-                
-                if notokay
-                    a= annotation('textbox');
-                    a.String = {'WARNING: QCA Cells are overlapped','Fix immediately or error will occur upon simulation'};
-                    a.Parent = ax;
-                    a.EdgeColor = [1 1 1];
-                    a.FontSize = 12;
-                    a.Position = [ax.XLim(1) ax.YLim(2)*.7 40 0.4 ];
-                end
-                
-                if ~isempty(a) && ~notokay
-                    a.BeingDeleted = 'on'
-                    a.Position = [];
-                end
-        end
+            end
             
+            
+            diffs;
+            sizeof = size(diffs);
+            
+            OL=[];
+            overlap = 0;
+            for i=1:sizeof(2)
+                if abs(diffs(1,i)) < .499 && abs(diffs(2,i)) < 1.499
+                    overlap = overlap +1;
+                    OL(end+1) = diffs(3,i);
+                    
+                end
+            end
+            
+            
+            for i=1:length(obj.Device)
+                if isa(obj.Device{i},'QCASuperCell')
+                    
+                    for j=1:length(obj.Device{i}.Device)
+                        
+                        if sum(obj.Device{i}.Device{j}.CellID == OL) > 0
+                            obj.Device{i}.Device{j}.Overlapping = 'on';
+                            obj.Device{i}.Device{j};
+                        else
+                            obj.Device{i}.Device{j}.Overlapping = 'off';
+                            
+                        end
+                        
+                        
+                        
+                        
+                    end
+                    
+                else
+                    
+                    if sum(obj.Device{i}.CellID == OL) > 0
+                        
+                        obj.Device{i}.Overlapping = 'on';
+                        
+                    else
+                        
+                        obj.Device{i}.Overlapping = 'off';
+                        
+                    end
+                    obj.Device{i}.CellID;
+                    obj.Device{i}.Overlapping;
+                end
+            end
+        end
+        
         
         function obj = LayoutDraw(obj, targetAxes)
-            cla;
+            
             hold on
             CellIndex = length(obj.Device);
             %              obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
@@ -433,7 +457,7 @@ classdef QCACircuit
                         colors=0;
                         for j=1:length(obj.Device)
                             if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
-%                                 colors{end+1} = obj.Device{j}.BoxColor;
+                                %                                 colors{end+1} = obj.Device{j}.BoxColor;
                                 colors =  colors+1;
                             end
                             
@@ -442,12 +466,12 @@ classdef QCACircuit
                             id = floor(obj.Device{CellIndex}.Device{1}.CellID);
                             
                             
-                        color(1)= abs(sin(.4*id*now/100000-id));
-                        
-                        color(3)= abs(sin(colors*id-(id^2))*abs(cos(id)));
-                        
-                        color(2)= abs(cos(colors*id + id*(id-1)*now/100000));
-
+                            color(1)= abs(sin(.4*id*now/100000-id));
+                            
+                            color(3)= abs(sin(colors*id-(id^2))*abs(cos(id)));
+                            
+                            color(2)= abs(cos(colors*id + id*(id-1)*now/100000));
+                            
                             
                             obj.Device{CellIndex}.BoxColor=color;
                         else
@@ -476,8 +500,8 @@ classdef QCACircuit
                 hold off
             end
             obj.Mode = 'Layout';
-    end
- 
+        end
+        
         %reference this based on CellId
         function sref = subsref(obj,s)
             % obj(index) is the same as obj.Device(index)
@@ -529,18 +553,18 @@ classdef QCACircuit
         end
         
         function obj = Relax2GroundState(obj)
-
+            
             %Iterate to Self consistency
             
-
-%             disp('ORDER OF RELAXING')
-%             for i=1:length(obj.Device)
-%                fprintf('Cell %d  ...   ',obj.Device{i}.CellID); 
-%             end
-%             fprintf('\n');
-
+            
+            %             disp('ORDER OF RELAXING')
+            %             for i=1:length(obj.Device)
+            %                fprintf('Cell %d  ...   ',obj.Device{i}.CellID);
+            %             end
+            %             fprintf('\n');
+            
             NewCircuitPols = ones(1,length(obj.Device));
-            converganceTolerance = 1; 
+            converganceTolerance = 1;
             sub = 1;
             chi = 0.8;
             it=1;
@@ -563,7 +587,7 @@ classdef QCACircuit
                         while (subnodeTolerance > 0.00001)
                             OldPols = NewPols;
                             
-%                             supernode = floor(obj.Device{idx}.Device{1}.CellID)
+                            %                             supernode = floor(obj.Device{idx}.Device{1}.CellID)
                             
                             
                             L=length(obj.Device);
@@ -576,7 +600,7 @@ classdef QCACircuit
                                     id = obj.Device{idx}.Device{subnode}.CellID;
                                     nl = obj.Device{idx}.Device{subnode}.NeighborList;
                                     pol = obj.Device{idx}.Device{subnode}.Polarization;
-%                                   disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
+                                    %                                   disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
                                     
                                     if ~isempty(nl)
                                         
@@ -591,7 +615,7 @@ classdef QCACircuit
                                         
                                         [V, EE] = eig(hamiltonian);
                                         newpsi = V(:,1);
-
+                                        
                                         normpsi = (1-chi)*obj.Device{idx}.Device{subnode}.Wavefunction + chi*newpsi;
                                         normpsi = normalize_psi_1D(normpsi');
                                         
@@ -602,7 +626,7 @@ classdef QCACircuit
                                         NewPols(subnode) = obj.Device{idx}.Device{subnode}.Polarization;
                                         
                                         
-%                                         disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+                                        %                                         disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
                                     end
                                 end
                                 
@@ -625,10 +649,10 @@ classdef QCACircuit
                         if ~isempty(nl)
                             
                             
-
+                            
                             %get Neighbor Objects
                             nl_obj = obj.getCellArray(nl);
-
+                            
                             
                             %get hamiltonian for current cell
                             hamiltonian = obj.Device{idx}.GetHamiltonian(nl_obj);
@@ -656,15 +680,15 @@ classdef QCACircuit
                                 NewCircuitPols(idx) = obj.Device{idx}.Polarization;
                             end
                             
-%                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
-
+                            %                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
+                            
                         end
                         idx = idx+1;
                     end
                     
                     
                 end
-%                 fprintf('\n');
+                %                 fprintf('\n');
                 deltaCircuitPols = abs(OldCircuitPols) - abs(NewCircuitPols);
                 converganceTolerance = max(abs(deltaCircuitPols));
                 
@@ -682,8 +706,8 @@ classdef QCACircuit
             
             nt=315;
             time_array = linspace(0,2,nt); %right now this will do 2 periods
-
-
+            
+            
             
             file = 'simResults.mat';
             m = matfile(file, 'Writable', true);
@@ -694,7 +718,7 @@ classdef QCACircuit
             m.efields = [];%zeros(nt,length(obj.Device));
             m.nt = nt;
             
-
+            
             
             for t = 1:nt %time step
                 
@@ -719,7 +743,7 @@ classdef QCACircuit
                 %relax2Groundstate
                 obj = obj.Relax2GroundState();
                 
-
+                
                 
                 %data output
                 it = 1;
@@ -751,8 +775,8 @@ classdef QCACircuit
                         it = it + 1;
                     end
                 end
-
-               
+                
+                
                 disp(['t: ', num2str(t)]);
                 
             end %time step loop
@@ -762,10 +786,10 @@ classdef QCACircuit
             
             disp('Complete!')
             
-           obj.Simulating = 'off'; 
+            obj.Simulating = 'off';
         end
         
-
+        
         
         function cell_obj = getCellArray(obj, CellIDArray)
             %this function returns an array of QCACell objects given a list
@@ -773,8 +797,8 @@ classdef QCACircuit
             
             cell_obj = {};
             
-            for i=1:length(obj.Device)        
-                if isa(obj.Device{i},'QCASuperCell')    
+            for i=1:length(obj.Device)
+                if isa(obj.Device{i},'QCASuperCell')
                     for j=1:length(obj.Device{i}.Device)
                         for k=1:length(CellIDArray)
                             if CellIDArray(k) == obj.Device{i}.Device{j}.CellID
@@ -790,7 +814,7 @@ classdef QCACircuit
                             cell_obj{end+1} = obj.Device{i};
                         end
                     end
-                                
+                    
                 end
             end
             
@@ -800,11 +824,11 @@ classdef QCACircuit
             %returns just the CellIDs given a list of objects.
             
             CellIds=[];
-
+            
             idx = 1;
             
             while idx <= length(cells)
-                if isa(cells{idx}, 'QCASuperCell') 
+                if isa(cells{idx}, 'QCASuperCell')
                     
                     for sub = 1:length(cells{idx}.Device)
                         CellIds(end+1) = cells{idx}.Device{sub}.CellID;
@@ -821,9 +845,9 @@ classdef QCACircuit
             
         end
         
-    
+        
     end
-
+    
 end
 
 
@@ -835,15 +859,15 @@ end
 %         Sel=0;
 %         for j=1:length(obj.Device{i}.Device)
 %             nl = obj.GenerateNeighborList();
-%             
+%
 %             %do a thing
-%             
-%             
+%
+%
 %         end
 %         if Sel
-%             
+%
 %         end
-%         
+%
 %     else
 %         %do a thing
 %

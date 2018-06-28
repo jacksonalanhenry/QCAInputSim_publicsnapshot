@@ -27,6 +27,7 @@ classdef ThreeDotCell < QCACell
         Wavefunction = zeros(3,1);
         SelectBox;
         LayoutBox;
+        Overlapping='off'
         
     end
     
@@ -263,7 +264,19 @@ classdef ThreeDotCell < QCACell
             obj.SelectBox=patch;
             obj.SelectBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];
             obj.SelectBox.YData=[obj.CenterPosition(2)-.75;obj.CenterPosition(2)-.75;obj.CenterPosition(2)+.75;obj.CenterPosition(2)+.75];
-            obj.SelectBox.FaceColor=[1 1 1];
+            
+            obj.CellID;
+            obj.Overlapping;
+            switch obj.Overlapping
+                case 'off'
+                    obj.SelectBox.FaceColor=[1 1 1];
+                    obj.SelectBox.FaceAlpha = .01;
+                case 'on'
+                    obj.SelectBox.FaceColor=[1 0 0];
+                    obj.SelectBox.FaceAlpha = .4;
+                    
+            end
+            
             obj.SelectBox.UserData = obj.CellID;            
         end
         

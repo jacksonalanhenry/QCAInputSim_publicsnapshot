@@ -50,6 +50,8 @@ for i=1:length(myCircuit.Device)
 end
 newCircuit.Mode = myCircuit.Mode;
 myCircuit=newCircuit;
+
+myCircuit.SnapToGrid = 'on';
 myCircuit.Device;
 
 

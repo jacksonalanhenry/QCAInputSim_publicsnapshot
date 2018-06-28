@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 22-Jun-2018 09:57:36
+% Last Modified by GUIDE v2.5 27-Jun-2018 14:38:39
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -373,3 +373,15 @@ function autoSnap_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of autoSnap
 AutoSnap(handles);
+
+
+% --- Executes on button press in refresh.
+function refresh_Callback(hObject, eventdata, handles)
+% hObject    handle to refresh (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myCircuit = getappdata(gcf,'myCircuit');
+
+myCircuit = myCircuit.CircuitDraw(gca);
+
+setappdata(gcf,'myCircuit',myCircuit);
