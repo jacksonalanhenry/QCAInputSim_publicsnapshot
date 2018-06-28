@@ -30,7 +30,7 @@ classdef Signal
                     case 1 % S = Signal( Amplitude )
                         if( isnumeric(varargin{1}) )
                             obj.Amplitude = varargin{1};
-                        else
+                        else 
                             error('Incorrect data input type.')
                         end
                         
