@@ -88,6 +88,12 @@ classdef Signal
                         
                 end % END: Switch nargin
                 
+            elseif ( strcmp(obj.Type, 'Piecewise') )
+                
+                % piecewise signal
+                
+                
+                
             else
                 %nothing for now, but eventually other types
                 
