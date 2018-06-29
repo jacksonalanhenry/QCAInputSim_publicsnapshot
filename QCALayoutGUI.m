@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 29-Jun-2018 12:59:53
+% Last Modified by GUIDE v2.5 29-Jun-2018 13:12:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -758,10 +758,10 @@ if ~isempty(contents)
             
             case 'Sinusoidal'
                 
-                A = handles.changeAmp.String
-                L = handles.changeWave.String
-                T = handles.changePeriod.String
-                b = handles.changePhase.String
+                A = str2num(handles.changeAmp.String);
+                L = str2num(handles.changeWave.String);
+                T = str2num(handles.changePeriod.String);
+                b = str2num(handles.changePhase.String);
                 
                 
             case 'Custom'
@@ -769,9 +769,13 @@ if ~isempty(contents)
         end
         setappdata(gcf,sigName,mySignal);
     end
-    t=-5:.01:5;
+
+    x=-5:.01:5;
     
-    y = A*cos( - b)
+    
+    y = ( cos((2*pi*(x/L - 1/T) )+ b) )*A;
+    
+    plot(handles.plotAxes,x,y);
     
 end
 
