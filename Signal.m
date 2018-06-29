@@ -14,13 +14,10 @@ classdef Signal
         Amplitude = 1;
         Wavelength = 1;
         Period = 1;
-<<<<<<< HEAD
-        Phase = 0;
-=======
         Phase = pi/2;
         
         %Piecewise Properties
->>>>>>> 3461a94d84697814b82225bdef0ec1d264e38be3
+
         
         
     end

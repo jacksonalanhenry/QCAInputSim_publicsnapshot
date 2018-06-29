@@ -36,10 +36,12 @@ for i=1:length(myCircuit.Device)
     end
 end
 
+snapping = myCircuit.SnapToGrid;
+
 
 myCircuit=newCircuit;
 
-% myCircuit.SnapToGrid = 'on';
+myCircuit.SnapToGrid = snapping;
 myCircuit.Device;
 
 

@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 29-Jun-2018 13:12:51
+% Last Modified by GUIDE v2.5 29-Jun-2018 14:20:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -506,6 +506,28 @@ function signalType_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns signalType contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from signalType
+signalTypes = cellstr(get(handles.signalType,'String'));
+
+sigType = signalTypes{get(handles.signalType,'Value')};
+
+
+
+switch sigType
+    
+    case 'Sinusoidal'
+        
+        handles.sinusoidPanel.Visible = 'on';
+        handles.customSignal.Visible = 'off';
+    case 'Custom'
+        handles.sinusoidPanel.Visible = 'off';
+        handles.customSignal.Visible = 'on';
+end
+
+
+
+
+    
+
 
 
 
@@ -578,7 +600,9 @@ if ~isempty(handles.signalName.String)
     
     handles.signalList.String{end+1,1} = handles.signalName.String;
 
+    
 setappdata(gcf,handles.signalName.String,mySignal);
+handles.signalName.String = 'Input Name';
 end
 
 
@@ -670,6 +694,8 @@ contents = cellstr(get(handles.signalList,'String'));
 
 if ~isempty(contents)
    
+    handles.signalEditor.String = '';
+    
     sigName = contents{get(handles.signalList,'Value')};
    
     deleteSig = getappdata(gcf,sigName);
@@ -689,6 +715,7 @@ if ~isempty(contents)
     handles.signalList.String = newList;
   handles.signalList.Value = 1;
     
+  handles.signalName.String = 'Input Name';
    
     deleteSig = {};
     
@@ -733,6 +760,7 @@ if ~isempty(contents)
                 
         end
         setappdata(gcf,sigName,mySignal);
+        handles.signalName.String = 'Input Name';
     end
 end
 
@@ -762,7 +790,13 @@ if ~isempty(contents)
                 L = str2num(handles.changeWave.String);
                 T = str2num(handles.changePeriod.String);
                 b = str2num(handles.changePhase.String);
+                x=-5:.01:5;
                 
+                
+                y = ( cos((2*pi*(x/L - 1/T) )+ b) )*A;
+                
+                plot(handles.plotAxes,x,y);
+                handles.signalDisplayBox.String = sigName;
                 
             case 'Custom'
                 
@@ -770,12 +804,7 @@ if ~isempty(contents)
         setappdata(gcf,sigName,mySignal);
     end
 
-    x=-5:.01:5;
-    
-    
-    y = ( cos((2*pi*(x/L - 1/T) )+ b) )*A;
-    
-    plot(handles.plotAxes,x,y);
+
     
 end
 
