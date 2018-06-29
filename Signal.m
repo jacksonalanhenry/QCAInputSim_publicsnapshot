@@ -17,6 +17,7 @@ classdef Signal
         Phase = pi/2;
         
         %Piecewise Properties
+
         
         
     end
@@ -117,7 +118,9 @@ classdef Signal
                     %THIS FUNCTION ONLY ASSIGNS z Field
                     
                     EField = [0,0,0];
-                    EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude;
+
+                    EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude; 
+
                     
                     ef = EField(3);
                     x  = centerposition(1);

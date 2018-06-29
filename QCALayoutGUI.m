@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 28-Jun-2018 09:38:51
+% Last Modified by GUIDE v2.5 29-Jun-2018 14:20:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,9 +57,16 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles)
+
+% set(handles.figure1,'Name','QCA Layout Demo');
+
+
+
 myCircuit = QCACircuit();
 myCircuit.CircuitDraw(gca);
 RightClickThings();
+
+
 setappdata(gcf, 'myCircuit', myCircuit);
 Path.home = pwd;
 Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder'; %this needs to change!!!
@@ -385,3 +392,419 @@ myCircuit = getappdata(gcf,'myCircuit');
 myCircuit = myCircuit.CircuitDraw(gca);
 
 setappdata(gcf,'myCircuit',myCircuit);
+
+
+
+
+% --- Executes on button press in circuitPanel.
+function circuitPanel_Callback(hObject, eventdata, handles)
+% hObject    handle to circuitPanel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of circuitPanel
+% PanelSwitch(handles);
+    handles.signalPanel.Value = 0;
+    handles.signalButtonGroup.Visible = 'off';
+    
+    handles.circuitPanel.Value = 1;
+    handles.circuitButtonGroup.Visible = 'on';
+
+    
+% --- Executes on button press in signalPanel.
+function signalPanel_Callback(hObject, eventdata, handles)
+% hObject    handle to signalPanel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of signalPanel
+% PanelSwitch(handles);
+    handles.signalPanel.Value = 1;
+    handles.signalButtonGroup.Visible = 'on';
+    
+    handles.circuitPanel.Value = 0;
+    handles.circuitButtonGroup.Visible = 'off';
+    
+    
+    
+
+
+
+function changeWave_Callback(hObject, eventdata, handles)
+% hObject    handle to changeWave (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of changeWave as text
+%        str2double(get(hObject,'String')) returns contents of changeWave as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function changeWave_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to changeWave (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function changePhase_Callback(hObject, eventdata, handles)
+% hObject    handle to changePhase (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of changePhase as text
+%        str2double(get(hObject,'String')) returns contents of changePhase as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function changePhase_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to changePhase (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function changeAmp_Callback(hObject, eventdata, handles)
+% hObject    handle to changeAmp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of changeAmp as text
+%        str2double(get(hObject,'String')) returns contents of changeAmp as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function changeAmp_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to changeAmp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in signalType.
+function signalType_Callback(hObject, eventdata, handles)
+% hObject    handle to signalType (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns signalType contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from signalType
+signalTypes = cellstr(get(handles.signalType,'String'));
+
+sigType = signalTypes{get(handles.signalType,'Value')};
+
+
+
+switch sigType
+    
+    case 'Sinusoidal'
+        
+        handles.sinusoidPanel.Visible = 'on';
+        handles.customSignal.Visible = 'off';
+    case 'Custom'
+        handles.sinusoidPanel.Visible = 'off';
+        handles.customSignal.Visible = 'on';
+end
+
+
+
+
+    
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function signalType_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to signalType (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function changePeriod_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to changePeriod (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function changePeriod_Callback(hObject, eventdata, handles)
+% hObject    handle to changePeriod (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of changePeriod as text
+%        str2double(get(hObject,'String')) returns contents of changePeriod as a double
+
+
+% --- Executes on button press in createSignal.
+function createSignal_Callback(hObject, eventdata, handles)
+% hObject    handle to createSignal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+contents = cellstr(get(handles.signalType,'String')); 
+sigType = contents{get(handles.signalType,'Value')} ;
+
+
+% sigType = handles.signalType.String;
+mySignal = Signal();
+
+switch sigType
+    case 'Sinusoidal'
+        mySignal.Amplitude = str2num(handles.changeAmp.String);
+        mySignal.Wavelength = str2num(handles.changeWave.String);
+        mySignal.Period = str2num(handles.changePeriod.String);
+        mySignal.Phase = str2num(handles.changePhase.String);
+        mySignal.Type = sigType;
+    case 'Custom'
+        
+        mySignal.Type = sigType;
+    
+    otherwise
+        
+end
+
+
+
+if ~isempty(handles.signalName.String)
+    
+    handles.signalList.String{end+1,1} = handles.signalName.String;
+
+    
+setappdata(gcf,handles.signalName.String,mySignal);
+handles.signalName.String = 'Input Name';
+end
+
+
+
+
+function signalName_Callback(hObject, eventdata, handles)
+% hObject    handle to signalName (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of signalName as text
+%        str2double(get(hObject,'String')) returns contents of signalName as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function signalName_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to signalName (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in signalList.
+function signalList_Callback(hObject, eventdata, handles)
+% hObject    handle to signalList (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns signalList contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from signalList
+contents = cellstr(get(handles.signalList,'String'));
+
+if ~isempty(contents)
+    sigName = contents{get(handles.signalList,'Value')};
+    
+    mySignal = getappdata(gcf,sigName);
+    
+    if ~isempty(mySignal)
+        sigType = mySignal.Type;
+        
+        handles.signalEditor.String = sigName;
+        
+        switch sigType
+            
+            case 'Sinusoidal'
+                
+                handles.changeAmp.String = num2str(mySignal.Amplitude);
+                handles.changeWave.String = num2str(mySignal.Wavelength);
+                handles.changePeriod.String = num2str(mySignal.Period);
+                handles.changePhase.String = num2str(mySignal.Phase);
+                
+                
+            case 'Custom'
+                
+        end
+        setappdata(gcf,sigName,mySignal);
+    end
+end
+
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function signalList_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to signalList (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in deleteSignal.
+function deleteSignal_Callback(hObject, eventdata, handles)
+% hObject    handle to deleteSignal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+contents = cellstr(get(handles.signalList,'String'));
+
+if ~isempty(contents)
+   
+    handles.signalEditor.String = '';
+    
+    sigName = contents{get(handles.signalList,'Value')};
+   
+    deleteSig = getappdata(gcf,sigName);
+    
+    contents{get(handles.signalList,'Value')} = '';
+   
+    newList={};
+    for i=1:length(contents)
+        
+        if ~isempty(contents{i})
+            newList{end+1} = contents{i};
+        end
+        
+    end
+   
+    
+    handles.signalList.String = newList;
+  handles.signalList.Value = 1;
+    
+  handles.signalName.String = 'Input Name';
+   
+    deleteSig = {};
+    
+    setappdata(gcf,sigName,deleteSig);
+    
+end
+
+
+
+
+
+% --- Executes on button press in saveSignal.
+function saveSignal_Callback(hObject, eventdata, handles)
+% hObject    handle to saveSignal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+contents = cellstr(get(handles.signalList,'String'));
+
+if ~isempty(contents)
+    sigName = contents{get(handles.signalList,'Value')};
+    
+    mySignal = getappdata(gcf,sigName);
+    
+    if ~isempty(mySignal)
+        sigType = mySignal.Type;
+        
+        handles.signalEditor.String = '';
+        
+        switch sigType
+            
+            case 'Sinusoidal'
+                
+                mySignal.Amplitude = str2num(handles.changeAmp.String);
+                mySignal.Wavelength = str2num(handles.changeWave.String);
+                mySignal.Period = str2num(handles.changePeriod.String);
+                mySignal.Phase = str2num(handles.changePhase.String);
+                
+                
+                
+                
+            case 'Custom'
+                
+        end
+        setappdata(gcf,sigName,mySignal);
+        handles.signalName.String = 'Input Name';
+    end
+end
+
+
+% --- Executes on button press in plotSignal.
+function plotSignal_Callback(hObject, eventdata, handles)
+% hObject    handle to plotSignal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+contents = cellstr(get(handles.signalList,'String'));
+
+if ~isempty(contents)
+    sigName = contents{get(handles.signalList,'Value')};
+    
+    mySignal = getappdata(gcf,sigName);
+    
+    if ~isempty(mySignal)
+        sigType = mySignal.Type;
+        
+        handles.signalEditor.String = sigName;
+        
+        switch sigType
+            
+            case 'Sinusoidal'
+                
+                A = str2num(handles.changeAmp.String);
+                L = str2num(handles.changeWave.String);
+                T = str2num(handles.changePeriod.String);
+                b = str2num(handles.changePhase.String);
+                x=-5:.01:5;
+                
+                
+                y = ( cos((2*pi*(x/L - 1/T) )+ b) )*A;
+                
+                plot(handles.plotAxes,x,y);
+                handles.signalDisplayBox.String = sigName;
+                
+            case 'Custom'
+                
+        end
+        setappdata(gcf,sigName,mySignal);
+    end
+
+
+    
+end
+

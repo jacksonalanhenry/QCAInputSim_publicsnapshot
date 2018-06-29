@@ -8,8 +8,8 @@ classdef QCACircuit
         RefinedDevice = {};
         GroundState = [];
         Mode='Simulation';
-        SnapToGrid = 'off'
-        Simulating = 'off'
+        SnapToGrid = 'off';
+        Simulating = 'off';
         
         
     end
