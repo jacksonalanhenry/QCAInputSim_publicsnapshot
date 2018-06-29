@@ -1,4 +1,4 @@
-classdef Signal 
+classdef Signal
     %Signal class used to input in to various systems
     %   Detailed explanation goes here
     %   Actually add a explaination of properties
@@ -9,11 +9,18 @@ classdef Signal
     properties
         
         Type = 'Sinusoidal';%  'Custom'(Piecewise) 'Imported'(COMSOL) there may be others
+        
         %These properties are only used for the sinusoidal type
         Amplitude = 1;
         Wavelength = 1;
         Period = 1;
+<<<<<<< HEAD
         Phase = 0;
+=======
+        Phase = pi/2;
+        
+        %Piecewise Properties
+>>>>>>> 3461a94d84697814b82225bdef0ec1d264e38be3
         
         
     end
@@ -21,8 +28,8 @@ classdef Signal
     methods
         function obj = Signal( varargin )
             % obj = QCACell( varargin )
-           
-           
+            
+            
             if( strcmp(obj.Type, 'Sinusoidal') )
                 
                 switch nargin
@@ -31,39 +38,57 @@ classdef Signal
                     case 1 % S = Signal( Amplitude )
                         if( isnumeric(varargin{1}) )
                             obj.Amplitude = varargin{1};
-                        else 
+                        else
                             error('Incorrect data input type.')
                         end
                         
                     case 2 % S = Signal( Amplitude, wavelength )
                         if( isnumeric(varargin{1}) && isnumeric(varargin{2}) )
                             obj.Amplitude = varargin{1};
-                            obj.wavelength = varargin{2};
+                            obj.Wavelength = varargin{2};
                         elseif (~isnumeric(varargin{1}))
                             error('Incorrect data input type for Amplitude.')
                         elseif(~isnumeric(varargin{2}))
-                            error('Incorrect data input type for Wavelength.')                            
+                            error('Incorrect data input type for Wavelength.')
                         else
                             error('Incorrect data input type.')
                         end
                         
-                     case 3 % S = Signal( Amplitude, wavelength , Period )
+                    case 3 % S = Signal( Amplitude, wavelength , Period )
                         if( isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3}) )
                             obj.Amplitude = varargin{1};
-                            obj.wavelength = varargin{2};
+                            obj.Wavelength = varargin{2};
                             obj.Period = varargin{3};
                         elseif ( ~isnumeric(varargin{1}) )
                             error('Incorrect data input type for Amplitude.')
                         elseif( ~isnumeric(varargin{2}) )
                             error('Incorrect data input type for Wavelength.')
                         elseif( ~isnumeric(varargin{3}) )
-                            error('Incorrect data input type for Period.') 
+                            error('Incorrect data input type for Period.')
                         else
                             error('Incorrect data input type.')
                         end
                         
+                        
+                    case 4 % S = Signal( Amplitude, wavelength , Period )
+                        if( isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3}) )
+                            obj.Amplitude = varargin{1};
+                            obj.Wavelength = varargin{2};
+                            obj.Period = varargin{3};
+                            obj.Phase = varargin{4};
+                        elseif ( ~isnumeric(varargin{1}) )
+                            error('Incorrect data input type for Amplitude.')
+                        elseif( ~isnumeric(varargin{2}) )
+                            error('Incorrect data input type for Wavelength.')
+                        elseif( ~isnumeric(varargin{3}) )
+                            error('Incorrect data input type for Period.')
+                        elseif( ~isnumeric(varargin{4}) )
+                            error('Incorrect data input type for Phase.')
+                        else
+                            error('Incorrect data input type.')
+                        end
                     otherwise
-                        error('Invalid number of inputs for QCACell');  
+                        error('Invalid number of inputs for QCACell');
                         
                 end % END: Switch nargin
                 
@@ -85,25 +110,27 @@ classdef Signal
         function EField = getEField(obj, centerposition, time)
             if( isnumeric(centerposition) )
                 if(size(centerposition) == [1, 3])
-                            
+                    
                     
                     %THIS FUNCTION ONLY ASSIGNS z Field
-
+                    
                     EField = [0,0,0];
-                    EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude; %-0.49
+
+                    EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude; 
+
                     
                     ef = EField(3);
                     x  = centerposition(1);
 %                     disp(['x: ', num2str(x), ' ef: ', num2str(ef)])%'t: ', num2str(time),
                     
-
+                    
                 else
                     error('Incorrect data input size.')
                 end
             else
                 error('Incorrect data input type.')
             end
-
+            
         end
         
         
