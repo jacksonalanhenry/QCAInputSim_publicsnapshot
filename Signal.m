@@ -13,6 +13,7 @@ classdef Signal
         Amplitude = 1;
         Wavelength = 1;
         Period = 1;
+        Phase = 0;
         
         
     end

@@ -39,7 +39,7 @@ end
 
 myCircuit=newCircuit;
 
-myCircuit.SnapToGrid = 'on';
+% myCircuit.SnapToGrid = 'on';
 myCircuit.Device;
 
 
