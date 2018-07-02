@@ -635,7 +635,7 @@ classdef QCACircuit
             
         end
         
-        function obj = pipeline(obj,signal,currentaxes)
+        function obj = pipeline(obj,signal)
             
             obj.Simulating = 'on';
             
@@ -654,6 +654,10 @@ classdef QCACircuit
             m.acts = [];%zeros(nt,length(obj.Device));
             m.efields = [];%zeros(nt,length(obj.Device));
             m.nt = nt;
+            
+            pols = [];
+            acts = [];
+            efields = [];
             
             
             
@@ -689,26 +693,26 @@ classdef QCACircuit
                     if isa(obj.Device{idx},'QCASuperCell')
                         
                         for sub=1:length(obj.Device{idx}.Device)
-                            %do a thing
+                            
                             ef = obj.Device{idx}.Device{sub}.ElectricField;
                             efz = ef(3);
                             
-                            m.pols(t,it) = obj.Device{idx}.Device{sub}.Polarization;
-                            m.acts(t,it) = obj.Device{idx}.Device{sub}.Activation;
-                            m.efields(t,it) = efz;
+                            pols(t,it) = obj.Device{idx}.Device{sub}.Polarization;
+                            acts(t,it) = obj.Device{idx}.Device{sub}.Activation;
+                            efields(t,it) = efz;
                             
                             it = it + 1;
                         end
                         
                         
                     else
-                        %do a thing
+                        
                         ef = obj.Device{idx}.ElectricField;
                         efz = ef(3);
                         
-                        m.pols(t,it) = obj.Device{idx}.Polarization;
-                        m.acts(t,it) = obj.Device{idx}.Activation;
-                        m.efields(t,it) = efz;
+                        pols(t,it) = obj.Device{idx}.Polarization;
+                        acts(t,it) = obj.Device{idx}.Activation;
+                        efields(t,it) = efz;
                         it = it + 1;
                     end
                 end
@@ -718,7 +722,9 @@ classdef QCACircuit
                 
             end %time step loop
             
-            
+            m.pols = pols;
+            m.acts = acts;
+            m.efields = efields;
             
             
             disp('Complete!')
