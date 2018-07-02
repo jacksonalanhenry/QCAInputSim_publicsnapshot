@@ -103,7 +103,7 @@ classdef Signal
         end
         
         function obj = set.Type(obj,value)
-            if (~isequal(value, 'Sinusoidal') && ~isequal(value,'Custom')) %edit this to add more types
+            if (~isequal(value, 'Sinusoidal') && ~isequal(value,'Custom') && ~isequal(value,'Electrode'))%edit this to add more types
                 error('Invalid Type. Must be Standard signal Type')
             else
                 obj.Type = value;
@@ -133,6 +133,79 @@ classdef Signal
             else
                 error('Incorrect data input type.')
             end
+            
+        end
+        
+        
+        function obj = drawElectrode(obj, centerpos, height, width, Efield)
+            
+            if strcmp(obj.Type,'Electrode')
+                top = patch('FaceColor','red','XData',[centerpos(1) - width/2-.1  centerpos(1) + width/2+.1 centerpos(1) + width/2+.1 centerpos(1) - width/2-.1]...
+                    ,'YData',[centerpos(2)+ height/2+.1  centerpos(2)+height/2+.1  centerpos(2) + height/2+.3   centerpos(2) + height/2+.3]);
+                
+                bottom = patch('FaceColor','black','XData',[centerpos(1) - width/2-.1  centerpos(1) + width/2+.1  centerpos(1) + width/2+.1    centerpos(1) - width/2-.1]...
+                    ,'YData',[centerpos(2)- height/2-.1  centerpos(2)-height/2-.1  centerpos(2) - height/2-.3   centerpos(2) - height/2-.3]);
+                
+                
+                x0 = centerpos(1) - width/2;
+                x1 = centerpos(1) + width/2;
+                
+                low = centerpos(2) - height/2;
+                high= centerpos(2) + height/2;
+                
+                
+                
+                Efield;
+                adjust=1;
+                if  Efield > 1.4
+                    adjust = 1;
+                    
+                elseif Efield > 1.0 && Efield <= 1.4
+                    adjust = adjust * .8;
+                    
+                elseif Efield > .6 && Efield <= 1.0
+                    adjust = adjust * .6;
+                    
+                elseif Efield > .2 && Efield <= .6
+                    adjust = adjust * .4;
+                    
+                elseif Efield > -.2 && Efield <= .2 && Efield ~= 0
+                    adjust = adjust * .2;
+                    
+                elseif Efield == 0 
+                    adjust = 0;
+                    
+                elseif Efield < -.2 && Efield >= -.6
+                    adjust = adjust * .4;
+                    
+                elseif Efield < -.6 && Efield >= -1.0
+                    adjust = adjust * .6;
+                    
+                elseif Efield < -1.0 && Efield >= -1.4
+                    adjust = adjust * .8;
+                    
+                elseif Efield < -1.4
+                    adjust = 1;
+                    
+                end
+                
+                adjust;
+                for i=x0 : (x1-x0)/10 : x1
+                    
+                    p1 = [i low];                         % First Point
+                    p2 = [i high];                         % Second Point
+                    dp = p2-p1;                         % Difference
+                    
+                    hold on;
+                    q=quiver(p1(1),p1(2),dp(1),adjust * dp(2),0);
+                    q.LineWidth = 1.5;
+                    q.MarkerEdgeColor = 'black';
+                    q.Color = 'black';
+                end
+                
+                hold off;
+            end
+            
             
         end
         

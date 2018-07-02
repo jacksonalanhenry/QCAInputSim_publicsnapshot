@@ -16,8 +16,8 @@ eps0 = 8.854E-12;%set constants
 a=1e-9;
 q=1;
 E0 = q^2 * (1.602e-19) / (4*pi*eps0*a)* (1-1/sqrt(2));
-clk= -5.5;%str2num(get(handles.chngClock,'String'));
-clockfield=[0 0 clk]*E0;    
+clk= str2num(get(handles.chngClock,'String'));
+clockfield=[0 clk 0]*E0;    
     
 
 

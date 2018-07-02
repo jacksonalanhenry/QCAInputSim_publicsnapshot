@@ -2,8 +2,7 @@ function AutoSnap(handles)
 
     myCircuit = getappdata(gcf,'myCircuit');
     
-snap = get(handles.autoSnap,'Value');%use this for the switch
-
+snap = get(handles.autoSnap,'Value')%use this for the switch
 
 
 switch snap
