@@ -14,7 +14,7 @@ myCircuit.Device{1}={};%empty first node
 myCircuit.Device=myCircuit.Device{1};%the empty first device
 
 myCircuit.Mode = 'Simulation';
-myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
+myCircuit = myCircuit.CircuitDraw(gca);
 handles.layoutchange.Value=0;
 
 setappdata(f,'myCircuit',myCircuit);

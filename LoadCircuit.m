@@ -22,7 +22,7 @@ else
     
     setappdata(f,'myCircuit',loader.Circuit);
     
-    loader.Circuit.CircuitDraw(handles.LayoutWindow);
+    loader.Circuit.CircuitDraw(gca);
     axis equal
     delete(newFile);
     
