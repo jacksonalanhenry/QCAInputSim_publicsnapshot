@@ -1,6 +1,6 @@
 function ResetCells()
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%All cells except for drivers will be reset to an activation of 1 and a
+%polarization of 0.
 
     myCircuit = getappdata(gcf,'myCircuit');
     
@@ -25,6 +25,7 @@ function ResetCells()
             
         end
         myCircuit = myCircuit.CircuitDraw(gca);
+          
         
         setappdata(gcf,'myCircuit',myCircuit);
 

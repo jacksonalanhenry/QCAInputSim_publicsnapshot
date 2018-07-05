@@ -1,4 +1,8 @@
 function RightClickThings()
+%Upon right-clicking, the user will see a uicontext menu where he or she
+%can selected multiple options, all of which are functions within the gui
+%for the purpose of increased ease of use.
+
 
 
 %get the current figure and axis
@@ -22,7 +26,7 @@ m4 = uimenu(c,'Label','Align');
 m4_1 = uimenu('Parent',m4,'Label','Horizontal','Callback',@changeThings);
 m4_2 = uimenu('Parent',m4,'Label','Vertical','Callback',@changeThings);
 
-m5 = uimenu(c,'Label','Simulate','Callback',@changeThings);
+m5 = uimenu(c,'Label','Box Select','Callback',@changeThings);
 m6 = uimenu(c,'Label','Remove Node','Callback',@changeThings);
 
 m7 = uimenu(c,'Label','Add');
@@ -44,8 +48,8 @@ m9 = uimenu(c,'Label','Paste','Callback',@changeThings);
                 AlignVert();
             case 'Horizontal'
                 AlignHoriz();
-            case 'Simulate'
-                Simulate();
+            case 'Box Select'
+                RectangleSelect();
             case 'Remove Node'
                 RemoveNode();
             case 'Driver'

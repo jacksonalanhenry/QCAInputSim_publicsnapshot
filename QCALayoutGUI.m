@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 02-Jul-2018 13:57:40
+% Last Modified by GUIDE v2.5 05-Jul-2018 15:18:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,7 @@ handles.output = hObject;
 guidata(hObject, handles)
 
 % set(handles.figure1,'Name','QCA Layout Demo');
-
+handles.autoSnap.Value;
 
 
 myCircuit = QCACircuit();
@@ -72,6 +72,7 @@ Path.home = pwd;
 Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder'; %this needs to change!!!
 
 setappdata(gcf,'Path',Path);
+
 
 
 
@@ -379,6 +380,8 @@ function autoSnap_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of autoSnap
+
+handles.autoSnap.Value;
 AutoSnap(handles);
 
 
@@ -424,7 +427,6 @@ function signalPanel_Callback(hObject, eventdata, handles)
     
     handles.circuitPanel.Value = 0;
     handles.circuitButtonGroup.Visible = 'off';
-    
     
     
 
@@ -584,7 +586,7 @@ sigType = contents{get(handles.signalType,'Value')} ;
 
 
 transitions = cellstr(get(handles.transitionType,'String')); 
-transType = transitions{get(handles.transitionType,'Value')} ;
+transType = transitions{get(handles.transitionType,'Value')};
 
 
 
@@ -607,6 +609,7 @@ switch sigType
         
     case 'Electrode'
         mySignal.Type = sigType;
+        mySignal.InputField = str2num(handles.changeInputField.String);
 end
 
 
@@ -676,6 +679,9 @@ if ~isempty(contents)
                 
                 
             case 'Custom'
+                
+            case 'Electrode'
+                handles.changeInputField.String = num2str(mySignal.InputField);
                 
         end
         setappdata(gcf,sigName,mySignal);
@@ -774,7 +780,7 @@ if ~isempty(contents)
             case 'Custom'
                 
             case 'Electrode'
-                
+                mySignal.InputField = str2num(handles.changeInputField.String);
         end
         setappdata(gcf,sigName,mySignal);
         handles.signalName.String = 'Input Name';
@@ -861,24 +867,24 @@ function makeElectrode_Callback(hObject, eventdata, handles)
 % hObject    handle to makeElectrode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-myCircuit = getappdata(gcf,'myCircuit');
+% myCircuit = getappdata(gcf,'myCircuit');
 
 
 
 
 
 function inputField_Callback(hObject, eventdata, handles)
-% hObject    handle to inputField (see GCBO)
+% hObject    handle to changeInputField (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of inputField as text
-%        str2double(get(hObject,'String')) returns contents of inputField as a double
+% Hints: get(hObject,'String') returns contents of changeInputField as text
+%        str2double(get(hObject,'String')) returns contents of changeInputField as a double
 
 
 % --- Executes during object creation, after setting all properties.
 function inputField_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to inputField (see GCBO)
+% hObject    handle to changeInputField (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -886,4 +892,125 @@ function inputField_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+
+function changeInputField_Callback(hObject, eventdata, handles)
+% hObject    handle to changeInputField (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of changeInputField as text
+%        str2double(get(hObject,'String')) returns contents of changeInputField as a double
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function changeInputField_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to changeInputField (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in drawElectrodes.
+function drawElectrodes_Callback(hObject, eventdata, handles)
+% hObject    handle to drawElectrodes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ChangeInputField(handles);
+
+
+% --- Executes on key press with focus on figure1 or any of its controls.
+function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+switch eventdata.Key
+    case 'h' %align horizontally
+        AlignHoriz();
+        
+    case 'v' %align vertical
+        AlignVert();
+    
+    case 's' %make a supercell
+        MakeSuperCellGUI();
+        
+    case 'n' %add a node
+        QCALayoutAddNode();
+        
+    case 'd' %add a driver
+        QCALayoutAddDriver();
+    
+    case 'b' %drag and expand box to select cells (must go over the middle)
+        RectangleSelect();
+        
+    case 'c' %disband super cell
+        DisbandSuperCell();
+        
+    case 'r' %remove any selected nodes
+        RemoveNode();
+        
+    case 'g' %turn snapt to grid on and off
+        snap = get(handles.autoSnap,'Value');
+        
+        switch snap
+            case 0 
+                handles.autoSnap.Value = 1;
+                
+            case 1
+                handles.autoSnap.Value = 0;
+        end
+        AutoSnap(handles);
+        
+    case 'e' %reset cells
+        ResetCells();
+        
+    case 't' %refresh
+        myCircuit = getappdata(gcf,'myCircuit');
+        
+        myCircuit = myCircuit.CircuitDraw(gca);
+        
+        setappdata(gcf,'myCircuit',myCircuit);
+        
+    case 'a' %select all
+        myCircuit = getappdata(gcf,'myCircuit');
+        
+        if ~isempty(myCircuit.Device)
+            for i = 1:length(myCircuit.Device)
+                if isa(myCircuit.Device{i},'QCASuperCell')
+                    
+                    for j=1:length(myCircuit.Device{i}.Device)
+                        
+                        myCircuit.Device{i}.Device{j}.SelectBox.Selected = 'on';
+                        
+                        
+                    end
+                    
+                    
+                else
+                    myCircuit.Device{i}.SelectBox.Selected = 'on';
+                    
+                end
+            end
+            
+            DragDropNEW();
+            setappdata(gcf,'myCircuit',myCircuit);
+        end
+        
+    case 'q' %deselect cells (but it's really just redrawing)
+        myCircuit = getappdata(gcf,'myCircuit');
+        myCircuit = myCircuit.CircuitDraw(gca);
+
+        setappdata(gcf,'myCircuit',myCircuit);
 end

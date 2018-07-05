@@ -16,9 +16,13 @@ classdef Signal
         Period = 1;
         Phase = pi/2;
         
-        %Piecewise Properties
-
         
+        
+        %Piecewise Properties
+        
+        
+        %Electrode Properties
+        InputField=0;
         
     end
     
@@ -118,13 +122,13 @@ classdef Signal
                     %THIS FUNCTION ONLY ASSIGNS z Field
                     
                     EField = [0,0,0];
-
-                    EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude; 
-
+                    
+                    EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude;
+                    
                     
                     ef = EField(3);
                     x  = centerposition(1);
-%                     disp(['x: ', num2str(x), ' ef: ', num2str(ef)])%'t: ', num2str(time),
+                    %                     disp(['x: ', num2str(x), ' ef: ', num2str(ef)])%'t: ', num2str(time),
                     
                     
                 else
@@ -138,70 +142,232 @@ classdef Signal
         
         
         function obj = drawElectrode(obj, centerpos, height, width, Efield)
+            centerpos;
+            height;
+            width;
             
             if strcmp(obj.Type,'Electrode')
-                top = patch('FaceColor','red','XData',[centerpos(1) - width/2-.1  centerpos(1) + width/2+.1 centerpos(1) + width/2+.1 centerpos(1) - width/2-.1]...
-                    ,'YData',[centerpos(2)+ height/2+.1  centerpos(2)+height/2+.1  centerpos(2) + height/2+.3   centerpos(2) + height/2+.3]);
                 
-                bottom = patch('FaceColor','black','XData',[centerpos(1) - width/2-.1  centerpos(1) + width/2+.1  centerpos(1) + width/2+.1    centerpos(1) - width/2-.1]...
-                    ,'YData',[centerpos(2)- height/2-.1  centerpos(2)-height/2-.1  centerpos(2) - height/2-.3   centerpos(2) - height/2-.3]);
+                %draw the text box showing the electric field, and
+                %lower/upper patches to denote electrodes
+                
+                txt = text(centerpos(1) - width/2-.25 , centerpos(2)+ height/2+.85 , [num2str(Efield) ' V/m']);
+                top = patch('FaceColor','red','XData',[centerpos(1) - width/2-.25  centerpos(1) + width/2+.25  centerpos(1) + width/2+.25 centerpos(1) - width/2-.25]...
+                    ,'YData',[centerpos(2)+ height/2+.75  centerpos(2)+height/2+.75  centerpos(2) + height/2+.95   centerpos(2) + height/2+.95]);
+                
+                bottom = patch('FaceColor','black','XData',[centerpos(1) - width/2-.25  centerpos(1) + width/2+.25   centerpos(1) + width/2+.25    centerpos(1) - width/2-.25]...
+                    ,'YData',[centerpos(2)- height/2-.95  centerpos(2)-height/2-.95  centerpos(2) - height/2-.75   centerpos(2) - height/2-.75]);
                 
                 
-                x0 = centerpos(1) - width/2;
-                x1 = centerpos(1) + width/2;
                 
-                low = centerpos(2) - height/2;
-                high= centerpos(2) + height/2;
+                x0 = centerpos(1) - width/2-.25;
+                x1 = centerpos(1) + width/2+.25;
                 
+                if height == 0
+                    low = centerpos(2) - .75;
+                    high= centerpos(2) + .75;
+                else
+                    low = centerpos(2) - height/2-.75;
+                    high= centerpos(2) + height/2+.75;    
+                end
                 
                 
                 Efield;
-                adjust=1;
-                if  Efield > 1.4
-                    adjust = 1;
+                num=0;
+                
+                %intervals of E field magnitude to determine number of
+                %electric field lines between the electrodes
+                if  Efield > 8
+                    num = (x1-x0)/20;
                     
-                elseif Efield > 1.0 && Efield <= 1.4
-                    adjust = adjust * .8;
+                    for i=x0 : num : x1
+                        
+                            
+                            p1 = [i low];
+                            p2 = [i high];
+                            dp = p2-p1;
+                            
+                            hold on;
+                            q=quiver(p1(1),p1(2),dp(1),dp(2),0);
+%                             q.LineWidth = 5;
+                            q.MarkerEdgeColor = 'black';
+                            q.Color = 'black';
+                            p.Parent = gca;
+                        
+                    end
                     
-                elseif Efield > .6 && Efield <= 1.0
-                    adjust = adjust * .6;
+                elseif Efield > 6 && Efield <= 8
+                    num = (x1-x0)/20;
+                    for i=x0 : num : x1
+                        
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p2-p1;
+                        
+                        hold on;
+                        q=quiver(p1(1),p1(2),dp(1),dp(2),0);
+%                         q.LineWidth = 3;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
+                    end
                     
-                elseif Efield > .2 && Efield <= .6
-                    adjust = adjust * .4;
+                elseif Efield > 4 && Efield <= 6
+                    num = (x1-x0)/9;
+                    for i=x0 : num : x1
+                        
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p2-p1;
+                        
+                        hold on;
+                        q=quiver(p1(1),p1(2),dp(1),dp(2),0);
+%                         q.LineWidth = 2;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
+                    end
                     
-                elseif Efield > -.2 && Efield <= .2 && Efield ~= 0
-                    adjust = adjust * .2;
+                elseif Efield > 2 && Efield <= 4
+                    num = (x1-x0)/5;
+                    for i=x0 : num : x1
+                        
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p2-p1;
+                        
+                        hold on;
+                        q=quiver(p1(1),p1(2),dp(1),dp(2),0);
+%                         q.LineWidth = 1;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
+                    end
                     
-                elseif Efield == 0 
-                    adjust = 0;
+                  
                     
-                elseif Efield < -.2 && Efield >= -.6
-                    adjust = adjust * .4;
+                elseif Efield <= 2 && Efield > 0
+                    num = (x1-x0)/2;
+                    for i=x0 : num : x1
+                        
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p2-p1;
+                        
+                        hold on;
+                        q=quiver(p1(1),p1(2),dp(1),dp(2),0);
+%                         q.LineWidth = .1;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
+                    end
                     
-                elseif Efield < -.6 && Efield >= -1.0
-                    adjust = adjust * .6;
                     
-                elseif Efield < -1.0 && Efield >= -1.4
-                    adjust = adjust * .8;
+                elseif Efield >= -2 && Efield < 0
+                    num = (x1-x0)/2;
+                    for i=x0 : num : x1
+                        
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p1-p2;
+                        
+                        hold on;
+                        q=quiver(p2(1),p2(2),dp(1),dp(2),0);
+%                         q.LineWidth = .1;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
+                    end                      
                     
-                elseif Efield < -1.4
-                    adjust = 1;
+                    
+                    
+                elseif Efield < -2 && Efield >= -4
+                    num = (x1-x0)/5;
+                    for i=x0 : num : x1
+                        
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p1-p2;
+                        
+                        hold on;
+                        q=quiver(p2(1),p2(2),dp(1),dp(2),0);
+%                         q.LineWidth = 1;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
+                    end
+                    
+                elseif Efield < -4 && Efield >= -6
+                    num = (x1-x0)/9;
+                    for i=x0 : num : x1
+                        
+                        p1 = [i low];                       
+                        p2 = [i high];                       
+                        dp = p1-p2;                         
+                        
+                        hold on;
+                        q=quiver(p2(1),p2(2),dp(1),dp(2),0);
+%                         q.LineWidth = 2;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
+                    end                    
+                    
+                elseif Efield < -6 && Efield >= -8
+                    num =(x1-x0)/15;
+                    for i=x0 : num : x1
+                        
+                        p1 = [i low];                       
+                        p2 = [i high];                       
+                        dp = p1-p2;                         
+                        
+                        hold on;
+                        q=quiver(p2(1),p2(2),dp(1),dp(2),0);
+%                         q.LineWidth = 3;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
+                    end                    
+                    
+                elseif Efield < -8
+                    num = (x1-x0)/20;
+                    for i=x0 : num : x1
+                        
+                        p1 = [i low];                       
+                        p2 = [i high];                       
+                        dp = p1-p2;                         
+                        
+                        hold on;
+                        q=quiver(p2(1),p2(2),dp(1),dp(2),0);
+%                         q.LineWidth = 5;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
+                    end                    
+                    
+                elseif Efield == 0
+                             
+                    %don't draw E field lines
                     
                 end
                 
-                adjust;
-                for i=x0 : (x1-x0)/10 : x1
-                    
-                    p1 = [i low];                         % First Point
-                    p2 = [i high];                         % Second Point
-                    dp = p2-p1;                         % Difference
-                    
-                    hold on;
-                    q=quiver(p1(1),p1(2),dp(1),adjust * dp(2),0);
-                    q.LineWidth = 1.5;
-                    q.MarkerEdgeColor = 'black';
-                    q.Color = 'black';
-                end
+                %we must now change the order of the Children of
+                %axes.Children so the arrows are behind the cell drawings
+                num;
+                num=(x1-x0)*num^(-1)+1; %interval multiplied by the inverse of the iteration length plus 1;
+                
+                ax=gca;
+                
+                graphicsList = get(ax,'children'); %list we are going to change
+                newList = [];
+                
+                for j=1:num
+                    newList(end+1)= graphicsList(j);%put all the arrows into the newList
+                end    
+                
+                set(ax,'children',[ax.Children(j+1:end); newList']); %the arrows are now at the end of the Children handle
+                
+                
                 
                 hold off;
             end

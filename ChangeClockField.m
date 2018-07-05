@@ -17,7 +17,7 @@ function ChangeClockField(handles)
                 
             else %any cell can be deleted also
                 
-                myCircuit.Device{i}.ElectricField = [0 newclockfield 0 ];
+                myCircuit.Device{i}.ElectricField = [0  0  newclockfield];
                 
             end
             
