@@ -23,6 +23,9 @@ classdef Signal
         
         %Electrode Properties
         InputField=0;
+        CenterPosition=[0 0 0];
+        Height=0;
+        Width=0;
         
     end
     
@@ -140,24 +143,24 @@ classdef Signal
             
         end
         
-        
         function obj = drawElectrode(obj, centerpos, height, width, Efield)
-            centerpos;
-            height;
-            width;
+            obj.CenterPosition = centerpos;
+            obj.Height = height;
+            obj.Width = width;
+            obj.InputField = Efield;
             
             if strcmp(obj.Type,'Electrode')
                 
                 %draw the text box showing the electric field, and
                 %lower/upper patches to denote electrodes
                 
-                txt = text(centerpos(1) - width/2-.25 , centerpos(2)+ height/2+.85 , [num2str(Efield) ' V/m']);
+                txt = text(centerpos(1) - width/2-.7 , centerpos(2) , [num2str(Efield) ' V/m']);
+                
                 top = patch('FaceColor','red','XData',[centerpos(1) - width/2-.25  centerpos(1) + width/2+.25  centerpos(1) + width/2+.25 centerpos(1) - width/2-.25]...
                     ,'YData',[centerpos(2)+ height/2+.75  centerpos(2)+height/2+.75  centerpos(2) + height/2+.95   centerpos(2) + height/2+.95]);
                 
                 bottom = patch('FaceColor','black','XData',[centerpos(1) - width/2-.25  centerpos(1) + width/2+.25   centerpos(1) + width/2+.25    centerpos(1) - width/2-.25]...
                     ,'YData',[centerpos(2)- height/2-.95  centerpos(2)-height/2-.95  centerpos(2) - height/2-.75   centerpos(2) - height/2-.75]);
-                
                 
                 
                 x0 = centerpos(1) - width/2-.25;

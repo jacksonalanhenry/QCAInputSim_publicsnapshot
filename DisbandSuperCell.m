@@ -1,6 +1,7 @@
 function DisbandSuperCell()
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%If a member of a a supercell is selected and then this function is called,
+%then the supercell will be disbanded and all constituent parts will be
+%individual nodes again.
 myCircuit = getappdata(gcf,'myCircuit');
 
 

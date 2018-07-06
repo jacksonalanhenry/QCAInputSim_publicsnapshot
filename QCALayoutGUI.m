@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 05-Jul-2018 15:18:53
+% Last Modified by GUIDE v2.5 06-Jul-2018 13:30:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -69,7 +69,8 @@ RightClickThings();
 
 setappdata(gcf, 'myCircuit', myCircuit);
 Path.home = pwd;
-Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder'; %this needs to change!!!
+% Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder'; %this needs to change!!!
+Path.circ = './Circuits folder';
 
 setappdata(gcf,'Path',Path);
 
@@ -148,7 +149,7 @@ function SaveCircuit_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveCircuit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% SaveCircuit(gcf);
+
 
 
 
@@ -157,14 +158,14 @@ function SaveMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-SaveCircuit(gcf,handles);
+SaveCircuit();
 
 % --------------------------------------------------------------------
 function OpenMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to OpenMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-LoadCircuit(gcf,handles)
+LoadCircuit();
 
 
 
@@ -173,7 +174,7 @@ function NewMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to NewMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-NewCircuit(gcf,handles);
+NewCircuit();
 
 
 
@@ -621,6 +622,7 @@ if ~isempty(handles.signalName.String)
     
 setappdata(gcf,handles.signalName.String,mySignal);
 handles.signalName.String = 'Input Name';
+handles.signalName.Value = 0;
 end
 
 
@@ -920,12 +922,12 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in drawElectrodes.
+% --- Executes on button press in drawElectrode.
 function drawElectrodes_Callback(hObject, eventdata, handles)
-% hObject    handle to drawElectrodes (see GCBO)
+% hObject    handle to drawElectrode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-ChangeInputField(handles);
+
 
 
 % --- Executes on key press with focus on figure1 or any of its controls.
@@ -936,36 +938,40 @@ function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
 %	Character: character interpretation of the key(s) that was pressed
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
-switch eventdata.Key
-    case 'h' %align horizontally
+
+
+if ~isempty(eventdata.Modifier)
+    
+    if strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'h')
+        
         AlignHoriz();
         
-    case 'v' %align vertical
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'v')%align vertical
         AlignVert();
-    
-    case 's' %make a supercell
+        
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'s') %make a supercell
         MakeSuperCellGUI();
         
-    case 'n' %add a node
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'n') %add a node
         QCALayoutAddNode();
         
-    case 'd' %add a driver
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'d')%add a driver
         QCALayoutAddDriver();
-    
-    case 'b' %drag and expand box to select cells (must go over the middle)
+        
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'b')%drag and expand box to select cells (must go over the middle)
         RectangleSelect();
         
-    case 'c' %disband super cell
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'l')%disband super cell
         DisbandSuperCell();
         
-    case 'r' %remove any selected nodes
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'r') %remove any selected nodes
         RemoveNode();
         
-    case 'g' %turn snapt to grid on and off
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'g')%turn snapt to grid on and off
         snap = get(handles.autoSnap,'Value');
         
         switch snap
-            case 0 
+            case 0
                 handles.autoSnap.Value = 1;
                 
             case 1
@@ -973,17 +979,17 @@ switch eventdata.Key
         end
         AutoSnap(handles);
         
-    case 'e' %reset cells
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'e') %reset cells
         ResetCells();
         
-    case 't' %refresh
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'t')%refresh
         myCircuit = getappdata(gcf,'myCircuit');
         
         myCircuit = myCircuit.CircuitDraw(gca);
         
         setappdata(gcf,'myCircuit',myCircuit);
         
-    case 'a' %select all
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'a')%select all
         myCircuit = getappdata(gcf,'myCircuit');
         
         if ~isempty(myCircuit.Device)
@@ -1008,9 +1014,37 @@ switch eventdata.Key
             setappdata(gcf,'myCircuit',myCircuit);
         end
         
-    case 'q' %deselect cells (but it's really just redrawing)
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'q')%deselect cells (but it's really just redrawing)
         myCircuit = getappdata(gcf,'myCircuit');
         myCircuit = myCircuit.CircuitDraw(gca);
-
+        
         setappdata(gcf,'myCircuit',myCircuit);
+        
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'c')
+        CopyCells();
+        
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'p')
+        PasteCells();
+    end
+    
+    if   strcmp(eventdata.Modifier,'alt') && strcmp(eventdata.Key,'leftbracket')
+        web('https://www.youtube.com/watch?v=TzXXHVhGXTQ');
+        
+    end
 end
+
+
+% --- Executes on button press in drawElectrode.
+function drawElectrode_Callback(hObject, eventdata, handles)
+% hObject    handle to drawElectrode (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ChangeInputField(handles);
+
+
+% --- Executes on button press in getAppInfo.
+function getAppInfo_Callback(hObject, eventdata, handles)
+% hObject    handle to getAppInfo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+AppInfo = getappdata(gcf)

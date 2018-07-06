@@ -1,6 +1,6 @@
 function QCALayoutAddNode()
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%This allows the user to add a node.  There is a similar button for adding
+%a driver.  See also the Add 5 Nodes button.
 
 myCircuit = getappdata(gcf, 'myCircuit');
 

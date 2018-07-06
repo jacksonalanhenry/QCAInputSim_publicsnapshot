@@ -1,4 +1,8 @@
 function DragDropNEW()
+%Drag and drop functionality for single cells, supercells, and groups of
+%cells.
+
+
 dragging = [];
 orPos = [];
 myOrPos=[];

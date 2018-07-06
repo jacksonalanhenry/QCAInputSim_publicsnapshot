@@ -1,5 +1,7 @@
-function NewCircuit(f,handles)
-%UNTITLED2 Summary of this function goes here
+function NewCircuit()
+%The axes are cleared for a new circuit to be made.
+f=gcf;
+
 a=gca;
 myCircuit = getappdata(f,'myCircuit');
 cla;%clear the axes
@@ -15,7 +17,7 @@ myCircuit.Device=myCircuit.Device{1};%the empty first device
 
 myCircuit.Mode = 'Simulation';
 myCircuit = myCircuit.CircuitDraw(gca);
-handles.layoutchange.Value=0;
+
 
 setappdata(f,'myCircuit',myCircuit);
 setappdata(f,'Copies',copies);

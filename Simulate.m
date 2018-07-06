@@ -3,7 +3,7 @@ function Simulate(handles)
 %   Detailed explanation goes here
 ax=gca;
 
-ResetCells();
+
 
 myCircuit = getappdata(gcf,'myCircuit');
 
@@ -92,7 +92,9 @@ if ~isempty(mySignal)
         ydiff = (max(y)-min(y));
         mySignal = mySignal.drawElectrode([x(1), y(1), 0], ydiff,xdiff,inputfield);
     end
+    setappdata(gcf,handles.signalEditor.String,mySignal);
 end
 
 setappdata(gcf,'myCircuit',myCircuit);
+
 end

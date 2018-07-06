@@ -1,6 +1,5 @@
 function ChangeCellPos(handles)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%Change a single cell's position.
 myCircuit = getappdata(gcf,'myCircuit');
 
 newPos = str2num(get(handles.chngPos,'String'));
