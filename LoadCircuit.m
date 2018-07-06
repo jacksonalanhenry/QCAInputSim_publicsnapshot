@@ -1,33 +1,39 @@
-function LoadCircuit(f,handles)
+function LoadCircuit()
 
-%   Extremely detailed explanation goes here
+%   A circuit/signal file can be selected from the dialog box upon calling
+%   this function.  Once the circuit is loaded, the user can interact with
+%   and change that circuit and the signals with it as well.
 
 Path = getappdata(gcf,'Path');
-myCircuit = getappdata(gcf,'myCircuit');
+
+myCircuit = getappdata(gcf,'myCircuit'); %going to replace this current circuit
+
 circpath = Path.circ;
+
 home = Path.home;
+
 cd(circpath);
 newFile = uigetfile('*.mat');
 
 
 if ~newFile
-    cd(home)
+    cd(home);
 else
     copyfile(newFile,home);
     cd(home);
     
     
     loader=load(newFile);
-    cla;
     
-    setappdata(f,'myCircuit',loader.Circuit);
     
-    loader.Circuit.CircuitDraw(gca);
-    axis equal
+    myCircuit = loader.Circuit;
+    
+    myCircuit = myCircuit.CircuitDraw(gca);
+    
     delete(newFile);
     
     
-    myCircuit=getappdata(gcf,'myCircuit');
+    
     setappdata(gcf,'myCircuit',myCircuit);
     
 end

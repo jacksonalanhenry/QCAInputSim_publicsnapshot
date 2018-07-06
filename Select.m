@@ -1,5 +1,4 @@
 function Select(p)
-%   GUI SELECT
 % Select functionality, then once that object is selected in the gui,
 % it can be dragged and dropped.  Once deselected, it cannot be
 % dragged and dropped until it is selected again.

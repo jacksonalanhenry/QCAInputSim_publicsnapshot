@@ -1,6 +1,6 @@
 function QCALayoutAddDriver()
-%UNTITLED4 Summary of this function goes here
-%   Detailed explanation goes here
+%This allows the user to add a driver.  There is a similar button for adding
+%a node.
 
 myCircuit = getappdata(gcf, 'myCircuit');
 

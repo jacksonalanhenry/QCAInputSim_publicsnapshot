@@ -1,6 +1,9 @@
 function ChangeClockField(handles)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%This function will change the clock field of the circuit, namely the
+%electric field in the z direction.  Once the clock field is strong enough
+%in the negative z direction, this will allow nodes to get relaxed to a
+%state of -1 or 1.
+%
     myCircuit = getappdata(gcf,'myCircuit');
     
     newclockfield = str2num(get(handles.chngClock,'String'));
@@ -17,7 +20,7 @@ function ChangeClockField(handles)
                 
             else %any cell can be deleted also
                 
-                myCircuit.Device{i}.ElectricField = [0 newclockfield 0 ];
+                myCircuit.Device{i}.ElectricField = [0  0  newclockfield];
                 
             end
             

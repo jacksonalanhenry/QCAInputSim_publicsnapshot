@@ -1,5 +1,5 @@
 function AlignVert()
-%aligning selected cells vertically
+%Aligning selected cells vertically
 
 
 myCircuit = getappdata(gcf,'myCircuit');

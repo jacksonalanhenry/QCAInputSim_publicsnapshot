@@ -361,9 +361,12 @@ classdef QCACircuit
                 
             end
             RightClickThings();   %uicontextmenu available upon drawing
-            
+
             hold off
             grid on
+            
+
+
         end
         
         
@@ -410,7 +413,7 @@ classdef QCACircuit
                         
                         if sum(obj.Device{i}.Device{j}.CellID == OL) > 0
                             obj.Device{i}.Device{j}.Overlapping = 'on';
-                            obj.Device{i}.Device{j};
+                            
                         else
                             obj.Device{i}.Device{j}.Overlapping = 'off';
                             

@@ -1,6 +1,8 @@
 function RemoveNode()
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%Any and all selected cells will be removed.  If a member of a supercell is
+%selected then removed, the entire group of cells within that supercell
+%will be removed as well.
+
 myCircuit = getappdata(gcf,'myCircuit');
 
 newCircuit = QCACircuit;

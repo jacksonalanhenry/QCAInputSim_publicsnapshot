@@ -1,6 +1,5 @@
 function ChangePol(handles)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%Change the position of any single driver or node.
 myCircuit = getappdata(gcf,'myCircuit');
 
 for i=1:length(myCircuit.Device)

@@ -1,6 +1,5 @@
 function PasteCells()
-%UNTITLED8 Summary of this function goes here
-%   Detailed explanation goes here
+%Paste the cells that were just copied.
 
 
     %get both the circuit and the copied cells from the current fig

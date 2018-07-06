@@ -1,6 +1,5 @@
 function CopyCells()
-% UNTITLED7 Summary of this function goes here
-%   Detailed explanation goes here
+%Make a copy of all selected cells.
 myCircuit = getappdata(gcf,'myCircuit');
 
 %we want to clear the current data
