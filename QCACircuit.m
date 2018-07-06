@@ -680,6 +680,9 @@ classdef QCACircuit
                     
                 end
                 
+               
+                
+                
                 
                 %relax2Groundstate
                 obj = obj.Relax2GroundState();
