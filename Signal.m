@@ -23,7 +23,7 @@ classdef Signal
         
 
             
-        Name
+        TransType
 %         Type
         Transition
 %         Period
