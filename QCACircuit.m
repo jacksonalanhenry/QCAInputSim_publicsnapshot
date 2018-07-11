@@ -658,7 +658,7 @@ classdef QCACircuit
                 
                 case 2 % normal
                     %disp('2')
-                    file = 'simResults.mat'
+                    file = 'simResults.mat';
                 case 3 % signal array and default name
                     file = varargin{1};
                 otherwise
@@ -761,10 +761,8 @@ classdef QCACircuit
                 disp(['t: ', num2str(t)]);
                 
             end %time step loop
-            pols
             m.pols = pols;
             m.acts = acts;
-            efields
             m.efields = efields;
             
             

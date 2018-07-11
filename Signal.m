@@ -146,11 +146,11 @@ classdef Signal
                     EField = [0,0,0];
                     switch obj.Type
                         case 'Sinusoidal'
-                            EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude;
+                            EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude + obj.MeanValue;
                     
     
                         case 'Fermi'
-                            EField(3) = PeriodicFermi(mod(centerposition(1) - time, obj.Period), obj.Period, obj.Sharpness);
+                            EField(3) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
             
  
                         otherwise

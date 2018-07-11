@@ -623,6 +623,14 @@ switch sigType
         mySignal.Phase = str2num(handles.changePhase.String);
         mySignal.Type = sigType;
         
+    case 'Fermi'
+        mySignal.Amplitude = str2num(handles.changeAmp.String);
+        %mySignal.Sharpness = str2num(handles.changeSharp.String);
+        mySignal.Period = str2num(handles.changePeriod.String);
+        mySignal.Phase = str2num(handles.changePhase.String);
+        %mySignal.MeanValue = str2num(handles.changeMV.String);
+        mySignal.Type = sigType;
+        
     case 'Custom'
         
         
@@ -707,6 +715,13 @@ if ~isempty(contents)
                 handles.changeWave.String = num2str(mySignal.Wavelength);
                 handles.changePeriod.String = num2str(mySignal.Period);
                 handles.changePhase.String = num2str(mySignal.Phase);
+                
+            case 'Fermi'
+                handles.changeAmp.String = num2str(mySignal.Amplitude);
+                %handles.changeSharp.String= num2str(mySignal.Sharpness);
+                handles.changePeriod.String = num2str(mySignal.Period);
+                handles.changePhase.String = num2str(mySignal.Phase);
+                %handles.changeMV.String = num2str(mySignal.MeanValue);
                 
                 
             case 'Custom'
@@ -825,11 +840,18 @@ if ~isempty(contents)
                 mySignal.Wavelength = str2num(handles.changeWave.String);
                 mySignal.Period = str2num(handles.changePeriod.String);
                 mySignal.Phase = str2num(handles.changePhase.String);
-                
+                %mySignal.MeanValue = str2num(handles.changeMV.String);
                 
                 
                 
             case 'Custom'
+                
+            case 'Fermi'
+                mySignal.Amplitude = str2num(handles.changeAmp.String);
+                %mySignal.Sharpness = str2num(handles.changeSharp.String);
+                mySignal.Period = str2num(handles.changePeriod.String);
+                mySignal.Phase = str2num(handles.changePhase.String);
+                %mySignal.MeanValue = str2num(handles.changeMV.String);
                 
             case 'Electrode'
                 mySignal.InputField = str2num(handles.changeInputField.String);
@@ -1266,7 +1288,7 @@ function createSimulation_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 myCircuit = getappdata(gcf,'myCircuit');
 SignalsList = getappdata(gcf,'SignalsList');
-
+myCircuit = myCircuit.GenerateNeighborList();
 if length(SignalsList)
     myCircuit = myCircuit.pipeline(SignalsList{1});
 end
