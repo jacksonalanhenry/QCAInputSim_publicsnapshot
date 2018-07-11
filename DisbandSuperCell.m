@@ -37,13 +37,12 @@ for i=1:length(myCircuit.Device)
     end
 end
 
-snapping = myCircuit.SnapToGrid;
+snapping = myCircuit.SnapToGrid; %keep the snap to grid trait
 
 
-myCircuit=newCircuit;
+myCircuit=newCircuit; %old = new
 
 myCircuit.SnapToGrid = snapping;
-myCircuit.Device;
 
 
 

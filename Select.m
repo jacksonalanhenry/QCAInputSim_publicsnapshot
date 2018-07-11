@@ -7,13 +7,7 @@ function Select(p)
 
 %assigning the callback function, the deselect function will get its
 %callback in the sel function
-
-
-
 p.ButtonDownFcn=@selObject;
-
-
-
 
 
     function selObject(hObject, eventdata)
@@ -24,13 +18,7 @@ p.ButtonDownFcn=@selObject;
                 p.ButtonDownFcn=@deSelObject;
                 
                 
-                
-                myCircuit=getappdata(gcf,'myCircuit');
-                
-                %                        setappdata(gcf,'myCircuit',myCircuit)
                 DragDropNEW();
-                
-                
                 
             end
             
@@ -53,44 +41,3 @@ p.ButtonDownFcn=@selObject;
         
     end
 end
-
-
-
-%     function deSelAll(hObject,eventdata)
-%         myCircuit=getappdata(gcf,'myCircuit');
-% 
-%         mode = myCircuit.Mode;
-% 
-%         if ~isempty(f.ButtonDownFcn)
-%             for i=1:length(myCircuit.Device)
-% 
-%                 switch mode
-% 
-%                     case 'Simulation'
-% 
-%                         if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
-%                             myCircuit.Device{i}.SelectBox.Selected='off';
-%                             setappdata(gcf,'myCircuit',myCircuit);
-%                             myCircuit.CircuitDraw(gca);
-%                         end
-% 
-%                     case 'Layout'
-% 
-%                         if strcmp(myCircuit.Device{i}.LayoutBox.Selected,'on')
-%                             myCircuit.Device{i}.LayoutBox.Selected='off';
-%                             myCircuit.LayoutDraw(gca);
-%                             setappdata(gcf,'myCircuit',myCircuit);
-%                         end
-%                 end
-% 
-%             end
-%             
-%             Select(p);
-% 
-%         end
-%     end
-% 
-% 
-% end
-
-

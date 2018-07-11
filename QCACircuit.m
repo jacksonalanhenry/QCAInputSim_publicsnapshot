@@ -183,9 +183,8 @@ classdef QCACircuit
             
         end
         
-        
         function obj = CircuitDraw(obj,targetaxis, varargin)
-            %cla; %DONT NEED IT ANYMORE YEEEEEEEEEEEEEEEEEEEEEEET
+            %cla; 
             
             hold on
             CellIndex = length(obj.Device);
@@ -322,7 +321,7 @@ classdef QCACircuit
                             
                         end
                         
-                        if colors>0;
+                        if colors>0
                             id = floor(obj.Device{CellIndex}.Device{1}.CellID);
                             
                             color(1)= abs(sin(.4*id*now/100000-id));
@@ -365,10 +364,25 @@ classdef QCACircuit
             hold off
             grid on
             
-
+            SignalsList = getappdata(gcf,'SignalsList');
+            
+            for i=1:length(SignalsList)
+                
+                if strcmp(SignalsList{i}.IsDrawn,'on')
+                    
+                    
+                    if ~isempty(SignalsList{i}.Height)
+                        
+                        SignalsList{i} = SignalsList{i}.drawElectrode();
+                    else
+                        
+                    end
+                    
+                end
+            end
+            setappdata(gcf,'SignalsList',SignalsList);
 
         end
-        
         
         function obj =  AntiOverlap(obj)
             %             clc;
@@ -440,7 +454,6 @@ classdef QCACircuit
                 end
             end
         end
-        
         
         %reference this based on CellId
         function sref = subsref(obj,s)
@@ -734,8 +747,6 @@ classdef QCACircuit
             
             obj.Simulating = 'off';
         end
-        
-        
         
         function cell_obj = getCellArray(obj, CellIDArray)
             %this function returns an array of QCACell objects given a list

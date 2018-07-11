@@ -5,7 +5,7 @@ myCircuit = getappdata(gcf,'myCircuit');
 %we want to clear the current data
 copyParts = getappdata(gcf,'Copies');
 
-copyParts={};
+copyParts={}; %empty the current copies
 
 
 

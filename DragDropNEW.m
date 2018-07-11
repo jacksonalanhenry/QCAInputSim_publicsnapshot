@@ -6,7 +6,6 @@ function DragDropNEW()
 dragging = [];
 orPos = [];
 myOrPos=[];
-ID=0;
 
 % FOR THE GUI::: This function will allow drag and drop capability during
 
@@ -18,12 +17,15 @@ a=gca;
 
 
 myCircuit = getappdata(f,'myCircuit');
+SignalsList = getappdata(f,'SignalsList');
+
+
 
 
 %assigning callbacks for each of the script functions the button functions
-f.WindowButtonUpFcn=@dropObject;
+f.WindowButtonUpFcn=@dropObject; %dropping the object being dragged
 
-f.WindowButtonMotionFcn=@moveObject;
+f.WindowButtonMotionFcn=@moveObject; %moving that object
 
 
 
@@ -32,6 +34,9 @@ f.WindowButtonMotionFcn=@moveObject;
 %with their positions
 selectedcells=[];
 selectedPos=[];
+
+
+
 for i=1:length(myCircuit.Device)
     if isa(myCircuit.Device{i},'QCASuperCell')
         Sel=0;
@@ -56,7 +61,7 @@ for i=1:length(myCircuit.Device)
     else
         if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
             
-            selectedcells(end+1)=myCircuit.Device{i}.CellID;
+            selectedcells(end+1)=myCircuit.Device{i}.CellID;  %we want to store the cell ID's and the center positions
             selectedPos(:,end+1)=myCircuit.Device{i}.CenterPosition;
             
             myCircuit.Device{i}.SelectBox.ButtonDownFcn = @dragObject; %every cell is draggable even in a group
@@ -65,30 +70,31 @@ for i=1:length(myCircuit.Device)
 end
 selectedcells;
 selectedPos;
-
+patchList = {};
 for a=1:length(selectedcells)
-    patchList{a} = {};
+    patchList{a} = {}; %we want a list of patches to drag for each of the selected cells
 end
 
 
-cellList = myCircuit.getCellArray(selectedcells);
+cellList = myCircuit.getCellArray(selectedcells); %these are the actual cells being dragged
 
 
-loopit = length(cellList);
+loopit = length(cellList); %loop iteration
+
 
 %making all the ghost patches to move as we drag the cells
 for i=1:loopit
-    if (selectedcells(i)-floor(selectedcells(i)))==0
+    if (selectedcells(i)-floor(selectedcells(i)))==0 %normal node
     
         patchList{i} = patch;
         patchList{i}.XData=[cellList{i}.CenterPosition(1)-.25;cellList{i}.CenterPosition(1)+.25;cellList{i}.CenterPosition(1)+.25;cellList{i}.CenterPosition(1)-.25];
         patchList{i}.YData=[cellList{i}.CenterPosition(2)-.75;cellList{i}.CenterPosition(2)-.75;cellList{i}.CenterPosition(2)+.75;cellList{i}.CenterPosition(2)+.75];
         patchList{i}.FaceColor=[1 1 1];
-        patchList{i}.FaceAlpha = .02;
+        patchList{i}.FaceAlpha = .02; %they are white patches that will be dragged.  Same size as any cell
         
         patchList{i}.ButtonDownFcn = @dragObject;
     
-    else
+    else %supercell
         
         patchList{i} = patch;
         patchList{i}.XData=[cellList{i}.CenterPosition(1)-.25;cellList{i}.CenterPosition(1)+.25;cellList{i}.CenterPosition(1)+.25;cellList{i}.CenterPosition(1)-.25];
@@ -100,6 +106,7 @@ for i=1:loopit
     end
     
 end
+
 
 
 
@@ -149,7 +156,7 @@ end
             
             
             
-            for i=1:length(myCircuit.Device)
+            for i=1:length(myCircuit.Device) %moving each cell or supercell by the position difference
                 sel=0;
                 if isa(myCircuit.Device{i},'QCASuperCell')
                     
@@ -177,12 +184,13 @@ end
                     end
                     
                 end
-            end            
+            end
             
             patchList={}; %empty the patch list since we don't need any of them anymore
             
-%             p.ButtonDownFcn=@callSel;
-            myCircuit = myCircuit.CircuitDraw(gca); %redraw
+
+            
+            myCircuit = myCircuit.CircuitDraw(gca); %redraw, Select() will get called automatically upon being redrawn
             
 
             
@@ -206,10 +214,12 @@ end
             orPos = newPos;
             
             
-            for i=1:length(patchList)
+            for i=1:length(patchList)  %moving each of the ghost patches so they are dragged as a group
                         patchList{i}.XData = patchList{i}.XData + posDiff(1,1);
                         patchList{i}.YData = patchList{i}.YData + posDiff(1,2);                
             end
+            
+                
             
  
         end

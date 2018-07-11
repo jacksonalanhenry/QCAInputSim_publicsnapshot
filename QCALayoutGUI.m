@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 06-Jul-2018 13:30:11
+% Last Modified by GUIDE v2.5 10-Jul-2018 14:50:02
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,14 +59,15 @@ handles.output = hObject;
 guidata(hObject, handles)
 
 % set(handles.figure1,'Name','QCA Layout Demo');
-handles.autoSnap.Value;
 
 
 myCircuit = QCACircuit();
 myCircuit.CircuitDraw(gca);
 RightClickThings();
 
+SignalsList = {};
 
+setappdata(gcf,'SignalsList',SignalsList);
 setappdata(gcf, 'myCircuit', myCircuit);
 Path.home = pwd;
 % Path.circ = 'C:\Users\jprev\Desktop\QCA\QCA Research\QCAInputSim\Circuits folder'; %this needs to change!!!
@@ -158,14 +159,14 @@ function SaveMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-SaveCircuit();
+SaveCircuit(handles);
 
 % --------------------------------------------------------------------
 function OpenMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to OpenMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-LoadCircuit();
+LoadCircuit(handles);
 
 
 
@@ -174,7 +175,7 @@ function NewMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to NewMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-NewCircuit();
+NewCircuit(handles);
 
 
 
@@ -382,7 +383,6 @@ function autoSnap_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of autoSnap
 
-handles.autoSnap.Value;
 AutoSnap(handles);
 
 
@@ -521,17 +521,17 @@ switch sigType
         
         handles.sinusoidPanel.Visible = 'on';
         handles.customSignal.Visible = 'off';
-        handles.uipanel9.Visible = 'off';
+        handles.electrodePanel.Visible = 'off';
     
     case 'Custom'
         handles.sinusoidPanel.Visible = 'off';
         handles.customSignal.Visible = 'on';
-        handles.uipanel9.Visible = 'off';
+        handles.electrodePanel.Visible = 'off';
     
     case 'Electrode'
         handles.sinusoidPanel.Visible = 'off';
         handles.customSignal.Visible = 'off';
-        handles.uipanel9.Visible = 'on';
+        handles.electrodePanel.Visible = 'on';
         
         
         
@@ -581,6 +581,7 @@ function createSignal_Callback(hObject, eventdata, handles)
 % hObject    handle to createSignal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+SignalsList = getappdata(gcf,'SignalsList');
 
 contents = cellstr(get(handles.signalType,'String')); 
 sigType = contents{get(handles.signalType,'Value')} ;
@@ -601,6 +602,7 @@ switch sigType
         mySignal.Period = str2num(handles.changePeriod.String);
         mySignal.Phase = str2num(handles.changePhase.String);
         mySignal.Type = sigType;
+        
     case 'Custom'
         
         
@@ -616,16 +618,14 @@ end
 
 
 if ~isempty(handles.signalName.String)
-    
+    mySignal.Name = handles.signalName.String;
     handles.signalList.String{end+1,1} = handles.signalName.String;
-
+    SignalsList{end+1} = mySignal;
     
-setappdata(gcf,handles.signalName.String,mySignal);
-handles.signalName.String = 'Input Name';
-handles.signalName.Value = 0;
+    setappdata(gcf,'SignalsList',SignalsList);
+    handles.signalName.String = 'Input Name';
+    handles.signalName.Value = 1;
 end
-
-
 
 
 function signalName_Callback(hObject, eventdata, handles)
@@ -660,17 +660,26 @@ function signalList_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from signalList
 contents = cellstr(get(handles.signalList,'String'));
 
+
 if ~isempty(contents)
     sigName = contents{get(handles.signalList,'Value')};
     
-    mySignal = getappdata(gcf,sigName);
+    SignalsList = getappdata(gcf,'SignalsList');
     
-    if ~isempty(mySignal)
-        sigType = mySignal.Type;
+    if ~isempty(SignalsList)
+        for i=1:length(SignalsList)
+            SignalsList{i}.Name;
+            if strcmp(sigName,SignalsList{i}.Name)
+                mySignal = SignalsList{i};
+                pick = i;
+            end
+        end
+        
         
         handles.signalEditor.String = sigName;
+        handles.signalEditType.String = mySignal.Type;
         
-        switch sigType
+        switch mySignal.Type
             
             case 'Sinusoidal'
                 
@@ -681,12 +690,16 @@ if ~isempty(contents)
                 
                 
             case 'Custom'
+                %nothing yet
                 
             case 'Electrode'
                 handles.changeInputField.String = num2str(mySignal.InputField);
                 
         end
-        setappdata(gcf,sigName,mySignal);
+        SignalsList{pick} = mySignal;
+        
+        
+        setappdata(gcf,'SignalsList',SignalsList);
     end
 end
 
@@ -715,34 +728,41 @@ function deleteSignal_Callback(hObject, eventdata, handles)
 
 contents = cellstr(get(handles.signalList,'String'));
 
+SignalsList = getappdata(gcf,'SignalsList');
+
 if ~isempty(contents)
    
     handles.signalEditor.String = '';
+    handles.signalEditType.String = '';
     
     sigName = contents{get(handles.signalList,'Value')};
    
-    deleteSig = getappdata(gcf,sigName);
+    newSigs = {};
+    contents = {};
     
-    contents{get(handles.signalList,'Value')} = '';
-   
-    newList={};
-    for i=1:length(contents)
+    delete = handles.signalList.Value;
+    
+    SignalsList{delete} = {};
+    
+    
+    
+    for i=1:length(SignalsList)
+                if ~isempty(SignalsList{i})               
         
-        if ~isempty(contents{i})
-            newList{end+1} = contents{i};
-        end
-        
+                    newSigs{end+1} = SignalsList{i};
+                    contents{end+1,1} = SignalsList{i}.Name;
+                end
     end
    
-    
-    handles.signalList.String = newList;
-    handles.signalList.Value = 1;
+   handles.signalList.String = contents;
+   
+   SignalsList = newSigs;
+   handles.signalList.Value = 1;
+
     
   handles.signalName.String = 'Input Name';
    
-    deleteSig = {};
-    
-    setappdata(gcf,sigName,deleteSig);
+    setappdata(gcf,'SignalsList',SignalsList);
     
 end
 
@@ -757,15 +777,25 @@ function saveSignal_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 contents = cellstr(get(handles.signalList,'String'));
 
+SignalsList = getappdata(gcf,'SignalsList');
+myCircuit = getappdata(gcf,'myCircuit');
+
 if ~isempty(contents)
     sigName = contents{get(handles.signalList,'Value')};
     
-    mySignal = getappdata(gcf,sigName);
+        for i=1:length(SignalsList)
+            if strcmp(sigName,SignalsList{i}.Name)
+                mySignal = SignalsList{i};
+                pick = i;
+            end
+        end       
     
     if ~isempty(mySignal)
         sigType = mySignal.Type;
         
         handles.signalEditor.String = '';
+        handles.signalEditType.String = '';
+        
         
         switch sigType
             
@@ -784,7 +814,13 @@ if ~isempty(contents)
             case 'Electrode'
                 mySignal.InputField = str2num(handles.changeInputField.String);
         end
-        setappdata(gcf,sigName,mySignal);
+        SignalsList{pick} = mySignal;
+        setappdata(gcf,'SignalsList',SignalsList);
+        myCircuit = myCircuit.CircuitDraw(gca);
+        setappdata(gcf,'myCircuit',myCircuit);
+        
+        
+        
         handles.signalName.String = 'Input Name';
     end
 end
@@ -797,10 +833,17 @@ function plotSignal_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 contents = cellstr(get(handles.signalList,'String'));
 
+SignalsList = getappdata(gcf,'SignalsList');
+
 if ~isempty(contents)
     sigName = contents{get(handles.signalList,'Value')};
     
-    mySignal = getappdata(gcf,sigName);
+    for i=1:length(SignalsList)
+        if strcmp(sigName,SignalsList{i}.Name)
+            mySignal = SignalsList{i};
+            pick = i;
+        end
+    end
     
     if ~isempty(mySignal)
         sigType = mySignal.Type;
@@ -830,7 +873,9 @@ if ~isempty(contents)
                 
                 
         end
-        setappdata(gcf,sigName,mySignal);
+        SignalsList{pick} = mySignal;
+        
+        setappdata(gcf,'SignalsList',SignalsList);
     end
 
 
@@ -939,6 +984,7 @@ function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
 
+eventdata.Key;
 
 if ~isempty(eventdata.Modifier)
     
@@ -946,13 +992,13 @@ if ~isempty(eventdata.Modifier)
         
         AlignHoriz();
         
-    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'v')%align vertical
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'u')%align vertical
         AlignVert();
         
-    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'s') %make a supercell
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'m') %make a supercell
         MakeSuperCellGUI();
         
-    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'n') %add a node
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'f') %add a node
         QCALayoutAddNode();
         
     elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'d')%add a driver
@@ -964,8 +1010,7 @@ if ~isempty(eventdata.Modifier)
     elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'l')%disband super cell
         DisbandSuperCell();
         
-    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'r') %remove any selected nodes
-        RemoveNode();
+        
         
     elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'g')%turn snapt to grid on and off
         snap = get(handles.autoSnap,'Value');
@@ -1023,14 +1068,28 @@ if ~isempty(eventdata.Modifier)
     elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'c')
         CopyCells();
         
-    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'p')
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'v')
         PasteCells();
-    end
-    
-    if   strcmp(eventdata.Modifier,'alt') && strcmp(eventdata.Key,'leftbracket')
-        web('https://www.youtube.com/watch?v=TzXXHVhGXTQ');
         
+        
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'n')
+        NewCircuit(handles);
+        
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'o')
+        LoadCircuit(handles);
+        
+    elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'s')
+        SaveCircuit(handles);
+        
+        if   strcmp(eventdata.Modifier,'alt') && strcmp(eventdata.Key,'leftbracket')
+            web('https://www.youtube.com/watch?v=TzXXHVhGXTQ');
+            
+        end
     end
+end
+
+if strcmp(eventdata.Key,'delete') || strcmp(eventdata.Key,'backspace')%remove any selected nodes
+    RemoveNode();
 end
 
 
@@ -1039,7 +1098,51 @@ function drawElectrode_Callback(hObject, eventdata, handles)
 % hObject    handle to drawElectrode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-ChangeInputField(handles);
+
+SignalsList = getappdata(gcf,'SignalsList');
+
+contents = cellstr(get(handles.signalList,'String'));
+
+
+
+
+
+if ~isempty(contents)
+    sigName = contents{get(handles.signalList,'Value')};
+    
+    for i=1:length(SignalsList)
+        SignalsList{i}.Name;
+        SignalsList{i}.Type;
+        if strcmp(SignalsList{i}.Name,sigName) && strcmp(SignalsList{i}.Type,'Electrode')
+            SignalsList{i}.IsDrawn = 'on';
+            mySignal = SignalsList{i};
+            if ~isempty(mySignal.Height)
+                mySignal = mySignal.drawElectrode();
+            else
+                [center height width field] = GetBoxTraits(handles);
+                mySignal = mySignal.drawElectrode(center ,height ,width ,field);
+                
+                
+                SignalsList{i} = mySignal;
+            end
+            
+        end
+        
+    end
+    
+end
+
+
+setappdata(gcf,'SignalsList',SignalsList);
+
+
+myCircuit = getappdata(gcf,'myCircuit');
+myCircuit = myCircuit.CircuitDraw(gca);
+
+setappdata(gcf,'myCircuit',myCircuit);
+
+
+% ChangeInputField(handles);
 
 
 % --- Executes on button press in getAppInfo.
@@ -1048,3 +1151,72 @@ function getAppInfo_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 AppInfo = getappdata(gcf)
+circuit = AppInfo.myCircuit
+signals = AppInfo.SignalsList
+
+
+% --- Executes on button press in eraseElectrodes.
+function eraseElectrodes_Callback(hObject, eventdata, handles)
+% hObject    handle to eraseElectrodes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+SignalsList = getappdata(gcf,'SignalsList');
+myCircuit = getappdata(gcf,'myCircuit');
+
+
+for i=1:length(SignalsList)
+    
+    if strcmp(SignalsList{i}.TopPatch.Selected,'on') || strcmp(SignalsList{i}.BottomPatch.Selected,'on')
+        SignalsList{i}.IsDrawn = 'off';
+    end
+    
+end
+
+setappdata(gcf,'SignalsList',SignalsList);
+
+myCircuit = myCircuit.CircuitDraw(gca);
+setappdata(gcf,'myCircuit',myCircuit);
+
+
+
+
+
+% --- Executes on button press in clearAll.
+function clearAll_Callback(hObject, eventdata, handles)
+% hObject    handle to clearAll (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+f=gcf;
+
+a=gca;
+myCircuit = getappdata(f,'myCircuit');
+SignalsList = getappdata(f,'SignalsList');
+cla;%clear the axes
+
+copies = getappdata(f,'Copies');
+
+copies={};
+
+SignalsList = {};
+handles.signalList.String = '';
+handles.signalList.Value = 1;
+handles.signalEditor.String = '' ;
+handles.signalEditType.String = '';
+handles.signalType.Value = 1;
+        handles.sinusoidPanel.Visible = 'on';
+        handles.customSignal.Visible = 'off';
+        handles.electrodePanel.Visible = 'off';
+
+setappdata(f,'SignalsList',SignalsList);
+
+
+myCircuit.Device{1}={};%empty first node
+
+myCircuit.Device=myCircuit.Device{1};%the empty first device
+
+myCircuit.Mode = 'Simulation';
+myCircuit = myCircuit.CircuitDraw(gca);
+
+
+setappdata(f,'myCircuit',myCircuit);
+setappdata(f,'Copies',copies);
