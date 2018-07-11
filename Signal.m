@@ -21,6 +21,21 @@ classdef Signal
         
         %Piecewise Properties
         
+
+            
+        Name
+%         Type
+        Transition
+%         Period
+        PhaseDelay % radians
+        MeanValue
+%         Amplitude
+        Sharpness
+        
+    
+    %dependent properties
+        Periodic
+        InitialValue
         
         %Electrode Properties
         InputField=0;
@@ -32,6 +47,9 @@ classdef Signal
         BottomPatch;
         
     end
+        
+        
+    
     
     methods
         function obj = Signal( varargin )
@@ -114,10 +132,11 @@ classdef Signal
         end
         
         function obj = set.Type(obj,value)
-            if (~isequal(value, 'Sinusoidal') && ~isequal(value,'Custom') && ~isequal(value,'Electrode'))%edit this to add more types
+            if (~isequal(value, 'Sinusoidal') && ~isequal(value,'Custom') && ~isequal(value,'Electrode') && ~isequal(value,'Fermi'))%edit this to add more types
                 error('Invalid Type. Must be Standard signal Type')
             else
                 obj.Type = value;
+                
             end
         end
         
@@ -436,6 +455,97 @@ classdef Signal
         end
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+        % vvv ------ Value ----- vvv
+        function varargout = Value( obj, centerposition, t )
+            
+            % disp(['QCApack.Signal.Value: ojb.Type = ', obj.Type])
+            switch obj.Type
+                case 'Sinusoidal'
+                    V = obj.MeanValue + ...
+                        obj.Amplitude*sin(2*pi*(centerposition(1)/obj.Wavelength + t/obj.Period) + obj.PhaseDelay);
+                    
+                case 'Fermi'
+                    t = mod(t + ...
+                        obj.PhaseDelay*(obj.Period/(2*pi)), ...
+                        obj.Period);
+                    
+                    xi = obj.Sharpness;
+                    
+                    RestorativeScalingFactor = (2*( ...
+                        -0.5 - (exp(xi*(obj.Period/4)) + 1).^(-1) ...
+                        + (exp(xi*(-obj.Period/4)) + 1).^(-1) ...
+                        - (exp(xi*(-3*obj.Period/4)) + 1).^(-1) ...
+                        + (exp(xi*(-5*obj.Period/4)) + 1).^(-1))).^(-1);
+                    
+                    
+                    V = RestorativeScalingFactor*2*obj.Amplitude*( ...
+                        -0.5 - (exp(xi*(t + obj.Period/4)) + 1).^(-1) ...
+                             + (exp(xi*(t - obj.Period/4)) + 1).^(-1) ...
+                             - (exp(xi*(t - 3*obj.Period/4)) + 1).^(-1) ...
+                             + (exp(xi*(t - 5*obj.Period/4)) + 1).^(-1)) ...
+                             
+                        ... - 5*obj.Amplitude 
+                        + obj.MeanValue;
+
+
+                otherwise
+                    error(['ClockType = ''', obj.Type, ...
+                        ''' is invalid.'])
+                    
+            end % END [ switch obj.Type ]
+
+            switch nargout
+                case 0
+                    varargout{1} = V;
+                case 1
+                    varargout{1} = V;
+                case 2
+                    varargout{1} = V;
+                    varargout{2} = dVdt;
+            end
+            
+            
+        end
+        % ^^^ ------ GET: InitialValue ----- ^^^
     end
     
 end

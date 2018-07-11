@@ -4,7 +4,7 @@ classdef Transition
     
     properties
         Type; %linear, fermi, random?
-        Initial=0; %x0
+        Initial=0;  %x0
         Final;      %x1
         CenterPoint;
         Alpha;  %y0
