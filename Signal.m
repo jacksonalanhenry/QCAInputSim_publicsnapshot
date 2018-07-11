@@ -8,6 +8,7 @@ classdef Signal
     
     properties
         
+        Name
         Type = 'Sinusoidal';%  'Fermi' 'Custom'(Piecewise) 'Imported'(COMSOL) there may be others
         %These properties are only used for the sinusoidal type
         Amplitude = 1;
