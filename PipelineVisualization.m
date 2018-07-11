@@ -49,7 +49,7 @@ xp = mod(xq, signal.Period);
 
 for t = 1:size(pols,1)
     for idx = 1:nx
-        efplots_temp = signal.getEField([xp(idx),0,0], tp(t));
+        efplots_temp = signal.getClockField([xp(idx),0,0], tp(t));
         efplots(t, idx) = efplots_temp(3);
         
     end
@@ -86,7 +86,7 @@ for t = 1:size(pols,1)
     
     drawnow
     %save it
-    Frame(t) = getframe(gcf);
+    Frame(t) = getframe(gca);
     writeVideo(v,Frame(t));
     disp(['t: ' num2str(t)])
     
@@ -94,6 +94,7 @@ end
 
 mycircuit.Simulating = 'off';
 
+colorbar('delete');
 close(v);
 disp('Complete!')
 

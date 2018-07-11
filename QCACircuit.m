@@ -363,6 +363,7 @@ classdef QCACircuit
 
             hold off
             grid on
+            axis equal
             
             SignalsList = getappdata(gcf,'SignalsList');
             
@@ -749,9 +750,10 @@ classdef QCACircuit
                 disp(['t: ', num2str(t)]);
                 
             end %time step loop
-            
+            pols
             m.pols = pols;
             m.acts = acts;
+            efields
             m.efields = efields;
             
             

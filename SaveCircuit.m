@@ -18,7 +18,8 @@ function SaveCircuit(handles)
         cd(Path.home);
         
     else%they don't cancel the save operation
-        save(File, 'Circuit','SignalsList');
+        save(File, 'Circuit');
+        save(File,'SignalsList');
     end
 
     cd(Path.home); %go back to the original directory

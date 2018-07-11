@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 10-Jul-2018 14:50:02
+% Last Modified by GUIDE v2.5 11-Jul-2018 13:14:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -413,6 +413,9 @@ function circuitPanel_Callback(hObject, eventdata, handles)
     
     handles.circuitPanel.Value = 1;
     handles.circuitButtonGroup.Visible = 'on';
+    
+    handles.simulatePanel.Value = 0;
+    handles.simulateButtonGroup.Visible = 'off';
 
     
 % --- Executes on button press in signalPanel.
@@ -429,8 +432,25 @@ function signalPanel_Callback(hObject, eventdata, handles)
     handles.circuitPanel.Value = 0;
     handles.circuitButtonGroup.Visible = 'off';
     
+    handles.simulatePanel.Value = 0;
+    handles.simulateButtonGroup.Visible = 'off';
     
 
+% --- Executes on button press in simulatePanel.
+function simulatePanel_Callback(hObject, eventdata, handles)
+% hObject    handle to simulatePanel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of simulatePanel    
+    handles.signalPanel.Value = 0;
+    handles.signalButtonGroup.Visible = 'off';
+    
+    handles.circuitPanel.Value = 0;
+    handles.circuitButtonGroup.Visible = 'off';
+    
+    handles.simulatePanel.Value = 1;
+    handles.simulateButtonGroup.Visible = 'on';
 
 
 function changeWave_Callback(hObject, eventdata, handles)
@@ -1080,16 +1100,14 @@ if ~isempty(eventdata.Modifier)
         
     elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'s')
         SaveCircuit(handles);
+    elseif strcmp(eventdata.Modifier,'control') && (strcmp(eventdata.Key,'delete') || strcmp(eventdata.Key,'backspace'))%remove any selected nodes
+        RemoveNode();
         
         if   strcmp(eventdata.Modifier,'alt') && strcmp(eventdata.Key,'leftbracket')
             web('https://www.youtube.com/watch?v=TzXXHVhGXTQ');
             
         end
     end
-end
-
-if strcmp(eventdata.Key,'delete') || strcmp(eventdata.Key,'backspace')%remove any selected nodes
-    RemoveNode();
 end
 
 
@@ -1220,3 +1238,40 @@ myCircuit = myCircuit.CircuitDraw(gca);
 
 setappdata(f,'myCircuit',myCircuit);
 setappdata(f,'Copies',copies);
+
+
+% --- Executes on button press in visualizeSim.
+function visualizeSim_Callback(hObject, eventdata, handles)
+% hObject    handle to visualizeSim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+Sim = uigetfile('*.mat');
+
+if Sim
+    PipelineVisualization(Sim,gca);
+else
+    
+    
+end
+myCircuit = getappdata(gcf,'myCircuit');
+myCircuit = myCircuit.CircuitDraw(gca);
+setappdata(gcf,'myCircuit',myCircuit);
+
+
+
+% --- Executes on button press in createSimulation.
+function createSimulation_Callback(hObject, eventdata, handles)
+% hObject    handle to createSimulation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myCircuit = getappdata(gcf,'myCircuit');
+SignalsList = getappdata(gcf,'SignalsList');
+
+if length(SignalsList)
+    myCircuit = myCircuit.pipeline(SignalsList{1});
+end
+myCircuit = myCircuit.CircuitDraw(gca);
+
+setappdata(gcf,'myCircuit',myCircuit);
+setappdata(gcf,'SignalsList',SignalsList);
+

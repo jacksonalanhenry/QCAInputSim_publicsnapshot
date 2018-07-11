@@ -8,6 +8,7 @@ classdef Signal
     
     properties
         
+        Name
         Type = 'Sinusoidal';%  'Fermi' 'Custom'(Piecewise) 'Imported'(COMSOL) there may be others
         %These properties are only used for the sinusoidal type
         Amplitude = 1;
@@ -138,7 +139,7 @@ classdef Signal
             end
         end
         
-        function EField = git(obj, centerposition, time)
+        function EField = getClockField(obj, centerposition, time)
             %THIS FUNCTION ONLY ASSIGNS z Field RIGHT NOW
             if( isnumeric(centerposition) )
                 if(size(centerposition) == [1, 3])

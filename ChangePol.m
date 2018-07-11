@@ -23,11 +23,9 @@ end
 
 
 
-% myCircuit = myCircuit.CircuitDraw(handles.LayoutWindow);
+myCircuit = myCircuit.CircuitDraw(gca);
 
 
 setappdata(gcf,'myCircuit',myCircuit);
-
-Simulate(handles);
 
 end
