@@ -138,7 +138,7 @@ classdef Signal
             end
         end
         
-        function EField = git(obj, centerposition, time)
+        function EField = getClockField(obj, centerposition, time)
             %THIS FUNCTION ONLY ASSIGNS z Field RIGHT NOW
             if( isnumeric(centerposition) )
                 if(size(centerposition) == [1, 3])
