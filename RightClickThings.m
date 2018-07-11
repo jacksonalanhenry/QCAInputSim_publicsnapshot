@@ -19,22 +19,22 @@ f.UIContextMenu = c;
 
 % Create child menu items for the uicontextmenu.
 %selecting any menu item calls its respective function
-m1 = uimenu(c,'Label','Make Super Cell (CTRL+S)','Callback',@changeThings);
-m2 = uimenu(c,'Label','Disband Super Cell (CTRL+L)','Callback',@changeThings);
+m1 = uimenu(c,'Label','Make Super Cell (Ctrl+S)','Callback',@changeThings);
+m2 = uimenu(c,'Label','Disband Super Cell (Ctrl+L)','Callback',@changeThings);
 
 m4 = uimenu(c,'Label','Align');
-m4_1 = uimenu('Parent',m4,'Label','Horizontal (CTRL+H)','Callback',@changeThings);
-m4_2 = uimenu('Parent',m4,'Label','Vertical (CTRL+V)','Callback',@changeThings);
+m4_1 = uimenu('Parent',m4,'Label','Horizontal (Ctrl+H)','Callback',@changeThings);
+m4_2 = uimenu('Parent',m4,'Label','Vertical (Ctrl+U)','Callback',@changeThings);
 
-m5 = uimenu(c,'Label','Box Select (CTRL+B)','Callback',@changeThings);
-m6 = uimenu(c,'Label','Remove Node (CTRL+R)','Callback',@changeThings);
+m5 = uimenu(c,'Label','Box Select (Ctrl+B)','Callback',@changeThings);
+m6 = uimenu(c,'Label','Remove Node (Del)','Callback',@changeThings);
 
 m7 = uimenu(c,'Label','Add');
-m7_1 = uimenu(m7,'Label','Driver (CTRL+D)','Callback',@changeThings);
-m7_2 = uimenu(m7,'Label','Node (CTRL+N)','Callback',@changeThings);
+m7_1 = uimenu(m7,'Label','Driver (Ctrl+D)','Callback',@changeThings);
+m7_2 = uimenu(m7,'Label','Node (Ctrl+F)','Callback',@changeThings);
 
-m8 = uimenu(c,'Label','Copy (CTRL+C)','Callback',@changeThings);
-m9 = uimenu(c,'Label','Paste (CTRL+P)','Callback',@changeThings);
+m8 = uimenu(c,'Label','Copy (Ctrl+C)','Callback',@changeThings);
+m9 = uimenu(c,'Label','Paste (Ctrl+V)','Callback',@changeThings);
 
 
 

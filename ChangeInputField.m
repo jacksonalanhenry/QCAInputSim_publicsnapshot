@@ -5,29 +5,31 @@ myCircuit = getappdata(gcf,'myCircuit');
 
 
 inputfield = str2num(get(handles.changeInputField,'String'));
+SignalsList = getappdata(gcf,'SignalsList');
 
-for i=1:length(myCircuit.Device)
-    if isa (myCircuit.Device{i},'QCASuperCell') %if any of the cells in a supercell are selected, the whole thing will be deleted
-        
-        for j=1:length(myCircuit.Device{i}.Device)
-            if strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on')
+for k=1:length(SignalsList)
+    for i=1:length(myCircuit.Device)
+        if isa (myCircuit.Device{i},'QCASuperCell') %if any of the cells in a supercell are selected, the whole thing will be deleted
+            
+            for j=1:length(myCircuit.Device{i}.Device)
+                if strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on')
+                    
+                    myCircuit.Device{i}.Device{j}.ElectricField = [0 inputfield 0];
+                    
+                    
+                end
                 
-                myCircuit.Device{i}.Device{j}.ElectricField = [0 inputfield 0];
                 
                 
             end
-            
-            
-            
+        else %any cell can be deleted also
+            if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
+                myCircuit.Device{i}.ElectricField = [0 inputfield 0];
+            end
         end
-    else %any cell can be deleted also
-        if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
-            myCircuit.Device{i}.ElectricField = [0 inputfield 0];
-        end
+        
     end
-    
 end
-
 setappdata(gcf,'myCircuit',myCircuit);
 
 

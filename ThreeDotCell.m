@@ -225,8 +225,6 @@ classdef ThreeDotCell < QCACell
             end
         end
         
-                
-                
         function obj = BoxDraw(obj)
             obj.SelectBox=patch;
             obj.SelectBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];

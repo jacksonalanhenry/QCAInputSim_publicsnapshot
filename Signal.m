@@ -9,7 +9,6 @@ classdef Signal
     properties
         
         Type = 'Sinusoidal';%  'Fermi' 'Custom'(Piecewise) 'Imported'(COMSOL) there may be others
-        
         %These properties are only used for the sinusoidal type
         Amplitude = 1;
         Wavelength = 1;
@@ -20,6 +19,7 @@ classdef Signal
         
         %Piecewise Properties
         
+
         Transition
         PhaseDelay % radians
         MeanValue
@@ -32,9 +32,12 @@ classdef Signal
         
         %Electrode Properties
         InputField=0;
-        CenterPosition=[0 0 0];
-        Height=0;
-        Width=0;
+        CenterPosition;
+        Height;
+        Width;
+        IsDrawn = 'off';
+        TopPatch;
+        BottomPatch;
         
     end
     
@@ -168,12 +171,28 @@ classdef Signal
             
         end
         
-        function obj = drawElectrode(obj, centerpos, height, width, Efield)
-            obj.CenterPosition = centerpos;
-            obj.Height = height;
-            obj.Width = width;
-            obj.InputField = Efield;
-            
+        function obj = drawElectrode(obj, varargin)
+            if nargin > 2
+                centerpos = varargin{1};
+                height = varargin{2};
+                width = varargin{3};
+                Efield = varargin{4};
+                
+                
+                
+                obj.CenterPosition = centerpos;
+                obj.Height = height;
+                obj.Width = width;
+                obj.InputField = Efield;
+                
+            else
+                centerpos = obj.CenterPosition;
+                height = obj.Height;
+                width = obj.Width;
+                Efield = obj.InputField;
+                
+                
+            end
             if strcmp(obj.Type,'Electrode')
                 
                 %draw the text box showing the electric field, and
@@ -181,12 +200,27 @@ classdef Signal
                 
                 txt = text(centerpos(1) - width/2-.7 , centerpos(2) , [num2str(Efield) ' V/m']);
                 
-                top = patch('FaceColor','red','XData',[centerpos(1) - width/2-.25  centerpos(1) + width/2+.25  centerpos(1) + width/2+.25 centerpos(1) - width/2-.25]...
+                if and(height ,width)
+                    name = text(centerpos(1) + width/2 , centerpos(2)+height/2 , num2str(obj.Name));
+                
+                elseif and(~height,width)
+                    name = text(centerpos(1) + width/2 , centerpos(2)+.75 , num2str(obj.Name));
+                
+                elseif and(height,~width)
+                    name = text(centerpos(1) + .5 , centerpos(2)+height/2 , num2str(obj.Name));
+                
+                else
+                    name = text(centerpos(1) + .5 , centerpos(2)+.75, num2str(obj.Name));
+                    
+                end
+                
+                obj.TopPatch = patch('FaceColor','red','XData',[centerpos(1) - width/2-.25  centerpos(1) + width/2+.25  centerpos(1) + width/2+.25 centerpos(1) - width/2-.25]...
                     ,'YData',[centerpos(2)+ height/2+.75  centerpos(2)+height/2+.75  centerpos(2) + height/2+.95   centerpos(2) + height/2+.95]);
                 
-                bottom = patch('FaceColor','black','XData',[centerpos(1) - width/2-.25  centerpos(1) + width/2+.25   centerpos(1) + width/2+.25    centerpos(1) - width/2-.25]...
+                obj.BottomPatch = patch('FaceColor','black','XData',[centerpos(1) - width/2-.25  centerpos(1) + width/2+.25   centerpos(1) + width/2+.25    centerpos(1) - width/2-.25]...
                     ,'YData',[centerpos(2)- height/2-.95  centerpos(2)-height/2-.95  centerpos(2) - height/2-.75   centerpos(2) - height/2-.75]);
-                
+                Select(obj.TopPatch);
+                Select(obj.BottomPatch);
                 
                 x0 = centerpos(1) - width/2-.25;
                 x1 = centerpos(1) + width/2+.25;
@@ -398,6 +432,28 @@ classdef Signal
                 
                 
                 hold off;
+            end
+            
+            myCircuit=getappdata(gcf,'myCircuit');
+            
+            for i=1:length(myCircuit.Device)
+                if isa(myCircuit.Device{i},'QCASuperCell')
+                   for j=1:length(myCircuit.Device{i}.Device)
+                       circCenter = myCircuit.Device{i}.Device{j}.CenterPosition;
+                       if circCenter(1) > centerpos(1) && circCenter(2) > centerpos(2) && circCenter(1) < centerpos(1)+width/2 && circCenter(2) > centerpos(2)+height/2
+                           myCircuit.Device{i}.Device{j}.ElectricField = Efield;
+                           
+                       end
+                   end
+                else
+                    
+                    circCenter = myCircuit.Device{i}.CenterPosition;
+                    if circCenter(1) > centerpos(1) && circCenter(2) > centerpos(2) && circCenter(1) < centerpos(1)+width/2 && circCenter(2) > centerpos(2)+height/2
+                        myCircuit.Device{i}.ElectricField = [0 Efield 0];
+                        
+                    end
+                end
+                
             end
             
             
