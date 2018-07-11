@@ -8,7 +8,7 @@ classdef Signal
     
     properties
         
-        Type = 'Sinusoidal';%  'Custom'(Piecewise) 'Imported'(COMSOL) there may be others
+        Type = 'Sinusoidal';%  'Fermi' 'Custom'(Piecewise) 'Imported'(COMSOL) there may be others
         
         %These properties are only used for the sinusoidal type
         Amplitude = 1;
@@ -20,19 +20,13 @@ classdef Signal
         
         %Piecewise Properties
         
-
-            
-        Name
-%         Type
         Transition
-%         Period
         PhaseDelay % radians
         MeanValue
-%         Amplitude
         Sharpness
         
-    
-    %dependent properties
+        
+        %dependent properties
         Periodic
         InitialValue
         
@@ -43,8 +37,8 @@ classdef Signal
         Width=0;
         
     end
-        
-        
+    
+    
     
     
     methods
@@ -114,6 +108,11 @@ classdef Signal
                         
                 end % END: Switch nargin
                 
+            elseif ( strcmp(obj.Type, 'Fermi') )
+                
+                % Fermi signal
+                
+                
             elseif ( strcmp(obj.Type, 'Piecewise') )
                 
                 % piecewise signal
@@ -136,21 +135,28 @@ classdef Signal
             end
         end
         
-        function EField = getEField(obj, centerposition, time)
+        function EField = git(obj, centerposition, time)
+            %THIS FUNCTION ONLY ASSIGNS z Field RIGHT NOW
             if( isnumeric(centerposition) )
                 if(size(centerposition) == [1, 3])
-                    
-                    
-                    %THIS FUNCTION ONLY ASSIGNS z Field
-                    
                     EField = [0,0,0];
+                    switch obj.Type
+                        case 'Sinusoidal'
+                            EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude;
                     
-                    EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude;
+    
+                        case 'Fermi'
+                            EField(3) = PeriodicFermi(mod(centerposition(1) - time, obj.Period), obj.Period, obj.Sharpness);
+            
+ 
+                        otherwise
+                            error(['ClockType = ''', obj.Type, ...
+                                ''' is invalid.'])
+                            
+                    end % END [ switch obj.Type ]
                     
                     
-                    ef = EField(3);
-                    x  = centerposition(1);
-                    %                     disp(['x: ', num2str(x), ' ef: ', num2str(ef)])%'t: ', num2str(time),
+                    
                     
                     
                 else
@@ -190,7 +196,7 @@ classdef Signal
                     high= centerpos(2) + .75;
                 else
                     low = centerpos(2) - height/2-.75;
-                    high= centerpos(2) + height/2+.75;    
+                    high= centerpos(2) + height/2+.75;
                 end
                 
                 
@@ -204,17 +210,17 @@ classdef Signal
                     
                     for i=x0 : num : x1
                         
-                            
-                            p1 = [i low];
-                            p2 = [i high];
-                            dp = p2-p1;
-                            
-                            hold on;
-                            q=quiver(p1(1),p1(2),dp(1),dp(2),0);
-%                             q.LineWidth = 5;
-                            q.MarkerEdgeColor = 'black';
-                            q.Color = 'black';
-                            p.Parent = gca;
+                        
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p2-p1;
+                        
+                        hold on;
+                        q=quiver(p1(1),p1(2),dp(1),dp(2),0);
+                        %                             q.LineWidth = 5;
+                        q.MarkerEdgeColor = 'black';
+                        q.Color = 'black';
+                        p.Parent = gca;
                         
                     end
                     
@@ -228,7 +234,7 @@ classdef Signal
                         
                         hold on;
                         q=quiver(p1(1),p1(2),dp(1),dp(2),0);
-%                         q.LineWidth = 3;
+                        %                         q.LineWidth = 3;
                         q.MarkerEdgeColor = 'black';
                         q.Color = 'black';
                         p.Parent = gca;
@@ -244,7 +250,7 @@ classdef Signal
                         
                         hold on;
                         q=quiver(p1(1),p1(2),dp(1),dp(2),0);
-%                         q.LineWidth = 2;
+                        %                         q.LineWidth = 2;
                         q.MarkerEdgeColor = 'black';
                         q.Color = 'black';
                         p.Parent = gca;
@@ -260,13 +266,13 @@ classdef Signal
                         
                         hold on;
                         q=quiver(p1(1),p1(2),dp(1),dp(2),0);
-%                         q.LineWidth = 1;
+                        %                         q.LineWidth = 1;
                         q.MarkerEdgeColor = 'black';
                         q.Color = 'black';
                         p.Parent = gca;
                     end
                     
-                  
+                    
                     
                 elseif Efield <= 2 && Efield > 0
                     num = (x1-x0)/2;
@@ -278,7 +284,7 @@ classdef Signal
                         
                         hold on;
                         q=quiver(p1(1),p1(2),dp(1),dp(2),0);
-%                         q.LineWidth = .1;
+                        %                         q.LineWidth = .1;
                         q.MarkerEdgeColor = 'black';
                         q.Color = 'black';
                         p.Parent = gca;
@@ -295,11 +301,11 @@ classdef Signal
                         
                         hold on;
                         q=quiver(p2(1),p2(2),dp(1),dp(2),0);
-%                         q.LineWidth = .1;
+                        %                         q.LineWidth = .1;
                         q.MarkerEdgeColor = 'black';
                         q.Color = 'black';
                         p.Parent = gca;
-                    end                      
+                    end
                     
                     
                     
@@ -313,7 +319,7 @@ classdef Signal
                         
                         hold on;
                         q=quiver(p2(1),p2(2),dp(1),dp(2),0);
-%                         q.LineWidth = 1;
+                        %                         q.LineWidth = 1;
                         q.MarkerEdgeColor = 'black';
                         q.Color = 'black';
                         p.Parent = gca;
@@ -323,52 +329,52 @@ classdef Signal
                     num = (x1-x0)/9;
                     for i=x0 : num : x1
                         
-                        p1 = [i low];                       
-                        p2 = [i high];                       
-                        dp = p1-p2;                         
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p1-p2;
                         
                         hold on;
                         q=quiver(p2(1),p2(2),dp(1),dp(2),0);
-%                         q.LineWidth = 2;
+                        %                         q.LineWidth = 2;
                         q.MarkerEdgeColor = 'black';
                         q.Color = 'black';
                         p.Parent = gca;
-                    end                    
+                    end
                     
                 elseif Efield < -6 && Efield >= -8
                     num =(x1-x0)/15;
                     for i=x0 : num : x1
                         
-                        p1 = [i low];                       
-                        p2 = [i high];                       
-                        dp = p1-p2;                         
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p1-p2;
                         
                         hold on;
                         q=quiver(p2(1),p2(2),dp(1),dp(2),0);
-%                         q.LineWidth = 3;
+                        %                         q.LineWidth = 3;
                         q.MarkerEdgeColor = 'black';
                         q.Color = 'black';
                         p.Parent = gca;
-                    end                    
+                    end
                     
                 elseif Efield < -8
                     num = (x1-x0)/20;
                     for i=x0 : num : x1
                         
-                        p1 = [i low];                       
-                        p2 = [i high];                       
-                        dp = p1-p2;                         
+                        p1 = [i low];
+                        p2 = [i high];
+                        dp = p1-p2;
                         
                         hold on;
                         q=quiver(p2(1),p2(2),dp(1),dp(2),0);
-%                         q.LineWidth = 5;
+                        %                         q.LineWidth = 5;
                         q.MarkerEdgeColor = 'black';
                         q.Color = 'black';
                         p.Parent = gca;
-                    end                    
+                    end
                     
                 elseif Efield == 0
-                             
+                    
                     %don't draw E field lines
                     
                 end
@@ -385,7 +391,7 @@ classdef Signal
                 
                 for j=1:num
                     newList(end+1)= graphicsList(j);%put all the arrows into the newList
-                end    
+                end
                 
                 set(ax,'children',[ax.Children(j+1:end); newList']); %the arrows are now at the end of the Children handle
                 
@@ -424,29 +430,29 @@ classdef Signal
         
         
         
+        function v = valueferm(obj, centerpos, t)
+            
+            x = PeriodicFermi(mod(centerpos(1) - t, obj.Period), obj.Period, obj.Sharpness);
+            v = [0,0,x];
+            
+        end
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-
         % vvv ------ Value ----- vvv
         function varargout = Value( obj, centerposition, t )
+            
+            
             
             % disp(['QCApack.Signal.Value: ojb.Type = ', obj.Type])
             switch obj.Type
                 case 'Sinusoidal'
-                    V = obj.MeanValue + ...
+                    x = obj.MeanValue + ...
                         obj.Amplitude*sin(2*pi*(centerposition(1)/obj.Wavelength + t/obj.Period) + obj.PhaseDelay);
                     
+                    V = [0,0,x];
                 case 'Fermi'
+                    
+                    
                     t = mod(t + ...
                         obj.PhaseDelay*(obj.Period/(2*pi)), ...
                         obj.Period);
@@ -462,20 +468,20 @@ classdef Signal
                     
                     V = RestorativeScalingFactor*2*obj.Amplitude*( ...
                         -0.5 - (exp(xi*(t + obj.Period/4)) + 1).^(-1) ...
-                             + (exp(xi*(t - obj.Period/4)) + 1).^(-1) ...
-                             - (exp(xi*(t - 3*obj.Period/4)) + 1).^(-1) ...
-                             + (exp(xi*(t - 5*obj.Period/4)) + 1).^(-1)) ...
-                             
-                        ... - 5*obj.Amplitude 
+                        + (exp(xi*(t - obj.Period/4)) + 1).^(-1) ...
+                        - (exp(xi*(t - 3*obj.Period/4)) + 1).^(-1) ...
+                        + (exp(xi*(t - 5*obj.Period/4)) + 1).^(-1)) ...
+                        
+                    ... - 5*obj.Amplitude
                         + obj.MeanValue;
-
-
+                    
+                    
                 otherwise
                     error(['ClockType = ''', obj.Type, ...
                         ''' is invalid.'])
                     
             end % END [ switch obj.Type ]
-
+            
             switch nargout
                 case 0
                     varargout{1} = V;

@@ -645,8 +645,10 @@ classdef QCACircuit
             %give this function a signal(or field) obj
             
             nt=315;
-            time_array = linspace(0,2,nt); %right now this will do 2 periods
-            
+            tperiod = signal.Period*2;
+            %time_array = linspace(0,2,nt); %right now this will do 2 periods
+            time_array = linspace(0,tperiod,nt);
+            tc = mod(time_array, tperiod);
             
             
             file = 'simResults.mat';
@@ -672,12 +674,19 @@ classdef QCACircuit
                     if( isa(obj.Device{idx}, 'QCASuperCell') )
                         
                         for subnode = 1:length(obj.Device{idx}.Device)
-                            obj.Device{idx}.Device{subnode}.ElectricField = signal.getEField(obj.Device{idx}.Device{subnode}.CenterPosition, time_array(t)); %changes E Field.
+                            %obj.Device{idx}.Device{subnode}.ElectricField = signal.getEField(obj.Device{idx}.Device{subnode}.CenterPosition, time_array(t)); %changes E Field.
+                            efield = obj.Device{idx}.Device{subnode}.ElectricField;
+                            efield(3) = 0;
+                            efield = efield + signal.getClockField(obj.Device{idx}.Device{subnode}.CenterPosition, tc(t)); %changes E Field.
+                            obj.Device{idx}.Device{subnode}.ElectricField = efield;
                         end
                         idx = idx+1;
                     else
-                        obj.Device{idx}.ElectricField = signal.getEField(obj.Device{idx}.CenterPosition, time_array(t)); %changes E Field.
-                        
+                        %obj.Device{idx}.ElectricField = signal.getEField(obj.Device{idx}.CenterPosition, time_array(t)); %changes E Field.
+                        efield = obj.Device{idx}.ElectricField;
+                        efield(3) = 0;
+                        efield = efield + signal.getClockField(obj.Device{idx}.CenterPosition, tc(t)); %changes E Field.
+                        obj.Device{idx}.ElectricField = efield;
                         idx = idx+1;
                     end
                     

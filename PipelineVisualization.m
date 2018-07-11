@@ -38,6 +38,23 @@ nx = 125;
 xq = linspace(xmin-1, xmax+1, nx);
 yq = linspace(ymin-2, ymax+2, nt);
 
+tperiod = signal.Period*2;
+time_array = linspace(0,tperiod,nt);
+
+tp = mod(time_array, tperiod);
+xp = mod(xq, signal.Period);
+
+
+%reconstruct signal
+
+for t = 1:size(pols,1)
+    for idx = 1:nx
+        efplots_temp = signal.getEField([xp(idx),0,0], tp(t));
+        efplots(t, idx) = efplots_temp(3);
+        
+    end
+end
+
 
 
 
@@ -50,12 +67,14 @@ mycircuit.Simulating = 'on';
 
 for t = 1:size(pols,1)
     
+    
     cla;
-    ef = efields(t,:);
-    interps = interp1(x,ef,xq,'pchip','extrap');
-    Eplot = repmat(interps,[nt,1]);
+
+    ef = efplots(t,:);
+%     interps = interp1(x,ef,xq,'pchip','extrap');
+    Eplot = repmat(ef,[nt,1]);
     
-    
+
     
     pcolor(xq' * ones(1, nt), ones(nx, 1)* yq, Eplot');
     colormap cool;
