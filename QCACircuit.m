@@ -652,7 +652,18 @@ classdef QCACircuit
             
         end
         
-        function obj = pipeline(obj,signal)
+        function obj = pipeline(obj, signal, varargin)
+            
+            switch nargin
+                
+                case 2 % normal
+                    %disp('2')
+                    file = 'simResults.mat'
+                case 3 % signal array and default name
+                    file = varargin{1};
+                otherwise
+                    error('Incorrect number of arguments');
+            end
             
             obj.Simulating = 'on';
             
@@ -665,7 +676,7 @@ classdef QCACircuit
             tc = mod(time_array, tperiod);
             
             
-            file = 'simResults.mat';
+            
             m = matfile(file, 'Writable', true);
             save(file, 'signal', '-v7.3');
             save(file, 'obj', '-append');

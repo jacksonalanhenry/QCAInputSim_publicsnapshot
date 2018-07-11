@@ -1,9 +1,22 @@
-function PipelineVisualization( simresults, targetaxis )
+function PipelineVisualization( simresults, targetaxis, varargin )
 %This function takes in a file and visualizes the simulation.
 %This should be used in conjuction with circuit function pipeline()
 %   draw the circuit at each time step.
 %   things we care about for this: The signal info to construct
 %   the gradient, and the cells positions, pol and act at each time step
+
+switch nargin
+    
+    case 2
+        vfilename = 'CircuitVideo.mp4';
+        
+    case 3
+        vfilename = varargin{1};
+        
+    otherwise 
+        disp('other')
+    
+end
 
 
 load(simresults);
@@ -60,7 +73,7 @@ end
 
 %
 Frame(nt) = struct('cdata',[],'colormap',[]);
-v = VideoWriter('sinusoidEField.mp4','MPEG-4');
+v = VideoWriter(vfilename,'MPEG-4');
 open(v);
 
 mycircuit.Simulating = 'on';
