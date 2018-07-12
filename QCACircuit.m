@@ -226,71 +226,7 @@ classdef QCACircuit
                 case 'off' %do nothing extra
                     
                 case 'on' %begin snapping each cell to the grid, skipping every .5
-                    coord = {};
-                    
-                    for i=1:length(obj.Device)  %fill cell with all center positions
-                        if isa(obj.Device{i},'QCASuperCell')
-                            
-                            
-                            for j=1:length(obj.Device{i}.Device)
-                                coord{end+1} = obj.Device{i}.Device{j}.CenterPosition;
-                                
-                            end
-                            
-                            
-                        else
-                            coord{end+1} = obj.Device{i}.CenterPosition;
-                        end
-                        
-                    end
-                    
-                    
-                    for i=1:length(coord)
-                        
-                        
-                        diffx=coord{i}(1)-floor(coord{i}(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
-                        diffy=coord{i}(2)-floor(coord{i}(2)); %this is priming the snap to grid functionality
-                        
-                        %determining how each x,y will be rounded to floor, .5 or
-                        %up to the next integer
-                        if diffx<.25
-                            coord{i}(1)=floor(coord{i}(1));
-                        end
-                        if diffx>=.25 && diffx<=.75
-                            coord{i}(1)=floor(coord{i}(1))+.5;
-                        end
-                        if diffx>.75
-                            coord{i}(1)=floor(coord{i}(1))+1;
-                        end
-                        
-                        
-                        if diffy<.25
-                            coord{i}(2)=floor(coord{i}(2));
-                        end
-                        if diffy>=.25 && diffy<=.75
-                            coord{i}(2)=floor(coord{i}(2))+.5;
-                        end
-                        if diffy>.75
-                            coord{i}(2)=floor(coord{i}(2))+1;
-                        end
-                    end
-                    
-                    
-                    it=1;
-                    for i=1:length(obj.Device) %replace the cell center positions with the new snapped center positions
-                        if isa(obj.Device{i},'QCASuperCell')
-                            for j=1:length(obj.Device{i}.Device)
-                                
-                                obj.Device{i}.Device{j}.CenterPosition = coord{it};
-                                it=it+1;
-                            end
-                        else
-                            obj.Device{i}.CenterPosition = coord{it};
-                            it = it+1;
-                        end
-                        
-                    end
-                    
+                    obj = obj.Snap2Grid();
                     
             end %end snap to grid
             
@@ -717,7 +653,7 @@ classdef QCACircuit
                     
                 end
                 
-               
+                
                 
                 
                 
@@ -761,9 +697,9 @@ classdef QCACircuit
                 disp(['t: ', num2str(t)]);
                 
             end %time step loop
-
             
-
+            
+            
             m.pols = pols;
             m.acts = acts;
             m.efields = efields;
@@ -826,6 +762,73 @@ classdef QCACircuit
                 
             end
             
+        end
+        
+        function obj = Snap2Grid(obj)
+            coord = {};
+            
+            for i=1:length(obj.Device)  %fill cell with all center positions
+                if isa(obj.Device{i},'QCASuperCell')
+                    
+                    
+                    for j=1:length(obj.Device{i}.Device)
+                        coord{end+1} = obj.Device{i}.Device{j}.CenterPosition;
+                        
+                    end
+                    
+                    
+                else
+                    coord{end+1} = obj.Device{i}.CenterPosition;
+                end
+                
+            end
+            
+            
+            for i=1:length(coord)
+                
+                
+                diffx=coord{i}(1)-floor(coord{i}(1)); %range of 0 to 1 for rounding to 0, .5, or 1 relatively speaking
+                diffy=coord{i}(2)-floor(coord{i}(2)); %this is priming the snap to grid functionality
+                
+                %determining how each x,y will be rounded to floor, .5 or
+                %up to the next integer
+                if diffx<.25
+                    coord{i}(1)=floor(coord{i}(1));
+                end
+                if diffx>=.25 && diffx<=.75
+                    coord{i}(1)=floor(coord{i}(1))+.5;
+                end
+                if diffx>.75
+                    coord{i}(1)=floor(coord{i}(1))+1;
+                end
+                
+                
+                if diffy<.25
+                    coord{i}(2)=floor(coord{i}(2));
+                end
+                if diffy>=.25 && diffy<=.75
+                    coord{i}(2)=floor(coord{i}(2))+.5;
+                end
+                if diffy>.75
+                    coord{i}(2)=floor(coord{i}(2))+1;
+                end
+            end
+            
+            
+            it=1;
+            for i=1:length(obj.Device) %replace the cell center positions with the new snapped center positions
+                if isa(obj.Device{i},'QCASuperCell')
+                    for j=1:length(obj.Device{i}.Device)
+                        
+                        obj.Device{i}.Device{j}.CenterPosition = coord{it};
+                        it=it+1;
+                    end
+                else
+                    obj.Device{i}.CenterPosition = coord{it};
+                    it = it+1;
+                end
+                
+            end
         end
         
         

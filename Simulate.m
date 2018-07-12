@@ -37,9 +37,9 @@ for i=1:length(myCircuit.Device)%set clock field for all cells
             myCircuit.Device{i}.Device{j};
             %
             
-            if (myCircuit.Device{i}.Device{j}.ElectricField(2)==0)
-                myCircuit.Device{i}.Device{j}.ElectricField=[0 0 clk]*E0;
-            end
+%             if (myCircuit.Device{i}.Device{j}.ElectricField(2)==0)
+                myCircuit.Device{i}.Device{j}.ElectricField(3)=clk*E0;
+%             end
             
 %             if strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on')
 %                 x(end+1)=myCircuit.Device{i}.Device{j}.CenterPosition(1);
@@ -51,11 +51,11 @@ for i=1:length(myCircuit.Device)%set clock field for all cells
         
     else
         myCircuit.Device{i};
-        if (myCircuit.Device{i}.ElectricField(2)==0)
-            myCircuit.Device{i}.ElectricField=[0 0 clk]*E0;
-        else
-             myCircuit.Device{i}.ElectricField =  myCircuit.Device{i}.ElectricField*E0;
-        end
+%         if (myCircuit.Device{i}.ElectricField(2)==0)
+%             myCircuit.Device{i}.ElectricField(3) = clk*E0;
+%         else
+             myCircuit.Device{i}.ElectricField(3) =  clk*E0;
+%         end
         
 %         if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
 %             x(end+1)=myCircuit.Device{i}.CenterPosition(1);

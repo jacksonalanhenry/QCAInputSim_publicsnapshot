@@ -52,7 +52,7 @@ myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation newYlocation 0]));
 
 myCircuit.Device{length(myCircuit.Device)}.CenterPosition = [newXlocation newYlocation 0];
 myCircuit.Device{length(myCircuit.Device)}.Type = 'Driver';
-
+myCircuit.Device{length(myCircuit.Device)}.Polarization = 1;
 
 
 % circuitDraw

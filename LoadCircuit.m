@@ -10,24 +10,21 @@ SignalsList = getappdata(gcf,'SignalsList'); %same with this SignalsList
 
 
 %We use paths to move between the folders where we use the gui and where we
-%place the .mat files.
-circpath = Path.circ; 
+%place the .mat files. 
 
 home = Path.home;
 
-cd(circpath);
-newFile = uigetfile('*.mat');
+
+[newFile pathname] = uigetfile('*.mat');
 
 
 %if the user cancels, then nothing goes wrong
 if ~newFile
     cd(home);
 else
+    cd(pathname);
     copyfile(newFile,home);
     cd(home);
-    
-    
-    
     loader=load(newFile);
     
     

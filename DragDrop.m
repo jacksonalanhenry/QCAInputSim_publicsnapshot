@@ -1,4 +1,4 @@
-function DragDropNEW()
+function DragDrop()
 %Drag and drop functionality for single cells, supercells, and groups of
 %cells.
 
@@ -8,9 +8,6 @@ orPos = [];
 myOrPos=[];
 
 % FOR THE GUI::: This function will allow drag and drop capability during
-
-
-
 
 f=gcf;
 a=gca;

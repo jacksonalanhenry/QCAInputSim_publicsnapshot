@@ -14,7 +14,7 @@ for k=1:length(SignalsList)
             for j=1:length(myCircuit.Device{i}.Device)
                 if strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on')
                     
-                    myCircuit.Device{i}.Device{j}.ElectricField = [0 inputfield 0];
+                    myCircuit.Device{i}.Device{j}.ElectricField(2) = inputfield;
                     
                     
                 end
@@ -24,7 +24,7 @@ for k=1:length(SignalsList)
             end
         else %any cell can be deleted also
             if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
-                myCircuit.Device{i}.ElectricField = [0 inputfield 0];
+                myCircuit.Device{i}.ElectricField(2) = inputfield;
             end
         end
         

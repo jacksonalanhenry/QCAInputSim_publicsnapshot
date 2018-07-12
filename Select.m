@@ -18,7 +18,7 @@ p.ButtonDownFcn=@selObject;
                 p.ButtonDownFcn=@deSelObject;
                 
                 
-                DragDropNEW();
+                DragDrop();
                 
             end
             

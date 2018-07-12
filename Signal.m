@@ -23,7 +23,7 @@ classdef Signal
 
         Transition
         PhaseDelay % radians
-        MeanValue
+        MeanValue=0;
         Sharpness
         
         
@@ -146,7 +146,8 @@ classdef Signal
                     EField = [0,0,0];
                     switch obj.Type
                         case 'Sinusoidal'
-                            EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude + obj.MeanValue;
+                            
+                            EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude+ obj.MeanValue;
                     
     
                         case 'Fermi'

@@ -1,16 +1,20 @@
-function PipelineVisualization( simresults, targetaxis, varargin )
+function PipelineVisualization( simresults, targetaxis, path, varargin )
 %This function takes in a file and visualizes the simulation.
 %This should be used in conjuction with circuit function pipeline()
 %   draw the circuit at each time step.
 %   things we care about for this: The signal info to construct
 %   the gradient, and the cells positions, pol and act at each time step
+home = pwd;
+cd(home);
+path;
+
 
 switch nargin
     
-    case 2
+    case 3
         vfilename = 'CircuitVideo.mp4';
         
-    case 3
+    case 4
         vfilename = varargin{1};
         
     otherwise 
@@ -18,8 +22,9 @@ switch nargin
     
 end
 
-
+cd(path);
 load(simresults);
+cd(home);
 mycircuit = obj;
 
 %get all of the xpositions
@@ -87,13 +92,13 @@ for t = 1:size(pols,1)
 %     interps = interp1(x,ef,xq,'pchip','extrap');
     Eplot = repmat(ef,[nt,1]);
     
-
+    
     
     pcolor(xq' * ones(1, nt), ones(nx, 1)* yq, Eplot');
     colormap cool;
     shading interp;
     colorbar;
-    caxis([-signal.Amplitude signal.Amplitude])
+    caxis([-signal.Amplitude signal.Amplitude]);
     mycircuit = mycircuit.CircuitDraw(targetaxis, [pols(t,:); acts(t,:)]);
 
     
@@ -106,7 +111,15 @@ for t = 1:size(pols,1)
 end
 
 mycircuit.Simulating = 'off';
-caxis('auto')
+caxis('auto');
+
+a=gca;
+
+a.Box = 'off';
+
+a.YLimMode = 'auto';
+
+
 colorbar('delete');
 close(v);
 disp('Complete!')

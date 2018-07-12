@@ -41,6 +41,6 @@ end
 
 %setappdata then call dragdrop, otherwise clicking will merit nothing
 setappdata(gcf,'myCircuit',myCircuit);
-DragDropNEW();
+DragDrop();
 end
 

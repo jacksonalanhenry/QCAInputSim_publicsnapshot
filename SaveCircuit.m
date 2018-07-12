@@ -5,21 +5,22 @@ function SaveCircuit(handles)
     
     Path = getappdata(gcf,'Path');
     
-
-    cd(Path.circ); %go to the circuits folder
+    
+    
     
     Circuit=getappdata(f, 'myCircuit' ); %attain the circuit we want to save
     SignalsList = getappdata(f,'SignalsList');
     
-    File = uiputfile('*.mat');
+    [File pathname] = uiputfile('*.mat');
     
     
     if File == 0 %if the user cancels the save operation
         cd(Path.home);
         
     else%they don't cancel the save operation
-        save(File, 'Circuit');
-        save(File,'SignalsList');
+        cd(pathname)
+        save(File, 'Circuit','SignalsList');
+        cd(Path.home);
     end
 
     cd(Path.home); %go back to the original directory
