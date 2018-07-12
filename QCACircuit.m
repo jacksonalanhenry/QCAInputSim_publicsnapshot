@@ -363,7 +363,7 @@ classdef QCACircuit
 
             hold off
             grid on
-            axis equal
+            
             
             SignalsList = getappdata(gcf,'SignalsList');
             
@@ -382,7 +382,7 @@ classdef QCACircuit
                 end
             end
             setappdata(gcf,'SignalsList',SignalsList);
-
+            axis equal
         end
         
         function obj =  AntiOverlap(obj)
@@ -761,10 +761,9 @@ classdef QCACircuit
                 disp(['t: ', num2str(t)]);
                 
             end %time step loop
-            pols
+            
             m.pols = pols;
             m.acts = acts;
-            efields
             m.efields = efields;
             
             

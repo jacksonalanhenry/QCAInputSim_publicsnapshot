@@ -6,7 +6,7 @@ function varargout = QCALayoutGUI(varargin)
 %      H = QCALAYOUTGUI returns the handle to a new QCALAYOUTGUI or the handle to
 %      the existing singleton*.
 %
-%      QCALAYOUTGUI('CALLBACK',hObject,eventData,handles,...) calls the local
+%      QCALAYOUTGUI('CALLBACK',hObject,eventData,handlesButton,...) calls the local
 %      function named CALLBACK in QCALAYOUTGUI.M with the given input arguments.
 %
 %      QCALAYOUTGUI('Property','Value',...) creates a new QCALAYOUTGUI or raises the
@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 11-Jul-2018 13:14:57
+% Last Modified by GUIDE v2.5 11-Jul-2018 15:28:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -49,16 +49,16 @@ function QCALayoutGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 % varargin   command line arguments to QCALayoutGUI (see VARARGIN)
 
 % Choose default command line output for QCALayoutGUI
 handles.output = hObject;
 
-% Update handles structure
+% Update handlesButton structure
 guidata(hObject, handles)
 
-% set(handles.figure1,'Name','QCA Layout Demo');
+% set(handlesButton.figure1,'Name','QCA Layout Demo');
 
 
 myCircuit = QCACircuit();
@@ -80,7 +80,7 @@ setappdata(gcf,'Path',Path);
 
 
 % UIWAIT makes QCALayoutGUI wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% uiwait(handlesButton.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -88,9 +88,9 @@ function varargout = QCALayoutGUI_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
-% Get default command line output from handles structure
+% Get default command line output from handlesButton structure
 varargout{1} = handles.output;
 
 
@@ -98,7 +98,7 @@ varargout{1} = handles.output;
 function addNodeButton_Callback(hObject, eventdata, handles)
 % hObject    handle to addNodeButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 QCALayoutAddNode();
 
 
@@ -108,7 +108,7 @@ QCALayoutAddNode();
 function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hint: delete(hObject) closes the figure
 
@@ -119,7 +119,7 @@ delete(hObject);
 function editText_Callback(hObject, eventdata, handles)
 % hObject    handle to editText (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of editText as text
 %        str2double(get(hObject,'String')) returns contents of editText as a double
@@ -129,7 +129,7 @@ QCALayoutAddNode();
 function editText_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to editText (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -142,14 +142,14 @@ end
 function FileMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to FileMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 
 % --------------------------------------------------------------------
 function SaveCircuit_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveCircuit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 
 
@@ -158,14 +158,14 @@ function SaveCircuit_Callback(hObject, eventdata, handles)
 function SaveMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 SaveCircuit(handles);
 
 % --------------------------------------------------------------------
 function OpenMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to OpenMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 LoadCircuit(handles);
 
 
@@ -174,7 +174,7 @@ LoadCircuit(handles);
 function NewMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to NewMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 NewCircuit(handles);
 
 
@@ -184,7 +184,7 @@ NewCircuit(handles);
 function changex_Callback(hObject, eventdata, handles)
 % hObject    handle to changex (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of changex as text
 %        str2double(get(hObject,'String')) returns contents of changex as a double
@@ -194,7 +194,7 @@ ChangeX(handles);
 function changex_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to changex (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -207,7 +207,7 @@ end
 function changey_Callback(hObject, eventdata, handles)
 % hObject    handle to changey (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of changey as text
 %        str2double(get(hObject,'String')) returns contents of changey as a double
@@ -217,7 +217,7 @@ ChangeY(handles);
 function changey_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to changey (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -231,7 +231,7 @@ end
 function chngPol_Callback(hObject, eventdata, handles)
 % hObject    handle to chngPol (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of chngPol as text
 %        str2double(get(hObject,'String')) returns contents of chngPol as a double
@@ -241,7 +241,7 @@ ChangePol(handles)
 function chngPol_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to chngPol (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -253,7 +253,7 @@ end
 function layoutchange_Callback(hObject, eventdata, handles)
 % hObject    handle to layoutchange (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of layoutchange
 SwitchMode(handles);
@@ -263,7 +263,7 @@ SwitchMode(handles);
 function makeSC_Callback(hObject, eventdata, handles)
 % hObject    handle to makeSC (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of makeSC
 
@@ -274,7 +274,7 @@ MakeSuperCellGUI()
 function disbandsupercell_Callback(hObject, eventdata, handles)
 % hObject    handle to disbandsupercell (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 DisbandSuperCell();
 
 
@@ -282,7 +282,7 @@ DisbandSuperCell();
 function simbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to simbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 Simulate(handles);
 
 
@@ -290,7 +290,7 @@ Simulate(handles);
 function removeNode_Callback(hObject, eventdata, handles)
 % hObject    handle to removeNode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 RemoveNode();
 
 
@@ -298,7 +298,7 @@ RemoveNode();
 function addDriver_Callback(hObject, eventdata, handles)
 % hObject    handle to addDriver (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 QCALayoutAddDriver();
 
 
@@ -306,8 +306,8 @@ QCALayoutAddDriver();
 function add5Cells_Callback(hObject, eventdata, handles)
 % hObject    handle to add5Cells (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Add5Cells(handles);
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
+% Add5Cells(handlesButton);
 for i=1:5 
     QCALayoutAddNode()
 end
@@ -317,7 +317,7 @@ end
 function resetButton_Callback(hObject, eventdata, handles)
 % hObject    handle to resetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 ResetCells();
 
 
@@ -325,7 +325,7 @@ ResetCells();
 function chngClock_Callback(hObject, eventdata, handles)
 % hObject    handle to chngClock (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of chngClock as text
 %        str2double(get(hObject,'String')) returns contents of chngClock as a double
@@ -335,7 +335,7 @@ ChangeClockField(handles);
 function chngClock_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to chngClock (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -348,7 +348,7 @@ end
 function chngPos_Callback(hObject, eventdata, handles)
 % hObject    handle to chngPos (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of chngPos as text
 %        str2double(get(hObject,'String')) returns contents of chngPos as a double
@@ -358,7 +358,7 @@ ChangeCellPos(handles);
 function chngPos_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to chngPos (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -371,7 +371,7 @@ end
 function snap2grid_Callback(hObject, eventdata, handles)
 % hObject    handle to snap2grid (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 SnapToGrid(handles);
 
 
@@ -379,7 +379,7 @@ SnapToGrid(handles);
 function autoSnap_Callback(hObject, eventdata, handles)
 % hObject    handle to autoSnap (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of autoSnap
 
@@ -390,7 +390,7 @@ AutoSnap(handles);
 function refresh_Callback(hObject, eventdata, handles)
 % hObject    handle to refresh (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 myCircuit = getappdata(gcf,'myCircuit');
 
 myCircuit = myCircuit.CircuitDraw(gca);
@@ -404,10 +404,10 @@ setappdata(gcf,'myCircuit',myCircuit);
 function circuitPanel_Callback(hObject, eventdata, handles)
 % hObject    handle to circuitPanel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of circuitPanel
-% PanelSwitch(handles);
+% PanelSwitch(handlesButton);
     handles.signalPanel.Value = 0;
     handles.signalButtonGroup.Visible = 'off';
     
@@ -422,10 +422,10 @@ function circuitPanel_Callback(hObject, eventdata, handles)
 function signalPanel_Callback(hObject, eventdata, handles)
 % hObject    handle to signalPanel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of signalPanel
-% PanelSwitch(handles);
+% PanelSwitch(handlesButton);
     handles.signalPanel.Value = 1;
     handles.signalButtonGroup.Visible = 'on';
     
@@ -440,7 +440,7 @@ function signalPanel_Callback(hObject, eventdata, handles)
 function simulatePanel_Callback(hObject, eventdata, handles)
 % hObject    handle to simulatePanel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of simulatePanel    
     handles.signalPanel.Value = 0;
@@ -456,7 +456,7 @@ function simulatePanel_Callback(hObject, eventdata, handles)
 function changeWave_Callback(hObject, eventdata, handles)
 % hObject    handle to changeWave (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of changeWave as text
 %        str2double(get(hObject,'String')) returns contents of changeWave as a double
@@ -466,7 +466,7 @@ function changeWave_Callback(hObject, eventdata, handles)
 function changeWave_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to changeWave (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -479,7 +479,7 @@ end
 function changePhase_Callback(hObject, eventdata, handles)
 % hObject    handle to changePhase (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of changePhase as text
 %        str2double(get(hObject,'String')) returns contents of changePhase as a double
@@ -489,7 +489,7 @@ function changePhase_Callback(hObject, eventdata, handles)
 function changePhase_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to changePhase (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -502,7 +502,7 @@ end
 function changeAmp_Callback(hObject, eventdata, handles)
 % hObject    handle to changeAmp (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of changeAmp as text
 %        str2double(get(hObject,'String')) returns contents of changeAmp as a double
@@ -512,7 +512,7 @@ function changeAmp_Callback(hObject, eventdata, handles)
 function changeAmp_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to changeAmp (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -525,7 +525,7 @@ end
 function signalType_Callback(hObject, eventdata, handles)
 % hObject    handle to signalType (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns signalType contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from signalType
@@ -565,7 +565,7 @@ end
 function signalType_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to signalType (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -578,7 +578,7 @@ end
 function changePeriod_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to changePeriod (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -590,7 +590,7 @@ end
 function changePeriod_Callback(hObject, eventdata, handles)
 % hObject    handle to changePeriod (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of changePeriod as text
 %        str2double(get(hObject,'String')) returns contents of changePeriod as a double
@@ -600,7 +600,7 @@ function changePeriod_Callback(hObject, eventdata, handles)
 function createSignal_Callback(hObject, eventdata, handles)
 % hObject    handle to createSignal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 SignalsList = getappdata(gcf,'SignalsList');
 
 contents = cellstr(get(handles.signalType,'String')); 
@@ -612,7 +612,7 @@ transType = transitions{get(handles.transitionType,'Value')};
 
 
 
-% sigType = handles.signalType.String;
+% sigType = handlesButton.signalType.String;
 mySignal = Signal();
 
 switch sigType
@@ -651,7 +651,7 @@ end
 function signalName_Callback(hObject, eventdata, handles)
 % hObject    handle to signalName (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of signalName as text
 %        str2double(get(hObject,'String')) returns contents of signalName as a double
@@ -661,7 +661,7 @@ function signalName_Callback(hObject, eventdata, handles)
 function signalName_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to signalName (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -674,7 +674,7 @@ end
 function signalList_Callback(hObject, eventdata, handles)
 % hObject    handle to signalList (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns signalList contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from signalList
@@ -731,7 +731,7 @@ end
 function signalList_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to signalList (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: listbox controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -744,7 +744,7 @@ end
 function deleteSignal_Callback(hObject, eventdata, handles)
 % hObject    handle to deleteSignal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 contents = cellstr(get(handles.signalList,'String'));
 
@@ -794,7 +794,7 @@ end
 function saveSignal_Callback(hObject, eventdata, handles)
 % hObject    handle to saveSignal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 contents = cellstr(get(handles.signalList,'String'));
 
 SignalsList = getappdata(gcf,'SignalsList');
@@ -850,7 +850,7 @@ end
 function plotSignal_Callback(hObject, eventdata, handles)
 % hObject    handle to plotSignal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 contents = cellstr(get(handles.signalList,'String'));
 
 SignalsList = getappdata(gcf,'SignalsList');
@@ -908,7 +908,7 @@ end
 function transitionType_Callback(hObject, eventdata, handles)
 % hObject    handle to transitionType (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns transitionType contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from transitionType
@@ -920,7 +920,7 @@ function transitionType_Callback(hObject, eventdata, handles)
 function transitionType_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to transitionType (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -933,7 +933,7 @@ end
 function makeElectrode_Callback(hObject, eventdata, handles)
 % hObject    handle to makeElectrode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 % myCircuit = getappdata(gcf,'myCircuit');
 
 
@@ -943,7 +943,7 @@ function makeElectrode_Callback(hObject, eventdata, handles)
 function inputField_Callback(hObject, eventdata, handles)
 % hObject    handle to changeInputField (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of changeInputField as text
 %        str2double(get(hObject,'String')) returns contents of changeInputField as a double
@@ -953,7 +953,7 @@ function inputField_Callback(hObject, eventdata, handles)
 function inputField_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to changeInputField (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -966,7 +966,7 @@ end
 function changeInputField_Callback(hObject, eventdata, handles)
 % hObject    handle to changeInputField (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hints: get(hObject,'String') returns contents of changeInputField as text
 %        str2double(get(hObject,'String')) returns contents of changeInputField as a double
@@ -978,7 +978,7 @@ function changeInputField_Callback(hObject, eventdata, handles)
 function changeInputField_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to changeInputField (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handlesButton    empty - handlesButton not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -991,7 +991,7 @@ end
 function drawElectrodes_Callback(hObject, eventdata, handles)
 % hObject    handle to drawElectrode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 
 
@@ -1002,7 +1002,7 @@ function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
 %	Key: name of the key that was pressed, in lower case
 %	Character: character interpretation of the key(s) that was pressed
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 eventdata.Key;
 
@@ -1115,7 +1115,7 @@ end
 function drawElectrode_Callback(hObject, eventdata, handles)
 % hObject    handle to drawElectrode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 SignalsList = getappdata(gcf,'SignalsList');
 
@@ -1160,14 +1160,14 @@ myCircuit = myCircuit.CircuitDraw(gca);
 setappdata(gcf,'myCircuit',myCircuit);
 
 
-% ChangeInputField(handles);
+% ChangeInputField(handlesButton);
 
 
 % --- Executes on button press in getAppInfo.
 function getAppInfo_Callback(hObject, eventdata, handles)
 % hObject    handle to getAppInfo (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 AppInfo = getappdata(gcf)
 circuit = AppInfo.myCircuit
 signals = AppInfo.SignalsList
@@ -1177,7 +1177,7 @@ signals = AppInfo.SignalsList
 function eraseElectrodes_Callback(hObject, eventdata, handles)
 % hObject    handle to eraseElectrodes (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 SignalsList = getappdata(gcf,'SignalsList');
 myCircuit = getappdata(gcf,'myCircuit');
 
@@ -1203,7 +1203,7 @@ setappdata(gcf,'myCircuit',myCircuit);
 function clearAll_Callback(hObject, eventdata, handles)
 % hObject    handle to clearAll (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 f=gcf;
 
 a=gca;
@@ -1244,7 +1244,7 @@ setappdata(f,'Copies',copies);
 function visualizeSim_Callback(hObject, eventdata, handles)
 % hObject    handle to visualizeSim (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 Sim = uigetfile('*.mat');
 
 if Sim
@@ -1258,20 +1258,30 @@ myCircuit = myCircuit.CircuitDraw(gca);
 setappdata(gcf,'myCircuit',myCircuit);
 
 
-
 % --- Executes on button press in createSimulation.
 function createSimulation_Callback(hObject, eventdata, handles)
 % hObject    handle to createSimulation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
 myCircuit = getappdata(gcf,'myCircuit');
 SignalsList = getappdata(gcf,'SignalsList');
-
-if length(SignalsList)
+myCircuit = myCircuit.GenerateNeighborList();
+if length(SignalsList)==1
     myCircuit = myCircuit.pipeline(SignalsList{1});
+else
+    
 end
+
 myCircuit = myCircuit.CircuitDraw(gca);
 
 setappdata(gcf,'myCircuit',myCircuit);
 setappdata(gcf,'SignalsList',SignalsList);
 
+
+
+% --- Executes on button press in handlesButton.
+function handlesButton_Callback(hObject, eventdata, handles)
+% hObject    handle to handlesButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handlesButton    structure with handlesButton and user data (see GUIDATA)
+gca

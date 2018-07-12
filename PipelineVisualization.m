@@ -106,7 +106,7 @@ for t = 1:size(pols,1)
 end
 
 mycircuit.Simulating = 'off';
-
+caxis('auto')
 colorbar('delete');
 close(v);
 disp('Complete!')
