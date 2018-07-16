@@ -141,6 +141,7 @@ classdef Signal
         
         function EField = getClockField(obj, centerposition, time)
             %THIS FUNCTION ONLY ASSIGNS z Field RIGHT NOW
+            
             if( isnumeric(centerposition) )
                 if(size(centerposition) == [1, 3])
                     EField = [0,0,0];
@@ -152,7 +153,8 @@ classdef Signal
     
                         case 'Fermi'
                             EField(3) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
-            
+                            
+                            
  
                         otherwise
                             error(['ClockType = ''', obj.Type, ...
@@ -463,97 +465,8 @@ classdef Signal
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        function v = valueferm(obj, centerpos, t)
-            
-            x = PeriodicFermi(mod(centerpos(1) - t, obj.Period), obj.Period, obj.Sharpness);
-            v = [0,0,x];
-            
-        end
-        
-        
-        % vvv ------ Value ----- vvv
-        function varargout = Value( obj, centerposition, t )
-            
-            
-            
-            % disp(['QCApack.Signal.Value: ojb.Type = ', obj.Type])
-            switch obj.Type
-                case 'Sinusoidal'
-                    x = obj.MeanValue + ...
-                        obj.Amplitude*sin(2*pi*(centerposition(1)/obj.Wavelength + t/obj.Period) + obj.PhaseDelay);
-                    
-                    V = [0,0,x];
-                case 'Fermi'
-                    
-                    
-                    t = mod(t + ...
-                        obj.PhaseDelay*(obj.Period/(2*pi)), ...
-                        obj.Period);
-                    
-                    xi = obj.Sharpness;
-                    
-                    RestorativeScalingFactor = (2*( ...
-                        -0.5 - (exp(xi*(obj.Period/4)) + 1).^(-1) ...
-                        + (exp(xi*(-obj.Period/4)) + 1).^(-1) ...
-                        - (exp(xi*(-3*obj.Period/4)) + 1).^(-1) ...
-                        + (exp(xi*(-5*obj.Period/4)) + 1).^(-1))).^(-1);
-                    
-                    
-                    V = RestorativeScalingFactor*2*obj.Amplitude*( ...
-                        -0.5 - (exp(xi*(t + obj.Period/4)) + 1).^(-1) ...
-                        + (exp(xi*(t - obj.Period/4)) + 1).^(-1) ...
-                        - (exp(xi*(t - 3*obj.Period/4)) + 1).^(-1) ...
-                        + (exp(xi*(t - 5*obj.Period/4)) + 1).^(-1)) ...
-                        
-                    ... - 5*obj.Amplitude
-                        + obj.MeanValue;
-                    
-                    
-                otherwise
-                    error(['ClockType = ''', obj.Type, ...
-                        ''' is invalid.'])
-                    
-            end % END [ switch obj.Type ]
-            
-            switch nargout
-                case 0
-                    varargout{1} = V;
-                case 1
-                    varargout{1} = V;
-                case 2
-                    varargout{1} = V;
-                    varargout{2} = dVdt;
-            end
-            
-            
-        end
-        % ^^^ ------ GET: InitialValue ----- ^^^
     end
     
 end
 
+    

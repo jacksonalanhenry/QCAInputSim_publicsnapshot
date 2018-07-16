@@ -186,6 +186,7 @@ classdef QCACircuit
         function obj = CircuitDraw(obj,targetaxis, varargin)
             %cla; 
             
+            
             hold on
             CellIndex = length(obj.Device);
             snapmode = obj.SnapToGrid;

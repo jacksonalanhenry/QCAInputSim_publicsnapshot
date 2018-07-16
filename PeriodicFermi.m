@@ -9,6 +9,7 @@ function f = PeriodicFermi( x, xperiod, sharpness )
 % 
 % f = FermiTransition(xl, t1, sharpness) - FermiTransition(xl, t2, sharpness);
 
+import QCALayoutPack.test.*
 
 t1 = xperiod/4;
 t2 = 3*xperiod/4;
