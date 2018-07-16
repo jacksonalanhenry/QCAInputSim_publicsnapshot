@@ -300,24 +300,8 @@ classdef QCACircuit
             hold off
             grid on
             
-            
-            SignalsList = getappdata(gcf,'SignalsList');
-            
-            for i=1:length(SignalsList)
-                
-                if strcmp(SignalsList{i}.IsDrawn,'on')
-                    
-                    
-                    if ~isempty(SignalsList{i}.Height)
-                        
-                        SignalsList{i} = SignalsList{i}.drawElectrode();
-                    else
-                        
-                    end
-                    
-                end
-            end
-            setappdata(gcf,'SignalsList',SignalsList);
+            DrawElectrodes();
+
             axis equal
         end
         
@@ -590,6 +574,8 @@ classdef QCACircuit
         
         function obj = pipeline(obj, signal, varargin)
             
+            home = pwd;
+            
             switch nargin
                 
                 case 2 % normal
@@ -614,6 +600,11 @@ classdef QCACircuit
             
             
             m = matfile(file, 'Writable', true);
+            
+%             [m path] = uiputfile('*.mat',file);
+%             cd(path);
+            
+            
             save(file, 'signal', '-v7.3');
             save(file, 'obj', '-append');
             m.pols = [];%zeros(nt,length(obj.Device));
@@ -626,9 +617,11 @@ classdef QCACircuit
             efields = [];
             
             
+            w8bar = waitbar(0,'Preparing Simulation...');
+            w8bar.Position = w8bar.Position + 50;
             
             for t = 1:nt %time step
-                
+                waitbar(t/nt, w8bar , 'Processing Simulation');
                 %edit Efield for all cells in circuit
                 idx=1;
                 while idx <= length(obj.Device)
@@ -697,8 +690,9 @@ classdef QCACircuit
                 disp(['t: ', num2str(t)]);
                 
             end %time step loop
-            
-            
+                        
+            waitbar(1, w8bar , 'Simulation Complete');
+            close (w8bar);
             
             m.pols = pols;
             m.acts = acts;
@@ -708,6 +702,8 @@ classdef QCACircuit
             disp('Complete!')
             
             obj.Simulating = 'off';
+            
+            cd(home);
         end
         
         function cell_obj = getCellArray(obj, CellIDArray)

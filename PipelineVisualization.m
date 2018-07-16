@@ -9,6 +9,11 @@ cd(home);
 path;
 
 
+% w8bar = waitbar(0,'Please wait...');
+% w8bar.Position = w8bar.Position + 50;
+
+pause(.5);
+
 switch nargin
     
     case 3
@@ -29,7 +34,12 @@ mycircuit = obj;
 
 %get all of the xpositions
 xit = 1;
+
+% waitbar(0, w8bar , 'Processing Simulation');
+
 for i=1:length(obj.Device)
+%     waitbar(i/length(obj.Device), w8bar , 'Retrieving Circuit and Signal data...');
+    
     if isa(obj.Device{i},'QCASuperCell')
         for j=1:length(obj.Device{i}.Device)
             center = obj.Device{i}.Device{j}.CenterPosition;
@@ -65,8 +75,15 @@ xp = mod(xq, signal.Period);
 
 %reconstruct signal
 
+% waitbar(0, w8bar , 'Reconstructing Signal...');
+
 for t = 1:size(pols,1)
+%     waitbar( t / size(pols,1) , w8bar , 'Reconstructing Signal...');
+    
     for idx = 1:nx
+        
+        
+        
         efplots_temp = signal.getClockField([xp(idx),0,0], tp(t));
         efplots(t, idx) = efplots_temp(3);
         
@@ -83,9 +100,18 @@ open(v);
 
 mycircuit.Simulating = 'on';
 
+% f=gcf;
+
+% f.Pointer = 'watch';
+
+
+% waitbar(0, w8bar , 'Writing to Video File...');
+
+
+
 for t = 1:size(pols,1)
     
-    
+    close(w8bar)
     cla;
 
     ef = efplots(t,:);
@@ -105,10 +131,19 @@ for t = 1:size(pols,1)
     drawnow
     %save it
     Frame(t) = getframe(gca);
-    writeVideo(v,Frame(t));
+    v;
+    
+    writeVideo(v,Frame(t))
     disp(['t: ' num2str(t)])
     
+    
 end
+
+% waitbar(1, w8bar , 'Simulation Video Complete');
+% pause(.5);
+% close(w8bar);
+
+% f.Pointer = 'arrow';
 
 mycircuit.Simulating = 'off';
 caxis('auto');
