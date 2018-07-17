@@ -12,10 +12,7 @@ name = num2str(handles.nameSim.String);
 
 f=gcf;
 
-% f.Pointer = 'watch';
-% f.Pointer
-
-
+f.Pointer = 'watch';
 
 
 if length(SignalsList)==1 %pipeline will run
@@ -37,6 +34,5 @@ setappdata(gcf,'myCircuit',myCircuit);
 setappdata(gcf,'SignalsList',SignalsList);
 
 
-% f.Pointer = 'arrow';
-% f.Pointer
+f.Pointer = 'arrow';
 end

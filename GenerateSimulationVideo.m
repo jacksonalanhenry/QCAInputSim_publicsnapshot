@@ -4,15 +4,14 @@ function GenerateSimulationVideo(handles)
 
 [Sim path]= uigetfile('*.mat'); %path gets sent into Pipeline in order to change the path, that way we can put the video file anywhere
 
-f=gcf;
+% f=gcf;
 
 
-f.Pointer = 'watch';
+% f.Pointer = 'watch';
 
 
 if Sim
     PipelineVisualization(Sim,gca,path);
-    
     
 end
 
@@ -23,7 +22,6 @@ myCircuit = myCircuit.CircuitDraw(gca);
 setappdata(gcf,'myCircuit',myCircuit);
 
 
-f.Pointer = 'arrow';
-f.Pointer
+% f.Pointer = 'arrow';
+% f.Pointer;
 end
-

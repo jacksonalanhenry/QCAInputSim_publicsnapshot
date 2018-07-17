@@ -60,7 +60,11 @@ classdef ThreeDotCell < QCACell
         
         function obj = set.Polarization(obj,value)
             if (~isnumeric(value) || value < -1 || value > 1) %value must be numeric in between -1 and 1
-                error('Invalid Polarization. Must be a number inbetween -1 and 1')
+%                 error('Invalid Polarization. Must be a number inbetween -1 and 1')
+                
+                obj.Polarization = 1;
+
+
             else
                 obj.Polarization = value;
                 
