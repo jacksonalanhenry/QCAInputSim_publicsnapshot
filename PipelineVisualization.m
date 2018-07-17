@@ -111,7 +111,9 @@ mycircuit.Simulating = 'on';
 
 for t = 1:size(pols,1)
     
+
     close(w8bar);
+
     cla;
 
     ef = efplots(t,:);

@@ -240,6 +240,7 @@ classdef QCACircuit
             end
             
             
+            
             for CellIndex = 1:length(obj.Device)
                 
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
@@ -296,6 +297,7 @@ classdef QCACircuit
                 end
                 
             end
+            
             RightClickThings();   %uicontextmenu available upon drawing
 
             hold off

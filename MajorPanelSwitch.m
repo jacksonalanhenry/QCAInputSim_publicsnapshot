@@ -30,7 +30,7 @@ switch panel
         handles.circuitPanel.Value = 0;
         handles.circuitButtonGroup.Visible = 'off';
         
-        handles.signalPanel.Value = 1;
+        handles.signalPanel.Value = 0;
         handles.signalButtonGroup.Visible = 'off';         
         
         handles.simulatePanel.Value = 1;

@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 16-Jul-2018 10:56:21
+% Last Modified by GUIDE v2.5 17-Jul-2018 10:38:43
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -116,48 +116,7 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 delete(hObject);
 
-
-
-function editText_Callback(hObject, eventdata, handles)
-% hObject    handle to editText (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handlesButton    structure with handlesButton and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of editText as text
-%        str2double(get(hObject,'String')) returns contents of editText as a double
-
-
-
-%may be depreciated
-% --- Executes during object creation, after setting all properties.
-function editText_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editText (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handlesButton    empty - handlesButton not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-%may be depreciated
-% --------------------------------------------------------------------
 function FileMenu_Callback(hObject, eventdata, handles)
-% hObject    handle to FileMenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handlesButton    structure with handlesButton and user data (see GUIDATA)
-
-
-%may be depreciated
-% --------------------------------------------------------------------
-function SaveCircuit_Callback(hObject, eventdata, handles)
-% hObject    handle to SaveCircuit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handlesButton    structure with handlesButton and user data (see GUIDATA)
-
-
 
 
 % --------------------------------------------------------------------
@@ -165,6 +124,8 @@ function SaveMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%saving both the circuit and the signal to a .mat file
 SaveCircuit(handles);
 
 % --------------------------------------------------------------------
@@ -172,6 +133,8 @@ function OpenMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to OpenMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%open a previously made circuit
 LoadCircuit(handles);
 
 
@@ -181,6 +144,8 @@ function NewMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to NewMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%get rid of the current circuit and clear its data from the appdata
 NewCircuit(handles);
 
 
@@ -193,6 +158,8 @@ function chngPol_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of chngPol as text
 %        str2double(get(hObject,'String')) returns contents of chngPol as a double
+
+%change the polarization of any driver cell(s)
 ChangePol(handles);
 
 
@@ -218,6 +185,9 @@ function makeSC_Callback(hObject, eventdata, handles)
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of makeSC
+
+%make the group of selected cells a supercell. Drivers cannot be in
+%supercells
 MakeSuperCellGUI();
 
 
@@ -226,6 +196,8 @@ function disbandsupercell_Callback(hObject, eventdata, handles)
 % hObject    handle to disbandsupercell (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%if any member of a supercell is selected, the SC can be disbanded
 DisbandSuperCell();
 
 
@@ -235,6 +207,9 @@ function simbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to simbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%currently the simulate button, but it may be deleted later since it it not
+%the same as the simulation panel functionality
 Simulate(handles);
 
 
@@ -243,6 +218,8 @@ function removeNode_Callback(hObject, eventdata, handles)
 % hObject    handle to removeNode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%Remove the node or nodes selected
 RemoveNode();
 
 
@@ -251,6 +228,8 @@ function addDriver_Callback(hObject, eventdata, handles)
 % hObject    handle to addDriver (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%add a driver to the circuit and axis
 QCALayoutAddDriver();
 
 
@@ -260,6 +239,9 @@ function add5Cells_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 % Add5Cells(handlesButton);
+
+%add 5 nodes instead of just 1 (we could desire certain shapes of
+%additions, something to think about)
 for i=1:5 
     QCALayoutAddNode();
 end
@@ -270,10 +252,12 @@ function resetButton_Callback(hObject, eventdata, handles)
 % hObject    handle to resetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%set all nodes to a polarization of 0
 ResetCells();
 
 
-
+%OBSOLETE
 function chngClock_Callback(hObject, eventdata, handles)
 % hObject    handle to chngClock (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -305,6 +289,8 @@ function autoSnap_Callback(hObject, eventdata, handles)
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of autoSnap
+
+%this is the switch function for turning snap2grid functionality on and off
 AutoSnap(handles);
 
 
@@ -314,11 +300,11 @@ function refresh_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
-%for debugging
+%for debugging, we redraw the circuit
 myCircuit = getappdata(gcf,'myCircuit');
 
-f=gcf;
-f.Pointer = 'arrow';
+% f=gcf;
+% f.Pointer = 'arrow';
 
 myCircuit = myCircuit.CircuitDraw(gca);
 
@@ -336,6 +322,7 @@ function circuitPanel_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of circuitPanel
 % PanelSwitch(handlesButton);
 
+%switching between the three main panels (circuit, signal, simulation)
 MajorPanelSwitch(handles,'circuit');
 
 
@@ -349,6 +336,7 @@ function signalPanel_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of signalPanel
 % PanelSwitch(handlesButton);
 
+%switching between the three main panels (circuit, signal, simulation)
 MajorPanelSwitch(handles,'signal');
 
 
@@ -362,6 +350,7 @@ function simulatePanel_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of simulatePanel   
 
+%switching between the three main panels (circuit, signal, simulation)
 MajorPanelSwitch(handles,'simulate');
 
 
@@ -454,6 +443,9 @@ function signalType_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns signalType contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from signalType
+
+%switch between the different signal type panels within the major signal
+%panel
 SignalTypePanelSwitch(handles);
 
 
@@ -490,6 +482,8 @@ function createSignal_Callback(hObject, eventdata, handles)
 % hObject    handle to createSignal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%create a signal of a designated type
 CreateSignal(handles);
 
 
@@ -526,6 +520,8 @@ function signalList_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns signalList contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from signalList
+
+%attain signal properties by selecting that signal in the gui listbox
 GetSignalPropsGUI(handles);
 
 
@@ -549,6 +545,7 @@ function deleteSignal_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
+%Delete a signal from the gui listbox and from the appdata
 DeleteSignal(handles);
 
 
@@ -558,6 +555,8 @@ function saveSignal_Callback(hObject, eventdata, handles)
 % hObject    handle to saveSignal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%save the current signal that is being edited
 SaveEditedSignal(handles);
 
 
@@ -622,10 +621,25 @@ function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
-%MAKE THIS A HOTKEY.M FUNCTION
+%all the hotkeys are here
+eventdata.Key;
+eventdata.Modifier;
+
 HotKeysFuncList(handles,eventdata);
 
 
+
+function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+f=gcf;
+f.SelectionType;
+
+Select = f.SelectionType;
+
+ClickFunctionality(handles,eventdata,Select);
 
 
 % --- Executes on button press in drawElectrode.
@@ -633,6 +647,8 @@ function drawElectrode_Callback(hObject, eventdata, handles)
 % hObject    handle to drawElectrode (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%drawing the electrodes
 ElectrodeDrawer(handles);
 
 
@@ -643,6 +659,7 @@ function eraseElectrodes_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
+%erasing the selected electrodes
 ElectrodeEraser(handles);
 
 
@@ -652,6 +669,7 @@ function clearAll_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
+%pretty self explanatory
 ClearAll(handles);
 
 
@@ -661,10 +679,12 @@ function createSimulation_Callback(hObject, eventdata, handles)
 % hObject    handle to createSimulation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
-f=gcf;
+
+%creating the simulation file that we will make the video from
+% f=gcf;
 % f.Pointer = 'watch';
 CreateSimulationFile(handles);
-f.Pointer = 'arrow';
+% f.Pointer = 'arrow';
 
 
 % --- Executes on button press in visualizeSim.
@@ -672,10 +692,12 @@ function visualizeSim_Callback(hObject, eventdata, handles)
 % hObject    handle to visualizeSim (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%calling the pipelinevisualization function to create the mp4 video file
 f=gcf;
 % f.Pointer = 'watch';
 GenerateSimulationVideo(handles);
-f.Pointer = 'arrow';
+% f.Pointer = 'arrow';
 
 function nameSim_Callback(hObject, eventdata, handles)
 % hObject    handle to nameSim (see GCBO)
@@ -706,16 +728,21 @@ function handlesButton_Callback(hObject, eventdata, handles)
 % hObject    handle to handlesButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%attaining the handles, not a necessary function and it will be gone
+%eventually
 handles
 gca;
 
 
-
+%WILL DELETE LATER. IT JUST MAKES IT EASIER TO GET DATA
 % --- Executes on button press in getAppInfo.
 function getAppInfo_Callback(hObject, eventdata, handles)
 % hObject    handle to getAppInfo (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
+
+%as said above, only getting the app data
 AppInfo = getappdata(gcf)
 circuit = AppInfo.myCircuit
 signals = AppInfo.SignalsList
@@ -859,10 +886,3 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in abortButton.
-function abortButton_Callback(hObject, eventdata, handles)
-% hObject    handle to abortButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% AbortSimulation();
