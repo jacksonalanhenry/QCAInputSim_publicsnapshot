@@ -111,7 +111,7 @@ mycircuit.Simulating = 'on';
 
 for t = 1:size(pols,1)
     
-    close(w8bar)
+    close(w8bar);
     cla;
 
     ef = efplots(t,:);
@@ -133,7 +133,7 @@ for t = 1:size(pols,1)
     Frame(t) = getframe(gca);
     v;
     
-    writeVideo(v,Frame(t))
+    writeVideo(v,Frame(t));
     disp(['t: ' num2str(t)])
     
     
