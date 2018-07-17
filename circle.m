@@ -32,7 +32,7 @@ function h = circle(varargin)
 %
 %                ':'     Dotted line
 %
-nth=15;
+nth=30;
 
 x0 = varargin{1};
 y0 = varargin{2};
