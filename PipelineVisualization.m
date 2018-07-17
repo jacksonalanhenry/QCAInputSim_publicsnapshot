@@ -113,8 +113,14 @@ mycircuit.Simulating = 'on';
 
 for t = 1:size(pols,1)
     
+<<<<<<< HEAD
 %     waitbar(t/size(pols,1), w8bar , 'Writing to Video File...');
     
+=======
+
+    close(w8bar);
+
+>>>>>>> 1640cb86a5106a7705ed679f14082306dfa1dd1c
     cla;
 
     ef = efplots(t,:);
@@ -136,7 +142,7 @@ for t = 1:size(pols,1)
     Frame(t) = getframe(gca);
     v;
     
-    writeVideo(v,Frame(t))
+    writeVideo(v,Frame(t));
     disp(['t: ' num2str(t)])
     
     

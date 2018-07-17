@@ -10,27 +10,16 @@ classdef Signal
         
         Name;
         Type = 'Sinusoidal';%  'Fermi' 'Custom'(Piecewise) 'Imported'(COMSOL) there may be others
-        %These properties are only used for the sinusoidal type
+        
+        %These properties are only used for the Sinusoidal and Fermi type
         Amplitude = 1;
         Wavelength = 1;
         Period = 1;
         Phase = pi/2;
-        
-        
-        
-        %Piecewise Properties
+        MeanValue=0;
+        Sharpness;
         
 
-        Transition
-        PhaseDelay % radians
-        MeanValue=0;
-        Sharpness
-        
-        
-        %dependent properties
-        Periodic
-        InitialValue
-        
         %Electrode Properties
         InputField=0;
         CenterPosition;
@@ -131,7 +120,7 @@ classdef Signal
         end
         
         function obj = set.Type(obj,value)
-            if (~isequal(value, 'Sinusoidal') && ~isequal(value,'Custom') && ~isequal(value,'Electrode') && ~isequal(value,'Fermi'))%edit this to add more types
+            if (~isequal(value, 'Sinusoidal') && ~isequal(value,'Fermi') && ~isequal(value,'Custom') && ~isequal(value,'Electrode') )%edit this to add more types
                 error('Invalid Type. Must be Standard signal Type')
             else
                 obj.Type = value;
@@ -174,6 +163,8 @@ classdef Signal
             end
             
         end
+        
+
         
         function obj = drawElectrode(obj, varargin)
             if nargin > 2
