@@ -9,6 +9,8 @@ cd(home);
 path;
 
 
+
+
 % w8bar = waitbar(0,'Please wait...');
 % w8bar.Position = w8bar.Position + 50;
 
@@ -78,7 +80,7 @@ xp = mod(xq, signal.Period);
 % waitbar(0, w8bar , 'Reconstructing Signal...');
 
 for t = 1:size(pols,1)
-%     waitbar( t / size(pols,1) , w8bar , 'Reconstructing Signal...');
+    waitbar( t / size(pols,1) , w8bar , 'Reconstructing Signal...');
     
     for idx = 1:nx
         
@@ -111,7 +113,8 @@ mycircuit.Simulating = 'on';
 
 for t = 1:size(pols,1)
     
-%     close(w8bar)
+%     waitbar(t/size(pols,1), w8bar , 'Writing to Video File...');
+    
     cla;
 
     ef = efplots(t,:);
@@ -140,7 +143,7 @@ for t = 1:size(pols,1)
 end
 
 % waitbar(1, w8bar , 'Simulation Video Complete');
-% pause(.5);
+% pause(.25);
 % close(w8bar);
 
 % f.Pointer = 'arrow';

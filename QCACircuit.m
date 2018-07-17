@@ -10,8 +10,6 @@ classdef QCACircuit
         Mode='Simulation';
         SnapToGrid = 'off';
         Simulating = 'off';
-        
-        
     end
     
     methods
@@ -604,102 +602,103 @@ classdef QCACircuit
             
             m = matfile(file, 'Writable', true);
             
-%             [m path] = uiputfile('*.mat',file);
-%             cd(path);
+%             [m path] = uiputfile('*.mat',file)
+            %             cd(path);
             
             
-            save(file, 'signal', '-v7.3');
-            save(file, 'obj', '-append');
-            m.pols = [];%zeros(nt,length(obj.Device));
-            m.acts = [];%zeros(nt,length(obj.Device));
-            m.efields = [];%zeros(nt,length(obj.Device));
-            m.nt = nt;
-            
-            pols = [];
-            acts = [];
-            efields = [];
-            
-            
-            w8bar = waitbar(0,'Preparing Simulation...');
-            w8bar.Position = w8bar.Position + 50;
-            
-            for t = 1:nt %time step
-                waitbar(t/nt, w8bar , 'Processing Simulation');
-                %edit Efield for all cells in circuit
-                idx=1;
-                while idx <= length(obj.Device)
-                    if( isa(obj.Device{idx}, 'QCASuperCell') )
-                        
-                        for subnode = 1:length(obj.Device{idx}.Device)
-                            %obj.Device{idx}.Device{subnode}.ElectricField = signal.getEField(obj.Device{idx}.Device{subnode}.CenterPosition, time_array(t)); %changes E Field.
-                            efield = obj.Device{idx}.Device{subnode}.ElectricField;
+                save(file, 'signal', '-v7.3');
+                save(file, 'obj', '-append');
+                m.pols = [];%zeros(nt,length(obj.Device));
+                m.acts = [];%zeros(nt,length(obj.Device));
+                m.efields = [];%zeros(nt,length(obj.Device));
+                m.nt = nt;
+                
+                pols = [];
+                acts = [];
+                efields = [];
+                
+                
+%                 w8bar = waitbar(0,'Preparing Simulation...');
+%                 w8bar.Position = w8bar.Position + 50;
+                
+                for t = 1:nt %time step
+%                     waitbar(t/nt, w8bar , 'Processing Simulation');
+                    %edit Efield for all cells in circuit
+                    idx=1;
+                    while idx <= length(obj.Device)
+                        if( isa(obj.Device{idx}, 'QCASuperCell') )
+                            
+                            for subnode = 1:length(obj.Device{idx}.Device)
+                                %obj.Device{idx}.Device{subnode}.ElectricField = signal.getEField(obj.Device{idx}.Device{subnode}.CenterPosition, time_array(t)); %changes E Field.
+                                efield = obj.Device{idx}.Device{subnode}.ElectricField;
+                                efield(3) = 0;
+                                efield = efield + signal.getClockField(obj.Device{idx}.Device{subnode}.CenterPosition, tc(t)); %changes E Field.
+                                obj.Device{idx}.Device{subnode}.ElectricField = efield;
+                            end
+                            idx = idx+1;
+                        else
+                            %obj.Device{idx}.ElectricField = signal.getEField(obj.Device{idx}.CenterPosition, time_array(t)); %changes E Field.
+                            efield = obj.Device{idx}.ElectricField;
                             efield(3) = 0;
-                            efield = efield + signal.getClockField(obj.Device{idx}.Device{subnode}.CenterPosition, tc(t)); %changes E Field.
-                            obj.Device{idx}.Device{subnode}.ElectricField = efield;
+                            efield = efield + signal.getClockField(obj.Device{idx}.CenterPosition, tc(t)); %changes E Field.
+                            obj.Device{idx}.ElectricField = efield;
+                            idx = idx+1;
                         end
-                        idx = idx+1;
-                    else
-                        %obj.Device{idx}.ElectricField = signal.getEField(obj.Device{idx}.CenterPosition, time_array(t)); %changes E Field.
-                        efield = obj.Device{idx}.ElectricField;
-                        efield(3) = 0;
-                        efield = efield + signal.getClockField(obj.Device{idx}.CenterPosition, tc(t)); %changes E Field.
-                        obj.Device{idx}.ElectricField = efield;
-                        idx = idx+1;
+                        
                     end
                     
-                end
-                
-                
-                
-                
-                
-                %relax2Groundstate
-                obj = obj.Relax2GroundState();
-                
-                
-                
-                %data output
-                it = 1;
-                for idx=1:length(obj.Device)
                     
-                    if isa(obj.Device{idx},'QCASuperCell')
+                    
+                    
+                    
+                    %relax2Groundstate
+                    obj = obj.Relax2GroundState();
+                    
+                    
+                    
+                    %data output
+                    it = 1;
+                    for idx=1:length(obj.Device)
                         
-                        for sub=1:length(obj.Device{idx}.Device)
+                        if isa(obj.Device{idx},'QCASuperCell')
                             
-                            ef = obj.Device{idx}.Device{sub}.ElectricField;
+                            for sub=1:length(obj.Device{idx}.Device)
+                                
+                                ef = obj.Device{idx}.Device{sub}.ElectricField;
+                                efz = ef(3);
+                                
+                                pols(t,it) = obj.Device{idx}.Device{sub}.Polarization;
+                                acts(t,it) = obj.Device{idx}.Device{sub}.Activation;
+                                efields(t,it) = efz;
+                                
+                                it = it + 1;
+                            end
+                            
+                            
+                        else
+                            
+                            ef = obj.Device{idx}.ElectricField;
                             efz = ef(3);
                             
-                            pols(t,it) = obj.Device{idx}.Device{sub}.Polarization;
-                            acts(t,it) = obj.Device{idx}.Device{sub}.Activation;
+                            pols(t,it) = obj.Device{idx}.Polarization;
+                            acts(t,it) = obj.Device{idx}.Activation;
                             efields(t,it) = efz;
-                            
                             it = it + 1;
                         end
-                        
-                        
-                    else
-                        
-                        ef = obj.Device{idx}.ElectricField;
-                        efz = ef(3);
-                        
-                        pols(t,it) = obj.Device{idx}.Polarization;
-                        acts(t,it) = obj.Device{idx}.Activation;
-                        efields(t,it) = efz;
-                        it = it + 1;
                     end
-                end
+                    
+                    
+                    disp(['t: ', num2str(t)]);
+                    
+                end %time step loop
                 
+%                 waitbar(1, w8bar , 'Simulation Complete');
+%                 pause(.5);
+%                 close(w8bar);
                 
-                disp(['t: ', num2str(t)]);
-                
-            end %time step loop
-                        
-            waitbar(1, w8bar , 'Simulation Complete');
-            close (w8bar);
-            
-            m.pols = pols;
-            m.acts = acts;
-            m.efields = efields;
+                m.pols = pols;
+                m.acts = acts;
+                m.efields = efields;
             
             
             disp('Complete!')

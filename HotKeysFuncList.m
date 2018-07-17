@@ -87,7 +87,7 @@ if ~isempty(eventdata.Modifier)
         LoadCircuit(handles);
         
     elseif  strcmp(eventdata.Modifier,'control') && strcmp(eventdata.Key,'s')
-        SaveCircuit(handles);
+        SaveCircuit();
         
     elseif strcmp(eventdata.Modifier,'control') && (strcmp(eventdata.Key,'delete') || strcmp(eventdata.Key,'backspace'))%remove any selected nodes
         RemoveNode();
