@@ -61,34 +61,32 @@ ymax = max(ypos);
 ymin = min(ypos);
 
 
-x = xmin:xmax;
-nx = 125;
-xq = linspace(xmin-1, xmax+1, nx);
-yq = linspace(ymin-2, ymax+2, nt);
+% x = xmin:xmax;
+% nx = 125;
+% xq = linspace(xmin-1, xmax+1, nx);
+% yq = linspace(ymin-2, ymax+2, nt);
 
 tperiod = signal.Period*2;
 time_array = linspace(0,tperiod,nt);
 
 tp = mod(time_array, tperiod);
-xp = mod(xq, signal.Period);
+% xp = mod(xq, signal.Period);
 
 
 %reconstruct signal
 
 % waitbar(0, w8bar , 'Reconstructing Signal...');
 
-for t = 1:size(pols,1)
+% for t = 1:size(pols,1)
 %     waitbar( t / size(pols,1) , w8bar , 'Reconstructing Signal...');
-    
-    for idx = 1:nx
-        
-        
-        
-        efplots_temp = signal.getClockField([xp(idx),0,0], tp(t));
-        efplots(t, idx) = efplots_temp(3);
-        
-    end
-end
+%     
+%     for idx = 1:nx
+%         
+%         efplots_temp = signal.getClockField([xp(idx),0,0], tp(t));
+%         efplots(t, idx) = efplots_temp(3);
+%         
+%     end
+% end
 
 
 
@@ -112,21 +110,16 @@ mycircuit.Simulating = 'on';
 for t = 1:size(pols,1)
     
 
-    close(w8bar);
+    %close(w8bar);
 
     cla;
 
-    ef = efplots(t,:);
+    %ef = efplots(t,:);
 %     interps = interp1(x,ef,xq,'pchip','extrap');
-    Eplot = repmat(ef,[nt,1]);
+    %Eplot = repmat(ef,[nt,1]);
     
-    
-    
-    pcolor(xq' * ones(1, nt), ones(nx, 1)* yq, Eplot');
-    colormap cool;
-    shading interp;
-    colorbar;
-    caxis([-signal.Amplitude signal.Amplitude]);
+
+    signal.drawSignal([xmin-1,xmax+1], [ymin-2, ymax+2], tp(t));
     mycircuit = mycircuit.CircuitDraw(targetaxis, [pols(t,:); acts(t,:)]);
 
     
