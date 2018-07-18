@@ -9,6 +9,8 @@ cd(home);
 path;
 
 
+
+
 % w8bar = waitbar(0,'Please wait...');
 % w8bar.Position = w8bar.Position + 50;
 
@@ -91,6 +93,7 @@ tp = mod(time_array, tperiod);
 
 
 
+
 %
 Frame(nt) = struct('cdata',[],'colormap',[]);
 v = VideoWriter(vfilename,'MPEG-4');
@@ -109,7 +112,6 @@ mycircuit.Simulating = 'on';
 
 for t = 1:size(pols,1)
     
-
     %close(w8bar);
 
     cla;
@@ -135,7 +137,7 @@ for t = 1:size(pols,1)
 end
 
 % waitbar(1, w8bar , 'Simulation Video Complete');
-% pause(.5);
+% pause(.25);
 % close(w8bar);
 
 % f.Pointer = 'arrow';

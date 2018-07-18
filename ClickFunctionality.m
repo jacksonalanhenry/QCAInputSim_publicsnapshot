@@ -2,9 +2,6 @@ function ClickFunctionality(handles,eventdata,Select)
 %All the different types of clicks are documented here, along with the
 %specific functionalities attributed to each one.
 
-myCircuit = getappdata(gcf,'myCircuit');
-
-
 
 switch Select
     

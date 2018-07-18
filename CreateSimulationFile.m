@@ -10,9 +10,9 @@ myCircuit = myCircuit.GenerateNeighborList();
 name = num2str(handles.nameSim.String);
 
 
-f=gcf;
-
-f.Pointer = 'watch';
+% f=gcf;
+% 
+% f.Pointer = 'watch';
 
 
 if length(SignalsList)==1 %pipeline will run
@@ -34,5 +34,5 @@ setappdata(gcf,'myCircuit',myCircuit);
 setappdata(gcf,'SignalsList',SignalsList);
 
 
-f.Pointer = 'arrow';
+% f.Pointer = 'arrow';
 end

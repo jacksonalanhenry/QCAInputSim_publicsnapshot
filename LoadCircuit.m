@@ -14,6 +14,7 @@ SignalsList = getappdata(gcf,'SignalsList'); %same with this SignalsList
 
 home = Path.home;
 
+handles.signalList.String='';
 
 [newFile pathname] = uigetfile('*.mat');
 
@@ -22,11 +23,16 @@ home = Path.home;
 if ~newFile
     cd(home);
 else
-    cd(pathname);
-    copyfile(newFile,home);
-    cd(home);
-    loader=load(newFile);
     
+    if ~strcmp(pathname(1:end-1),home)
+        cd(pathname);
+        copyfile(newFile,home);
+        cd(home);
+        
+        
+    end
+    
+    loader=load(newFile);
     
     %replacing the old circuit and signals list with the loaded data
     myCircuit = loader.Circuit;
@@ -40,9 +46,10 @@ else
     myCircuit = myCircuit.CircuitDraw(gca);
     
     
-    %the file stays in the folder we put it
-    delete(newFile);
-    
+    %the file stays in the folder we put it originally
+    if ~strcmp(pathname(1:end-1),home)
+        delete(newFile);
+    end
     
     
     setappdata(gcf,'myCircuit',myCircuit);

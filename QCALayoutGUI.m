@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 17-Jul-2018 10:38:43
+% Last Modified by GUIDE v2.5 17-Jul-2018 14:47:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -116,17 +116,21 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 delete(hObject);
 
-function FileMenu_Callback(hObject, eventdata, handles)
-
-
 % --------------------------------------------------------------------
+function FileMenus_Callback(hObject, eventdata, handles)
+% hObject    handle to FileMenus (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% --------------------------------------------------------------------
+
+
 function SaveMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 %saving both the circuit and the signal to a .mat file
-SaveCircuit(handles);
+SaveCircuit();
 
 % --------------------------------------------------------------------
 function OpenMenu_Callback(hObject, eventdata, handles)
@@ -694,7 +698,7 @@ function visualizeSim_Callback(hObject, eventdata, handles)
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 %calling the pipelinevisualization function to create the mp4 video file
-f=gcf;
+% f=gcf;
 % f.Pointer = 'watch';
 GenerateSimulationVideo(handles);
 % f.Pointer = 'arrow';
@@ -742,7 +746,7 @@ function getAppInfo_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
-%as said above, only getting the app data
+%as said above, only getting the app data for debugging purposes
 AppInfo = getappdata(gcf)
 circuit = AppInfo.myCircuit
 signals = AppInfo.SignalsList
@@ -884,5 +888,8 @@ function changeSharpnessFermi_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
 
 
