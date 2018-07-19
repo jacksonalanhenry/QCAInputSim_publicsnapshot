@@ -618,11 +618,11 @@ classdef QCACircuit
                 efields = [];
                 
                 
-%                 w8bar = waitbar(0,'Preparing Simulation...');
-%                 w8bar.Position = w8bar.Position + 50;
+                w8bar = waitbar(0,'Preparing Simulation...');
+                w8bar.Position = w8bar.Position + 50;
                 
                 for t = 1:nt %time step
-%                     waitbar(t/nt, w8bar , 'Processing Simulation');
+                    waitbar(t/nt, w8bar , 'Processing Simulation');
                     %edit Efield for all cells in circuit
                     idx=1;
                     while idx <= length(obj.Device)
@@ -692,9 +692,9 @@ classdef QCACircuit
                     
                 end %time step loop
                 
-%                 waitbar(1, w8bar , 'Simulation Complete');
-%                 pause(.5);
-%                 close(w8bar);
+                waitbar(1, w8bar , 'Simulation Complete');
+                pause(.5);
+                close(w8bar);
                 
                 m.pols = pols;
                 m.acts = acts;

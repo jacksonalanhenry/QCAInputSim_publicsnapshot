@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 17-Jul-2018 14:47:35
+% Last Modified by GUIDE v2.5 19-Jul-2018 14:50:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -367,7 +367,7 @@ function changeWave_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changeWave as text
 %        str2double(get(hObject,'String')) returns contents of changeWave as a double
-
+RePlotSignal(handles)
 
 % --- Executes during object creation, after setting all properties.
 function changeWave_CreateFcn(hObject, eventdata, handles)
@@ -388,7 +388,7 @@ function changeAmp_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changeAmp as text
 %        str2double(get(hObject,'String')) returns contents of changeAmp as a double
-
+RePlotSignal(handles)
 
 % --- Executes during object creation, after setting all properties.
 function changeAmp_CreateFcn(hObject, eventdata, handles)
@@ -411,7 +411,7 @@ function changePeriod_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changePeriod as text
 %        str2double(get(hObject,'String')) returns contents of changePeriod as a double
-
+RePlotSignal(handles)
 
 function changePhase_Callback(hObject, eventdata, handles)
 % hObject    handle to changePhase (see GCBO)
@@ -420,7 +420,7 @@ function changePhase_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changePhase as text
 %        str2double(get(hObject,'String')) returns contents of changePhase as a double
-
+RePlotSignal(handles)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -436,9 +436,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
-
-
 % --- Executes on selection change in signalType.
 function signalType_Callback(hObject, eventdata, handles)
 % hObject    handle to signalType (see GCBO)
@@ -450,7 +447,28 @@ function signalType_Callback(hObject, eventdata, handles)
 
 %switch between the different signal type panels within the major signal
 %panel
-SignalTypePanelSwitch(handles);
+
+signalTypes = cellstr(get(handles.signalType,'String')); %get the list of signal types from handles
+
+sigType = signalTypes{get(handles.signalType,'Value')}; %find which one is selected
+
+SignalTypePanelSwitch(handles, sigType);
+
+if ~isempty(handles.signalEditor.String) %changing the signal type and replotting if a signal is being edited
+    SignalsList = getappdata(gcf,'SignalsList');
+    
+    for i=1:length(SignalsList)
+        if strcmp(SignalsList{i}.Name,handles.signalEditor.String)
+            SignalsList{i}.Type = sigType;
+        end
+    end
+    setappdata(gcf,'SignalsList',SignalsList);
+    
+    RePlotSignal(handles);
+end
+
+
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -526,6 +544,7 @@ function signalList_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from signalList
 
 %attain signal properties by selecting that signal in the gui listbox
+
 GetSignalPropsGUI(handles);
 
 
@@ -588,8 +607,6 @@ function transitionType_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
 
 
 function changeInputField_Callback(hObject, eventdata, handles)
@@ -673,8 +690,8 @@ function clearAll_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
-%pretty self explanatory
-ClearAll(handles);
+%a dialog box opens, if the use selects yes then the figure gets cleared
+choosedialog(handles)
 
 
 
@@ -752,7 +769,6 @@ circuit = AppInfo.myCircuit
 signals = AppInfo.SignalsList
 
 
-
 function changeWaveFermi_Callback(hObject, eventdata, handles)
 % hObject    handle to changeWaveFermi (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -760,7 +776,7 @@ function changeWaveFermi_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changeWaveFermi as text
 %        str2double(get(hObject,'String')) returns contents of changeWaveFermi as a double
-
+RePlotSignal(handles)
 
 % --- Executes during object creation, after setting all properties.
 function changeWaveFermi_CreateFcn(hObject, eventdata, handles)
@@ -783,7 +799,7 @@ function changePhaseFermi_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changePhaseFermi as text
 %        str2double(get(hObject,'String')) returns contents of changePhaseFermi as a double
-
+RePlotSignal(handles)
 
 % --- Executes during object creation, after setting all properties.
 function changePhaseFermi_CreateFcn(hObject, eventdata, handles)
@@ -806,7 +822,7 @@ function changeAmpFermi_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changeAmpFermi as text
 %        str2double(get(hObject,'String')) returns contents of changeAmpFermi as a double
-
+RePlotSignal(handles)
 
 % --- Executes during object creation, after setting all properties.
 function changeAmpFermi_CreateFcn(hObject, eventdata, handles)
@@ -829,7 +845,7 @@ function changePeriodFermi_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changePeriodFermi as text
 %        str2double(get(hObject,'String')) returns contents of changePeriodFermi as a double
-
+RePlotSignal(handles)
 
 % --- Executes during object creation, after setting all properties.
 function changePeriodFermi_CreateFcn(hObject, eventdata, handles)
@@ -852,7 +868,7 @@ function changeMeanValueFermi_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changeMeanValueFermi as text
 %        str2double(get(hObject,'String')) returns contents of changeMeanValueFermi as a double
-
+RePlotSignal(handles)
 
 % --- Executes during object creation, after setting all properties.
 function changeMeanValueFermi_CreateFcn(hObject, eventdata, handles)
@@ -867,7 +883,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
 function changeSharpnessFermi_Callback(hObject, eventdata, handles)
 % hObject    handle to changeSharpnessFermi (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -875,7 +890,7 @@ function changeSharpnessFermi_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changeSharpnessFermi as text
 %        str2double(get(hObject,'String')) returns contents of changeSharpnessFermi as a double
-
+RePlotSignal(handles)
 
 % --- Executes during object creation, after setting all properties.
 function changeSharpnessFermi_CreateFcn(hObject, eventdata, handles)
@@ -890,6 +905,10 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
-
-
+% --- Executes on button press in helpButton.
+function helpButton_Callback(hObject, eventdata, handles)
+% hObject    handle to helpButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+help QCAHelp
+QCAHelp()

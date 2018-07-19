@@ -1,10 +1,6 @@
-function SignalTypePanelSwitch(handles)
+function SignalTypePanelSwitch(handles, sigType)
 %The purpose of this function is to switch between the 4 different signals
 %panels within the major signal panel.
-
-signalTypes = cellstr(get(handles.signalType,'String')); %get the list of signal types from handles
-
-sigType = signalTypes{get(handles.signalType,'Value')}; %find which one is selected
 
 
 %switching visibility on or off

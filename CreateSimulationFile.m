@@ -25,6 +25,23 @@ if length(SignalsList)==1 %pipeline will run
 elseif length(SignalsList) > 1
     %no functionality for multiple Signals yet
     
+    d = dialog('Position',[300 300 250 150],'Name','Clear All');
+    txt = uicontrol('Parent',d,...
+        'Style','text',...
+        'Position',[20 80 210 40],...
+        'String','Clear all? (nothing will be saved)');
+    
+    
+    btn1 = uicontrol('Parent',d,...
+        'Position',[49 40 70 25],...
+        'String','Yes',...
+        'Callback',@Yes);
+    
+    btn2 = uicontrol('Parent',d,...
+        'Position',[139 40 70 25],...
+        'String','Close',...
+        'Callback',@No);
+    
     
 end
 
@@ -35,4 +52,21 @@ setappdata(gcf,'SignalsList',SignalsList);
 
 
 % f.Pointer = 'arrow';
+
+
+
+    function Yes(source,callbackdata)
+        
+        delete(d);
+        ClearAll(handles);
+        
+    end
+
+    function No(source,callbackdata)
+        
+        delete(d);
+    end
+
+
+
 end

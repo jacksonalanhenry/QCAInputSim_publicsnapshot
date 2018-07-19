@@ -4,12 +4,13 @@ function PipelineVisualization( simresults, targetaxis, path, varargin )
 %   draw the circuit at each time step.
 %   things we care about for this: The signal info to construct
 %   the gradient, and the cells positions, pol and act at each time step
+
 home = pwd;
 cd(home);
 path;
 
-
-
+f=gcf;
+f.Units = 'pixels';
 
 % w8bar = waitbar(0,'Please wait...');
 % w8bar.Position = w8bar.Position + 50;
@@ -80,7 +81,7 @@ xp = mod(xq, signal.Period);
 % waitbar(0, w8bar , 'Reconstructing Signal...');
 
 for t = 1:size(pols,1)
-    waitbar( t / size(pols,1) , w8bar , 'Reconstructing Signal...');
+%     waitbar( t / size(pols,1) , w8bar , 'Reconstructing Signal...');
     
     for idx = 1:nx
         
@@ -102,27 +103,24 @@ open(v);
 
 mycircuit.Simulating = 'on';
 
-% f=gcf;
-
 % f.Pointer = 'watch';
 
+f=gcf;
 
 % waitbar(0, w8bar , 'Writing to Video File...');
 
-
+maxheight=f.Position(4);
+maxwidth=f.Position(3);
 
 for t = 1:size(pols,1)
+%     t
+%     size(pols,1)
+%     w8bar
+%     waitbar( t / size(pols,1) , w8bar , 'Writing to Video File...');
     
-<<<<<<< HEAD
-%     waitbar(t/size(pols,1), w8bar , 'Writing to Video File...');
     
-=======
-
-    close(w8bar);
-
->>>>>>> 1640cb86a5106a7705ed679f14082306dfa1dd1c
     cla;
-
+    
     ef = efplots(t,:);
 %     interps = interp1(x,ef,xq,'pchip','extrap');
     Eplot = repmat(ef,[nt,1]);
@@ -135,11 +133,16 @@ for t = 1:size(pols,1)
     colorbar;
     caxis([-signal.Amplitude signal.Amplitude]);
     mycircuit = mycircuit.CircuitDraw(targetaxis, [pols(t,:); acts(t,:)]);
-
+    
     
     drawnow
     %save it
-    Frame(t) = getframe(gca);
+%     gcf
+%     gca
+%     r = getrect(gcf)
+    Frame(t) = getframe(gcf,[0 0 maxwidth*.65 maxheight*.5]);
+% Frame(t) = getframe(gca);
+% Frame(t) = getframe(gcf);
     v;
     
     writeVideo(v,Frame(t));
@@ -147,6 +150,7 @@ for t = 1:size(pols,1)
     
     
 end
+
 
 % waitbar(1, w8bar , 'Simulation Video Complete');
 % pause(.25);
@@ -163,10 +167,9 @@ a.Box = 'off';
 
 a.YLimMode = 'auto';
 
-
+% delete(c);
 colorbar('delete');
 close(v);
 disp('Complete!')
 
 end
-

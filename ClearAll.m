@@ -4,13 +4,12 @@ function ClearAll(handles)
 
 f=gcf;
 
-%NEED TO MAKE THIS A GLOBAL FUNCTION OTHERWISE IT CANNOT BE A HOT KEY
-%add a dialog box to ask 'r u sure'
-
 a=gca;
 myCircuit = getappdata(f,'myCircuit');
 SignalsList = getappdata(f,'SignalsList');
 cla;%clear the axes
+
+plot(handles.plotAxes,0,0);
 
 copies = getappdata(f,'Copies');
 

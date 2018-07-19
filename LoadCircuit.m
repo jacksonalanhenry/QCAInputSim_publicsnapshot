@@ -10,7 +10,7 @@ SignalsList = getappdata(gcf,'SignalsList'); %same with this SignalsList
 
 
 %We use paths to move between the folders where we use the gui and where we
-%place the .mat files. 
+%place the .mat files.
 
 home = Path.home;
 

@@ -21,7 +21,6 @@ else%they don't cancel the save operation
     
     save(File,'Circuit','SignalsList');
     
-    
     cd(Path.home);
 end
 

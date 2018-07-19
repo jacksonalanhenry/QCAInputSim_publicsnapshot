@@ -18,7 +18,6 @@ switch Select
         
         
     case 'open' %double click
-        %might not need this, still thinking what we could want with a
-        %double click
+        %not sure what would work for this yet...
         
 end
