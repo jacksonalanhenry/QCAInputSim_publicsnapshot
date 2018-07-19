@@ -19,7 +19,7 @@ classdef Signal
         MeanValue=0;
         Sharpness = .05;
         
-
+        
         %Electrode Properties
         InputField=0;
         CenterPosition = [0 0 0];
@@ -190,16 +190,15 @@ classdef Signal
                 if(size(centerposition) == [1, 3])
                     EField = [0,0,0];
                     switch obj.Type
-                        case 'Sinusoidal'
-                            
+                        case 'Sinusoidal' 
                             EField(3)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude+ obj.MeanValue;
-                    
-    
+                            
+                            
                         case 'Fermi'
                             EField(3) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
                             
                             
- 
+                            
                         otherwise
                             error(['ClockType = ''', obj.Type, ...
                                 ''' is invalid.'])
@@ -218,6 +217,61 @@ classdef Signal
             end
             
         end
+        
+        
+        
+        
+        function obj = drawSignal(obj, varargin)
+            
+            
+            
+            if( strcmp('Sinusoidal', obj.Type) || strcmp('Fermi', obj.Type) )
+                if nargin == 4
+                    nx = 200;
+                    xlims = varargin{1};
+                    ylims = varargin{2};
+                    t = varargin{3};
+                    
+                    xq = linspace(xlims(1), xlims(2), nx);
+                    xp = mod(xq, obj.Period);
+                    
+                    yq = linspace(ylims(1), ylims(2), nx);
+                    
+                    for idx = 1:nx
+                        efield_temp = obj.getClockField([xp(idx), 0, 0], t);
+                        efield(idx) = efield_temp(3);
+                    end %for
+                    
+                    
+                    Eplot = repmat(efield,[nx,1]);
+                    pcolor(xq' * ones(1, nx), ones(nx, 1)* yq, Eplot');
+                    colormap cool;
+                    shading interp;
+                    colorbar;
+                    caxis([-obj.Amplitude obj.Amplitude])
+                    
+                    %plot(xq,efield)
+                    
+                else
+                    error('incorrect number of inputs for signal type')
+                end %if nargin
+                
+                
+                %case 'Fermi'
+                
+            elseif( 'Custom' )
+                
+            elseif( 'Planar')
+                
+            else
+                
+                
+            end %end if
+            
+            
+            
+        end %drawSignalFunction
+        
         
         function obj = drawElectrode(obj, varargin)
             if nargin > 2
@@ -250,13 +304,13 @@ classdef Signal
                 
                 if and(height ,width)
                     name = text(centerpos(1) + width/2 , centerpos(2)+height/2 , num2str(obj.Name));
-                
+                    
                 elseif and(~height,width)
                     name = text(centerpos(1) + width/2 , centerpos(2)+.75 , num2str(obj.Name));
-                
+                    
                 elseif and(height,~width)
                     name = text(centerpos(1) + .5 , centerpos(2)+height/2 , num2str(obj.Name));
-                
+                    
                 else
                     name = text(centerpos(1) + .5 , centerpos(2)+.75, num2str(obj.Name));
                     
@@ -486,13 +540,13 @@ classdef Signal
             
             for i=1:length(myCircuit.Device)
                 if isa(myCircuit.Device{i},'QCASuperCell')
-                   for j=1:length(myCircuit.Device{i}.Device)
-                       circCenter = myCircuit.Device{i}.Device{j}.CenterPosition;
-                       if circCenter(1) > centerpos(1) && circCenter(2) > centerpos(2) && circCenter(1) < centerpos(1)+width/2 && circCenter(2) > centerpos(2)+height/2
-                           myCircuit.Device{i}.Device{j}.ElectricField = Efield;
-                           
-                       end
-                   end
+                    for j=1:length(myCircuit.Device{i}.Device)
+                        circCenter = myCircuit.Device{i}.Device{j}.CenterPosition;
+                        if circCenter(1) > centerpos(1) && circCenter(2) > centerpos(2) && circCenter(1) < centerpos(1)+width/2 && circCenter(2) > centerpos(2)+height/2
+                            myCircuit.Device{i}.Device{j}.ElectricField = Efield;
+                            
+                        end
+                    end
                 else
                     
                     circCenter = myCircuit.Device{i}.CenterPosition;
@@ -511,4 +565,3 @@ classdef Signal
     
 end
 
-    
