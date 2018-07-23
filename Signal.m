@@ -17,14 +17,14 @@ classdef Signal
         Period = 1;
         Phase = pi/2;
         MeanValue=0;
-        Sharpness;
+        Sharpness = .05;
         
         
         %Electrode Properties
         InputField=0;
-        CenterPosition;
-        Height;
-        Width;
+        CenterPosition = [0 0 0];
+        Height = 1.5;
+        Width = .5;
         IsDrawn = 'off';
         TopPatch;
         BottomPatch;
@@ -127,6 +127,61 @@ classdef Signal
                 
             end
         end
+        
+        function obj = set.Amplitude(obj,value)
+            
+            if ~isnumeric(value)
+                error('Invalid Type. Must be Standard signal Type')
+            else
+                obj.Amplitude = value;
+                
+            end            
+        end
+        
+        function obj = set.Period(obj,value)
+            if ~isnumeric(value)
+                error('Invalid Type. Must be Standard signal Type')
+            else
+                obj.Period = value;
+                
+            end            
+        end
+        
+        function obj = set.Wavelength(obj,value)
+            if ~isnumeric(value)
+                error('Invalid Type. Must be Standard signal Type')
+            else
+                obj.Wavelength = value;
+                
+            end            
+        end
+        
+        function obj = set.Phase(obj,value)
+            if ~isnumeric(value)
+                error('Invalid Type. Must be Standard signal Type')
+            else
+                obj.Phase = value;
+                
+            end            
+        end
+        
+        function obj = set.MeanValue(obj,value)
+            if ~isnumeric(value)
+                error('Invalid Type. Must be Standard signal Type')
+            else
+                obj.MeanValue = value;
+                
+            end            
+        end
+        
+        function obj = set.Sharpness(obj,value)
+            if ~isnumeric(value)
+                error('Invalid Type. Must be Standard signal Type')
+            else
+                obj.Sharpness = value;
+                
+            end            
+        end       
         
         function EField = getClockField(obj, centerposition, time)
             %THIS FUNCTION ONLY ASSIGNS z Field RIGHT NOW
@@ -519,8 +574,6 @@ classdef Signal
             
             
         end
-        
-        
         
     end
     

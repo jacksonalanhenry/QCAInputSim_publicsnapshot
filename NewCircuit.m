@@ -6,6 +6,8 @@ a=gca;
 myCircuit = getappdata(f,'myCircuit');
 SignalsList = getappdata(f,'SignalsList');
 cla;%clear the axes
+plot(handles.plotAxes,0,0);
+
 
 copies = getappdata(f,'Copies');
 

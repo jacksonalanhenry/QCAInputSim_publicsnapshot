@@ -11,6 +11,7 @@ function GenerateSimulationVideo(handles)
 
 
 if Sim
+    
     PipelineVisualization(Sim,gca,path);
     
 end

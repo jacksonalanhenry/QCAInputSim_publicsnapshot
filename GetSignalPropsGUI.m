@@ -5,13 +5,15 @@ function GetSignalPropsGUI(handles)
 
 contents = cellstr(get(handles.signalList,'String')); %get the signal list from handles
 
-
 if ~isempty(contents)
     sigName = contents{get(handles.signalList,'Value')};
     
     SignalsList = getappdata(gcf,'SignalsList'); %get the signal list from the app data that already exists
     
+    
+    
     if ~isempty(SignalsList)
+        
         for i=1:length(SignalsList)
             SignalsList{i}.Name;
             if strcmp(sigName,SignalsList{i}.Name)
@@ -20,57 +22,53 @@ if ~isempty(contents)
             end
         end
         
-        
         handles.signalEditor.String = sigName;
         handles.signalEditType.String = mySignal.Type;
+        handles.signalName.String = sigName;
         
-        switch mySignal.Type
+        SignalsList{pick} = mySignal;
+        
+        Type = mySignal.Type;
+        
+        SignalTypePanelSwitch(handles,Type); %make the right panel pop up
+        
+        switch Type
             
             case 'Sinusoidal'
+                handles.signalType.Value = 1;
                 
-                handles.changeAmp.String = num2str(mySignal.Amplitude);
+                
+                handles.changeAmp.String = num2str(mySignal.Amplitude); %display the properties in the edit boxes
                 handles.changeWave.String = num2str(mySignal.Wavelength);
                 handles.changePeriod.String = num2str(mySignal.Period);
                 handles.changePhase.String = num2str(mySignal.Phase);
                 
                 
-                A = str2num(handles.changeAmp.String);
-                L = str2num(handles.changeWave.String);
-                T = str2num(handles.changePeriod.String);
-                b = str2num(handles.changePhase.String);
-                x=-5:.01:5;
-                
-                
-                y = ( cos((2*pi*(x/L - 1/T) )+ b) )*A;
-                
-                plot(handles.plotAxes,x,y);
-                handles.signalDisplayBox.String = sigName;
-                
-                
             case 'Fermi'
-                Amp = str2num(handles.changeAmpFermi.String);
+                handles.signalType.Value = 2;
                 
-                T = str2num(handles.changePeriodFermi.String);
-                b = str2num(handles.changePhaseFermi.String);
-                K = str2num(handles.changeSharpnessFermi.String);
-                M = str2num(handles.changeMeanValueFermi.String);
+                handles.changeAmpFermi.String = num2str(mySignal.Amplitude); %display the properties in the edit boxes
+                handles.changeWaveFermi.String = num2str(mySignal.Wavelength);
+                handles.changePeriodFermi.String = num2str(mySignal.Period);
+                handles.changePhaseFermi.String = num2str(mySignal.Phase);
+                handles.changeMeanValueFermi.String = num2str(mySignal.MeanValue);
+                handles.changeSharpnessFermi.String = num2str(mySignal.Sharpness);
                 
-                x=-5:.01:5;
-                
-                
-                y = Amp * PeriodicFermi(mod(x  - b , T), T, K) + M;
-                
-                plot(handles.plotAxes,x,y);
-                handles.signalDisplayBox.String = sigName;
                 
             case 'Custom'
-                %nothing yet, but it will also get plotted
+                handles.signalType.Value = 3;
+                %nothing yet, but it will also get plotted once custom
+                %becomes a functionality
                 
             case 'Electrode'
+                handles.signalType.Value = 4;
+                
                 handles.changeInputField.String = num2str(mySignal.InputField);
                 
         end
-        SignalsList{pick} = mySignal;
+        
+        
+        PlotSignal(handles, mySignal);
         
         
         setappdata(gcf,'SignalsList',SignalsList);

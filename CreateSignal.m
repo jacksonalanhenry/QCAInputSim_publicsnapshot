@@ -5,8 +5,12 @@ function CreateSignal(handles)
 %before creating
 
 
+
+
 if ~isempty(handles.signalName.String) %the signal must get a name in order to be created
     SignalsList = getappdata(gcf,'SignalsList');
+    
+    Names = cellstr(get(handles.signalList,'String'));
     
     contents = cellstr(get(handles.signalType,'String'));
     sigType = contents{get(handles.signalType,'Value')} ;
@@ -50,11 +54,21 @@ if ~isempty(handles.signalName.String) %the signal must get a name in order to b
     end
     
     
+    copy=0;
+    for i=1:length(Names)
+        if strcmp(Names{i},handles.signalName.String)
+            copy=copy+1;
+        end
+    end
+    if copy~=0
+        newName = strcat(handles.signalName.String,'(copy)');
+        mySignal.Name = newName;
+        handles.signalList.String{end+1,1} = newName;
+    else       
+        mySignal.Name = handles.signalName.String;
+        handles.signalList.String{end+1,1} = handles.signalName.String;
+    end
     
-    
-    mySignal.Name = handles.signalName.String;
-    
-    handles.signalList.String{end+1,1} = handles.signalName.String;
     SignalsList{end+1} = mySignal;
     
     setappdata(gcf,'SignalsList',SignalsList);
@@ -67,9 +81,7 @@ else
     handles.signalName.String = 'NAME NEEDED';
     fprintf('INPUT NAME NEEDED\n')
     %         handles.signalName.ForegroundColor = 'red';
-    tic;
     
-
     
     handles.signalName.String = 'Input Name';
     
