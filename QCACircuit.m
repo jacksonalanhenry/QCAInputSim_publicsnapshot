@@ -107,8 +107,8 @@ classdef QCACircuit
                 
                 
                 
-                %                 cellIDToplevelnodes(idx);
-                %                 max(cellIDToplevelnodes);
+%                 cellIDToplevelnodes(idx);
+%                 max(cellIDToplevelnodes);
                 
                 leng = length(obj.Device);
                 
@@ -135,18 +135,18 @@ classdef QCACircuit
                         
                         
                         
-                        %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-                        
-                        %                             newNeighbors=[];
-                        %                             first = neighbors
-                        %                            for i=1:length(neighbors)
-                        %                                if neighbors(i) ~= obj.Device{idx}.Device{subnode}.CellID
-                        %                                     newNeighbors(end+1) = neighbors(i);
-                        %                                end
-                        %                            end
-                        %
-                        %
-                        %                            neighbors = newNeighbors
+%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+
+%                             newNeighbors=[];
+%                             first = neighbors
+%                            for i=1:length(neighbors)
+%                                if neighbors(i) ~= obj.Device{idx}.Device{subnode}.CellID
+%                                     newNeighbors(end+1) = neighbors(i);
+%                                end
+%                            end
+%
+%
+%                            neighbors = newNeighbors
                         
                         obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
                         cellposit = cellposit+1;
@@ -182,7 +182,7 @@ classdef QCACircuit
         end
         
         function obj = CircuitDraw(obj,targetaxis, varargin)
-            %cla; 
+            %cla;
             
             
             hold on
@@ -297,12 +297,12 @@ classdef QCACircuit
             end
             
             RightClickThings();   %uicontextmenu available upon drawing
-
+            
             hold off
             grid on
             
             DrawElectrodes();
-
+            
             axis equal
         end
         
@@ -432,11 +432,11 @@ classdef QCACircuit
             %Iterate to Self consistency
             
             
-            %             disp('ORDER OF RELAXING')
-            %             for i=1:length(obj.Device)
-            %                fprintf('Cell %d  ...   ',obj.Device{i}.CellID);
-            %             end
-            %             fprintf('\n');
+            %disp('ORDER OF RELAXING')
+            %for i=1:length(obj.Device)
+            %   fprintf('Cell %d  ...   ',obj.Device{i}.CellID);
+            %end
+            %fprintf('\n');
             
             NewCircuitPols = ones(1,length(obj.Device));
             converganceTolerance = 1;
@@ -462,7 +462,7 @@ classdef QCACircuit
                         while (subnodeTolerance > 0.00001)
                             OldPols = NewPols;
                             
-                            %                             supernode = floor(obj.Device{idx}.Device{1}.CellID)
+                            %supernode = floor(obj.Device{idx}.Device{1}.CellID)
                             
                             
                             L=length(obj.Device);
@@ -475,7 +475,7 @@ classdef QCACircuit
                                     id = obj.Device{idx}.Device{subnode}.CellID;
                                     nl = obj.Device{idx}.Device{subnode}.NeighborList;
                                     pol = obj.Device{idx}.Device{subnode}.Polarization;
-                                    %                                   disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
+                                    %disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
                                     
                                     if ~isempty(nl)
                                         
@@ -555,7 +555,7 @@ classdef QCACircuit
                                 NewCircuitPols(idx) = obj.Device{idx}.Polarization;
                             end
                             
-                            %                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
+%                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
                             
                         end
                         idx = idx+1;
@@ -563,7 +563,7 @@ classdef QCACircuit
                     
                     
                 end
-                %                 fprintf('\n');
+%                 fprintf('\n');
                 deltaCircuitPols = abs(OldCircuitPols) - abs(NewCircuitPols);
                 converganceTolerance = max(abs(deltaCircuitPols));
                 
@@ -603,102 +603,100 @@ classdef QCACircuit
             m = matfile(file, 'Writable', true);
             
 %             [m path] = uiputfile('*.mat',file)
-            %             cd(path);
+%             cd(path);
             
             
-                save(file, 'signal', '-v7.3');
-                save(file, 'obj', '-append');
-                m.pols = [];%zeros(nt,length(obj.Device));
-                m.acts = [];%zeros(nt,length(obj.Device));
-                m.efields = [];%zeros(nt,length(obj.Device));
-                m.nt = nt;
+            save(file, 'signal', '-v7.3');
+            save(file, 'obj', '-append');
+            m.pols = [];%zeros(nt,length(obj.Device));
+            m.acts = [];%zeros(nt,length(obj.Device));
+            m.efields = [];%zeros(nt,length(obj.Device));
+            m.nt = nt;
+            
+            pols = [];
+            acts = [];
+            efields = [];
+            
+            
+            for t = 1:nt %time step
                 
-                pols = [];
-                acts = [];
-                efields = [];
-                
-                
-%                 w8bar = waitbar(0,'Preparing Simulation...');
-%                 w8bar.Position = w8bar.Position + 50;
-                
-                for t = 1:nt %time step
-%                     waitbar(t/nt, w8bar , 'Processing Simulation');
-                    %edit Efield for all cells in circuit
-                    idx=1;
-                    while idx <= length(obj.Device)
-                        if( isa(obj.Device{idx}, 'QCASuperCell') )
-                            
-                            for subnode = 1:length(obj.Device{idx}.Device)
-                                %obj.Device{idx}.Device{subnode}.ElectricField = signal.getEField(obj.Device{idx}.Device{subnode}.CenterPosition, time_array(t)); %changes E Field.
-                                efield = obj.Device{idx}.Device{subnode}.ElectricField;
-                                efield(3) = 0;
-                                efield = efield + signal.getClockField(obj.Device{idx}.Device{subnode}.CenterPosition, tc(t)); %changes E Field.
-                                obj.Device{idx}.Device{subnode}.ElectricField = efield;
-                            end
-                            idx = idx+1;
-                        else
-                            %obj.Device{idx}.ElectricField = signal.getEField(obj.Device{idx}.CenterPosition, time_array(t)); %changes E Field.
-                            efield = obj.Device{idx}.ElectricField;
-                            efield(3) = 0;
-                            efield = efield + signal.getClockField(obj.Device{idx}.CenterPosition, tc(t)); %changes E Field.
-                            obj.Device{idx}.ElectricField = efield;
-                            idx = idx+1;
-                        end
+                idx=1;
+                while idx <= length(obj.Device)
+                    if( isa(obj.Device{idx}, 'QCASuperCell') )
                         
+                        for subnode = 1:length(obj.Device{idx}.Device)
+                            %obj.Device{idx}.Device{subnode}.ElectricField = signal.getEField(obj.Device{idx}.Device{subnode}.CenterPosition, time_array(t)); %changes E Field.
+                            efield = obj.Device{idx}.Device{subnode}.ElectricField;
+                            efield(3) = 0;
+                            efield = efield + signal.getClockField(obj.Device{idx}.Device{subnode}.CenterPosition, tc(t)); %changes E Field.
+                            obj.Device{idx}.Device{subnode}.ElectricField = efield;
+                        end
+                        idx = idx+1;
+                    else
+                        %obj.Device{idx}.ElectricField = signal.getEField(obj.Device{idx}.CenterPosition, time_array(t)); %changes E Field.
+                        efield = obj.Device{idx}.ElectricField;
+                        efield(3) = 0;
+                        efield = efield + signal.getClockField(obj.Device{idx}.CenterPosition, tc(t)); %changes E Field.
+                        
+                        
+                        obj.Device{idx}.ElectricField = efield;
+                        idx = idx+1;
                     end
                     
+                end
+                
+                
+                
+                
+                
+                %relax2Groundstate
+                obj = obj.Relax2GroundState();
+                
+                
+                
+                %data output
+                it = 1;
+                for idx=1:length(obj.Device)
                     
-                    
-                    
-                    
-                    %relax2Groundstate
-                    obj = obj.Relax2GroundState();
-                    
-                    
-                    
-                    %data output
-                    it = 1;
-                    for idx=1:length(obj.Device)
+                    if isa(obj.Device{idx},'QCASuperCell')
                         
-                        if isa(obj.Device{idx},'QCASuperCell')
+                        for sub=1:length(obj.Device{idx}.Device)
                             
-                            for sub=1:length(obj.Device{idx}.Device)
-                                
-                                ef = obj.Device{idx}.Device{sub}.ElectricField;
-                                efz = ef(3);
-                                
-                                pols(t,it) = obj.Device{idx}.Device{sub}.Polarization;
-                                acts(t,it) = obj.Device{idx}.Device{sub}.Activation;
-                                efields(t,it) = efz;
-                                
-                                it = it + 1;
-                            end
-                            
-                            
-                        else
-                            
-                            ef = obj.Device{idx}.ElectricField;
+                            ef = obj.Device{idx}.Device{sub}.ElectricField;
                             efz = ef(3);
                             
-                            pols(t,it) = obj.Device{idx}.Polarization;
-                            acts(t,it) = obj.Device{idx}.Activation;
+                            pols(t,it) = obj.Device{idx}.Device{sub}.Polarization;
+                            acts(t,it) = obj.Device{idx}.Device{sub}.Activation;
                             efields(t,it) = efz;
+                            
                             it = it + 1;
                         end
+                        
+                        
+                    else
+                        
+                        ef = obj.Device{idx}.ElectricField;
+                        efz = ef(3);
+                        
+                        pols(t,it) = obj.Device{idx}.Polarization;
+                        acts(t,it) = obj.Device{idx}.Activation;
+                        efields(t,it) = efz;
+                        it = it + 1;
                     end
-                    
-                    
-                    disp(['t: ', num2str(t)]);
-                    
-                end %time step loop
+                end
                 
-%                 waitbar(1, w8bar , 'Simulation Complete');
-%                 pause(.5);
-%                 close(w8bar);
                 
-                m.pols = pols;
-                m.acts = acts;
-                m.efields = efields;
+                disp(['t: ', num2str(t)]);
+                
+            end %time step loop
+            
+%           waitbar(1, w8bar , 'Simulation Complete');
+%           pause(.5);
+%           close(w8bar);
+            
+            m.pols = pols;
+            m.acts = acts;
+            m.efields = efields;
             
             
             disp('Complete!')

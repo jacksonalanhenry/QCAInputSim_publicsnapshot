@@ -163,7 +163,21 @@ classdef Signal
             
         end
         
-        
+        function EField = getInputField(obj, centerposition)
+            if( isnumeric(centerposition) && isequal(size(centerposition), [1, 3]))
+                
+                EField = [0,0,0];
+                
+                
+                
+            else
+                error('centerposition has incorrect data type or format')
+            end %centerpos is correct input type and size
+            
+            
+            
+            
+        end
         
         
         function obj = drawSignal(obj, varargin)
