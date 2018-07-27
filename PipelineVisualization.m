@@ -64,35 +64,30 @@ ymax = max(ypos);
 ymin = min(ypos);
 
 
-% x = xmin:xmax;
-% nx = 125;
-% xq = linspace(xmin-1, xmax+1, nx);
-% yq = linspace(ymin-2, ymax+2, nt);
+x = xmin:xmax;
+nx = 125;
+xq = linspace(xmin-1, xmax+1, nx);
+yq = linspace(ymin-2, ymax+2, nt);
 
-tperiod = signal.Period*2;
+if (length(signalList) == 1)
+    clockSignal = signalList{1};
+else
+    error('Too many signals')
+end
+tperiod = clockSignal.Period*2;
 time_array = linspace(0,tperiod,nt);
 
 tp = mod(time_array, tperiod);
 % xp = mod(xq, signal.Period);
 
+% get the clock field
+% efields_mat = cell2mat(efields(:,:));
+% zfields = efields_mat(:,3:3:end);
+% zmax = max(max(zfields));
+% zmin = min(min(zfields));
+
 
 %reconstruct signal
-
-% waitbar(0, w8bar , 'Reconstructing Signal...');
-
-
-for t = 1:size(pols,1)
-%     waitbar( t / size(pols,1) , w8bar , 'Reconstructing Signal...');
-    
-    for idx = 1:nx
-        
-        
-        
-        efplots_temp = signal.getClockField([xp(idx),0,0], tp(t));
-        efplots(t, idx) = efplots_temp(3);
-        
-    end
-end
 
 % for t = 1:size(pols,1)
 %     waitbar( t / size(pols,1) , w8bar , 'Reconstructing Signal...');
@@ -104,6 +99,7 @@ end
 %         
 %     end
 % end
+
 
 
 
@@ -125,22 +121,24 @@ maxheight=f.Position(4);
 maxwidth=f.Position(3);
 
 for t = 1:size(pols,1)
-%     t
-%     size(pols,1)
-%     w8bar
-%     waitbar( t / size(pols,1) , w8bar , 'Writing to Video File...');
-    
+
 
     
     cla;
     
-%     ef = efplots(t,:);
-
-%     interps = interp1(x,ef,xq,'pchip','extrap');
-    %Eplot = repmat(ef,[nt,1]);
+    %ef = efplots(t,:); 
+%     efz = zfields(t,:);
+%     
+%     interps = interp1(x,efz,xq,'pchip','extrap');
+%     Eplot = repmat(ef,[nt,1]);
+%     pcolor(xq' * ones(1, nx), ones(nx, 1)* yq, Eplot');
+%     colormap cool;
+%     shading interp;
+%     colorbar;
+%     caxis([zmin zmax])
     
 
-    signal.drawSignal([xmin-1,xmax+1], [ymin-2, ymax+2], tp(t));
+    clockSignal.drawSignal([xmin-1,xmax+1], [ymin-2, ymax+2], tp(t));
     mycircuit = mycircuit.CircuitDraw(targetaxis, [pols(t,:); acts(t,:)]);
     
     
@@ -152,7 +150,7 @@ for t = 1:size(pols,1)
     Frame(t) = getframe(gcf,[0 0 maxwidth*.65 maxheight*.5]);
 % Frame(t) = getframe(gca);
 % Frame(t) = getframe(gcf);
-    v;
+    
     
     writeVideo(v,Frame(t));
     disp(['t: ' num2str(t)])
@@ -165,7 +163,7 @@ end
 % pause(.25);
 % close(w8bar);
 
-% f.Pointer = 'arrow';
+
 
 mycircuit.Simulating = 'off';
 caxis('auto');
@@ -173,10 +171,8 @@ caxis('auto');
 a=gca;
 
 a.Box = 'off';
-
 a.YLimMode = 'auto';
 
-% delete(c);
 colorbar('delete');
 close(v);
 disp('Complete!')
