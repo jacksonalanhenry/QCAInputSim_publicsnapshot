@@ -285,7 +285,7 @@ classdef QCACircuit
                     end
                 else
                     
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw();
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw();
                     obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                     obj.Device{CellIndex}.SelectBox.Selected = 'off';
                     %                         obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
