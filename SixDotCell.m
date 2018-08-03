@@ -120,15 +120,15 @@ classdef SixDotCell < QCACell
             
             for x = 1:length(neighborList)
 %                 disp([num2str(obj.CellID) '---' num2str(neighborList{x}.CellID)])
-                objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x});
+                objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x})
             end
             
             gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];
             
             
-            hamiltonian = -1*[objDotpotential(1)+objDotpotential(4),0,0;...
+            hamiltonian = -1*[objDotpotential(3)+objDotpotential(6),0,0;...
                            0,objDotpotential(2)+objDotpotential(5),0;...
-                           0,0,objDotpotential(3)+objDotpotential(6)]...
+                           0,0,objDotpotential(1)+objDotpotential(4)]...
                            +gammaMatrix;
             
             
@@ -180,7 +180,7 @@ classdef SixDotCell < QCACell
                     obj.Wavefunction = psi;
                     
                     % Polarization is the expectation value of sigma_z
-                    obj.Polarization = psi' * obj.Z * psi
+                    obj.Polarization = psi' * obj.Z * psi;
                     disp(['P of cell ' num2str(obj.CellID) ' is ' num2str(obj.Polarization)])
                     obj.Activation = 1 - psi' * obj.Pnn * psi;
                     disp(['A of cell ' num2str(obj.CellID) ' is ' num2str(obj.Activation)])
