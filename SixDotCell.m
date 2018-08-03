@@ -190,7 +190,7 @@ classdef SixDotCell < QCACell
             end
         end
         
-        function obj = ThreeDotColorDraw(obj, varargin)
+        function obj = ColorDraw(obj, varargin)%NOT FUNCTIONAL
             targetAxes = [];
             a= obj.CharacteristicLength;
             
@@ -254,7 +254,6 @@ classdef SixDotCell < QCACell
             
             obj.SelectBox.UserData = obj.CellID;            
         end
-        
         
         function obj = ElectronDraw(obj, varargin)
             
@@ -336,12 +335,6 @@ classdef SixDotCell < QCACell
         end
     end
 end
-
-% make a neighbor list.
-%QCACiruit: assign neighbors (based on center-center distance)
-%testing just assign neightbors
-% QCACell
-%NeighborList [unique cell ID's]
 
 
 

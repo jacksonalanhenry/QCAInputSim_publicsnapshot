@@ -3,6 +3,7 @@ function QCALayoutAddNode()
 %a driver.  See also the Add 5 Nodes button.
 
 myCircuit = getappdata(gcf, 'myCircuit');
+nodeType = getappdata(gcf, 'nodeType');
 
 % xloc=[];
 
@@ -47,10 +48,23 @@ else
 
 end
 
-% add node to circuit
-myCircuit = myCircuit.addNode(ThreeDotCell([newXlocation newYlocation 0]));
+%create node
+switch nodeType
+     case 'Three Dot Node'
+        node = ThreeDotCell([newXlocation newYlocation 0]);
+        node.CenterPosition = [newXlocation newYlocation 0];
+        
+    case 'Six Dot Node'
+        node = SixDotCell([newXlocation newYlocation 0]);
+        node.CenterPosition = [newXlocation newYlocation 0];
+        
+    otherwise
+        error('Node Type was set to an Invalid Type');
+end
 
-myCircuit.Device{length(myCircuit.Device)}.CenterPosition = [newXlocation newYlocation 0];
+% add node to circuit
+myCircuit = myCircuit.addNode(node);
+
 
 
 
