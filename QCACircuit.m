@@ -130,12 +130,20 @@ classdef QCACircuit
                         shifted = shifted.^(.5);
                         
                         
-                        %give me the cellid's of the node within a certain limit
-                        neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1);
+                        %give me the cellid's of the node within a certain
+                        %limit. Limit depends on object type
+                        switch class(obj.Device{idx}.Device{subnode})
+                            case 'ThreeDotCell'
+                                neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1); %or 2.25
+                            case 'SixDotCell'
+                                neighbors = cellIDArray(shifted < 4.1 & shifted > 0.1); %or 2.25
+                        end
                         
                         
                         
-%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                        
+                        
+                        disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
 
 %                             newNeighbors=[];
 %                             first = neighbors
@@ -165,9 +173,16 @@ classdef QCACircuit
                     
                     %give me the cellid's of the node within a certain limit
                     id = obj.Device{idx}.CellID;
-                    neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1);
+                    
+                    switch class(obj.Device{idx})
+                        case 'ThreeDotCell'
+                            neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1); %or 2.25
+                        case 'SixDotCell'
+                            neighbors = cellIDArray(shifted < 4.1 & shifted > 0.1); %or 2.25
+                    end
                     
                     
+                    disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
                     obj.Device{idx}.NeighborList = neighbors;
                     cellposit = cellposit+1;
                     
@@ -275,7 +290,7 @@ classdef QCACircuit
                     
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
                         
-                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ThreeDotElectronDraw();
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw();
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
                         %                             obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;

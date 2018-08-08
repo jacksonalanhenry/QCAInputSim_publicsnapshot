@@ -36,7 +36,7 @@ classdef QCASuperCell
         function obj = CircuitDraw(obj, targetAxes)
             hold on
             for CellIndex = 1:length(obj.Device)
-                obj.Device{CellIndex} = obj.Device{CellIndex}.ThreeDotElectronDraw(); 
+                obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(); 
             end
             hold off
         end
