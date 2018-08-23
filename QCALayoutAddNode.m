@@ -13,37 +13,24 @@ if(isempty(myCircuit.Device))
     newYlocation = 0;
 else
     xs=[];
-
-    for i=1:length(myCircuit.Device)
-        if isa(myCircuit.Device{i},'QCASuperCell')
-            for j=1:length(myCircuit.Device{i}.Device)
-                
-                xs(end+1)=myCircuit.Device{i}.Device{j}.CenterPosition(1);
-            end
-        else
-            xs(end+1)=myCircuit.Device{i}.CenterPosition(1);
-        end
-        
-        
-    end
-    
-    
     ys=[];
     for i=1:length(myCircuit.Device)
         if isa(myCircuit.Device{i},'QCASuperCell')
             for j=1:length(myCircuit.Device{i}.Device)
                 
+                xs(end+1)=myCircuit.Device{i}.Device{j}.CenterPosition(1);
                 ys(end+1)=myCircuit.Device{i}.Device{j}.CenterPosition(2);
             end
         else
+            xs(end+1)=myCircuit.Device{i}.CenterPosition(1);
             ys(end+1)=myCircuit.Device{i}.CenterPosition(2);
         end
         
         
-    end    
+    end
     
-    newXlocation = max(xs)+1;
-    newYlocation = min(ys);    
+ 
+   
     
 
 end
@@ -51,10 +38,27 @@ end
 %create node
 switch nodeType
      case 'Three Dot Node'
+         
+        if(isempty(myCircuit.Device))
+            newXlocation = 0;
+            newYlocation = 0;
+        else
+            newXlocation = max(xs)+1;
+            newYlocation = min(ys); 
+        end
+        
         node = ThreeDotCell([newXlocation newYlocation 0]);
         node.CenterPosition = [newXlocation newYlocation 0];
         
     case 'Six Dot Node'
+        if(isempty(myCircuit.Device))
+            newXlocation = 0;
+            newYlocation = 0;
+        else
+            newXlocation = max(xs)+2;
+            newYlocation = min(ys); 
+        end 
+        
         node = SixDotCell([newXlocation newYlocation 0]);
         node.CenterPosition = [newXlocation newYlocation 0];
         
@@ -69,7 +73,7 @@ myCircuit = myCircuit.addNode(node);
 
 
 
-        myCircuit = myCircuit.CircuitDraw(gca);
+myCircuit = myCircuit.CircuitDraw(gca);
 %         handles.layoutchange.Value=0;
 
 

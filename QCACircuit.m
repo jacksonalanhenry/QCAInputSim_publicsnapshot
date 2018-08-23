@@ -182,7 +182,7 @@ classdef QCACircuit
                     end
                     
                     
-                    disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
+%                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
                     obj.Device{idx}.NeighborList = neighbors;
                     cellposit = cellposit+1;
                     
@@ -290,7 +290,7 @@ classdef QCACircuit
                     
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
                         
-                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw();
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw(targetaxis);
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
                         %                             obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
@@ -300,7 +300,7 @@ classdef QCACircuit
                     end
                 else
                     
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw();
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(targetaxis);
                     obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                     obj.Device{CellIndex}.SelectBox.Selected = 'off';
                     %                         obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
@@ -319,6 +319,7 @@ classdef QCACircuit
             DrawElectrodes();
             
             axis equal
+            
         end
         
         function obj =  AntiOverlap(obj)
