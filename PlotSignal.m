@@ -15,7 +15,7 @@ switch type
         L = str2num(handles.changeWave.String);
         T = str2num(handles.changePeriod.String);
         b = str2num(handles.changePhase.String);
-        x=-5:.01:5;
+        x=-2:.01:12;
         
         
         y = ( cos((2*pi*(x/L - 1/T) )+ b) )*A;
@@ -33,7 +33,7 @@ switch type
         K = str2num(handles.changeSharpnessFermi.String);
         M = str2num(handles.changeMeanValueFermi.String);
         
-        x=-5:.01:5;
+        x=-2:.01:12;
         
         
         y = Amp * PeriodicFermi(mod(x  - b , T), T, K) + M;

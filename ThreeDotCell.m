@@ -184,13 +184,13 @@ classdef ThreeDotCell < QCACell
             end
         end
         
-        function obj = ThreeDotColorDraw(obj, varargin)
+        function obj = ColorDraw(obj, varargin)
             targetAxes = [];
             a= obj.CharacteristicLength;
             
             r= obj.CenterPosition;
             x=a*.25*[-1,1,1,-1] + r(1);
-            y=a*.625*[1,1,-1,-1] + r(2);
+            y=a*.75*[1,1,-1,-1] + r(2);
             %r(3) would be in the z direction
             
             
@@ -198,9 +198,9 @@ classdef ThreeDotCell < QCACell
             faceColor = getFaceColor(obj);
             cell_patch.FaceColor = faceColor;
             
-            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*abs(obj.Polarization), [1 1 1]);
-            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125, [1 1 1]);
-            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 1 1]);
+%             c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*abs(obj.Polarization), [1 1 1]);
+%             c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125, [1 1 1]);
+%             c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 1 1]);
             
 
             
@@ -218,10 +218,10 @@ classdef ThreeDotCell < QCACell
         
         function color = getFaceColor(obj)
             pol = obj.Polarization;
-            if(pol < 0)
+            if(pol > 0)
                 %color = [abs(pol) 0 0];
                 color = [1-abs(pol) 1 1-abs(pol)];
-            elseif(pol > 0)
+            elseif(pol < 0)
                 %color = [0 abs(pol) 0];
                 color = [1 1-abs(pol) 1-abs(pol)];
             else
@@ -233,6 +233,7 @@ classdef ThreeDotCell < QCACell
             obj.SelectBox=patch;
             obj.SelectBox.XData=[obj.CenterPosition(1)-.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)+.25;obj.CenterPosition(1)-.25];
             obj.SelectBox.YData=[obj.CenterPosition(2)-.75;obj.CenterPosition(2)-.75;obj.CenterPosition(2)+.75;obj.CenterPosition(2)+.75];
+            obj.SelectBox.EdgeColor = 'None';
             
             obj.CellID;
             obj.Overlapping;
@@ -269,15 +270,15 @@ classdef ThreeDotCell < QCACell
 %                 text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center',...
 %                     'FontSize',12);
                 
-                %extra circle
-                %             c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
-                
-                %             if obj.CellID == 6
-                %             th = 0:pi/50:2*pi;
-                %             xunit = 2.25 * cos(th) + obj.CenterPosition(1);
-                %             yunit = 2.25 * sin(th) + obj.CenterPosition(2);
-                %             h = plot(xunit, yunit);
-                %             end
+                 %extra circle
+%                 c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
+% 
+%                 if obj.CellID == 6
+%                 th = 0:pi/50:2*pi;
+%                 xunit = 2.25 * cos(th) + obj.CenterPosition(1);
+%                 yunit = 2.25 * sin(th) + obj.CenterPosition(2);
+%                 h = plot(xunit, yunit);
+%                 end
                 
                 
                 
@@ -300,9 +301,9 @@ classdef ThreeDotCell < QCACell
                 q1 = (act/2)*(1+pol);
                 
                 scalefactor = 0.90;
-                e0 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, q0*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
-                eN = circle(obj.CenterPosition(1), obj.CenterPosition(2),      qN*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
+                e0 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, q0*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25);
+                eN = circle(obj.CenterPosition(1), obj.CenterPosition(2),      qN*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25);
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25);
                 
                 
                 if length(varargin)==1

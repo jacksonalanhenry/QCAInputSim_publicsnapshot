@@ -120,7 +120,7 @@ classdef SixDotCell < QCACell
             
             for x = 1:length(neighborList)
 %                 disp([num2str(obj.CellID) '---' num2str(neighborList{x}.CellID)])
-                objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x})
+                objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x});
             end
             
             gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];
@@ -195,8 +195,8 @@ classdef SixDotCell < QCACell
             a= obj.CharacteristicLength;
             
             r= obj.CenterPosition;
-            x=a*.25*[-1,1,1,-1] + r(1);
-            y=a*.625*[1,1,-1,-1] + r(2);
+            x=a*.75*[-1,1,1,-1] + r(1);
+            y=a*.75*[1,1,-1,-1] + r(2);
             %r(3) would be in the z direction
             
             
@@ -204,9 +204,9 @@ classdef SixDotCell < QCACell
             faceColor = getFaceColor(obj);
             cell_patch.FaceColor = faceColor;
             
-            c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*abs(obj.Polarization), [1 1 1]);
-            c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125, [1 1 1]);
-            c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 1 1]);
+%             c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*abs(obj.Polarization), [1 1 1]);
+%             c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.4, a*.125, [1 1 1]);
+%             c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.4, a*.125, [1 1 1]);
             
 
             
@@ -277,8 +277,8 @@ classdef SixDotCell < QCACell
                 y_dist64 = [dotpos(6,2), dotpos(4,2)];
                 l64 = line(x_dist64, y_dist64, 'LineWidth', 2, 'Color', [0 0 0]);
                 
-                text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center',...
-                    'FontSize',12);
+%                 text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center',...
+%                     'FontSize',12);
                 
                        
                 

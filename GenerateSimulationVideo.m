@@ -2,7 +2,12 @@ function GenerateSimulationVideo(handles)
 %This function will use the simulation .mat files to create a video with
 %the help of the PipelineVisualization function
 
-[Sim path]= uigetfile('*.mat'); %path gets sent into Pipeline in order to change the path, that way we can put the video file anywhere
+
+Sim = getappdata(gcf,'SimResults');
+path = getappdata(gcf, 'SimResultsPath');
+
+
+%[Sim path]= uigetfile('*.mat'); %path gets sent into Pipeline in order to change the path, that way we can put the video file anywhere
 
 % f=gcf;
 
@@ -11,9 +16,11 @@ function GenerateSimulationVideo(handles)
 
 
 if Sim
+    PipelineVisualization(Sim,gca, path);
     
+else
+    [Sim, path]= uigetfile('*.mat'); %path gets sent into Pipeline in order to change the path, that way we can put the video file anywhere
     PipelineVisualization(Sim,gca,path);
-    
 end
 
 

@@ -143,7 +143,7 @@ classdef QCACircuit
                         
                         
                         
-                        disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
 
 %                             newNeighbors=[];
 %                             first = neighbors
@@ -266,7 +266,6 @@ classdef QCACircuit
                         colors=0;
                         for j=1:length(obj.Device)
                             if isa(obj.Device{j},'QCASuperCell') && ~isempty(obj.Device{j}.BoxColor) && j~= CellIndex
-                                %                                 colors{end+1} = obj.Device{j}.BoxColor;
                                 colors =  colors+1;
                             end
                             
@@ -293,8 +292,7 @@ classdef QCACircuit
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw(targetaxis);
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
-                        %                             obj.Device{CellIndex}.Device{subnode}.SelectBox.FaceAlpha = .01;
-                        obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor;
+                        %obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor; %turns on and off the supercell color
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
                         Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
                     end
@@ -443,7 +441,7 @@ classdef QCACircuit
             end
         end
         
-        function obj = Relax2GroundState(obj)
+        function obj = Relax2GroundState(obj, varargin)
             
             %Iterate to Self consistency
             
@@ -453,6 +451,10 @@ classdef QCACircuit
             %   fprintf('Cell %d  ...   ',obj.Device{i}.CellID);
             %end
             %fprintf('\n');
+            
+            if length(varargin) == 1
+                disp(num2str(varargin{1}))
+            end
             
             NewCircuitPols = ones(1,length(obj.Device));
             converganceTolerance = 1;
@@ -493,6 +495,10 @@ classdef QCACircuit
                                     pol = obj.Device{idx}.Device{subnode}.Polarization;
                                     %disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
                                     
+                                    if length(varargin) == 1
+                                        obj.Device{idx}.Device{subnode}.ElectricField(3) = varargin{1}; 
+                                    end
+                                    
                                     if ~isempty(nl)
                                         
                                         %get Neighbor Objects
@@ -517,7 +523,7 @@ classdef QCACircuit
                                         NewPols(subnode) = obj.Device{idx}.Device{subnode}.Polarization;
                                         
                                         
-                                        %                                         disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
+                                        % disp(['id: ', num2str(id), ' pol: ', num2str(pol)]) %, ' nl: ', num2str(nl)
                                     end
                                 end
                                 
@@ -536,6 +542,9 @@ classdef QCACircuit
                         id = obj.Device{idx}.CellID;
                         nl = obj.Device{idx}.NeighborList;
                         pol = obj.Device{idx}.Polarization;
+                        if length(varargin) == 1
+                            obj.Device{idx}.ElectricField(3) = varargin{1}; 
+                        end
                         
                         if ~isempty(nl)
                             

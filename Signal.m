@@ -29,6 +29,7 @@ classdef Signal
         TopPatch;
         BottomPatch;
         
+        
     end
     
     

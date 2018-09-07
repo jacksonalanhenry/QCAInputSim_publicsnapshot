@@ -37,7 +37,7 @@ if ~isempty(sigName) %check to see if there is a signal being edited
             mySignal.Wavelength = str2num(handles.changeWave.String);
             mySignal.Period = str2num(handles.changePeriod.String);
             mySignal.Phase = str2num(handles.changePhase.String);
-            %mySignal.MeanValue = str2num(handles.changeMeanValue.String);
+            mySignal.MeanValue = str2num(handles.changeMeanValue.String);
             
             
             

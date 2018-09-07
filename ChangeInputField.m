@@ -4,6 +4,9 @@ function ChangeInputField(handles)
 myCircuit = getappdata(gcf,'myCircuit');
 
 
+% strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
+
+
 inputfield = str2num(get(handles.changeInputField,'String'));
 SignalsList = getappdata(gcf,'SignalsList');
 
@@ -16,15 +19,14 @@ for k=1:length(SignalsList)
                     
                     myCircuit.Device{i}.Device{j}.ElectricField(2) = inputfield;
                     
-                    
                 end
                 
-                
-                
+ 
             end
         else %any cell can be deleted also
             if strcmp(myCircuit.Device{i}.SelectBox.Selected,'on')
                 myCircuit.Device{i}.ElectricField(2) = inputfield;
+                myCircuit.Device{i}.ElectricField(2);
             end
         end
         

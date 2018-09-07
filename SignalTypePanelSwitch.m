@@ -9,27 +9,27 @@ switch sigType
     case 'Sinusoidal'
         
         handles.sinusoidPanel.Visible = 'on';
-        handles.customSignal.Visible = 'off';
-        handles.electrodePanel.Visible = 'off';
-        handles.fermiPanel.Visible = 'off';
+        handles.customSignal.Visible = 'on';
+        handles.electrodePanel.Visible = 'on';
+        handles.fermiPanel.Visible = 'on';
     
     case 'Fermi'
-        handles.sinusoidPanel.Visible = 'off';
-        handles.customSignal.Visible = 'off';
-        handles.electrodePanel.Visible = 'off';
+        handles.sinusoidPanel.Visible = 'on';
+        handles.customSignal.Visible = 'on';
+        handles.electrodePanel.Visible = 'on';
         handles.fermiPanel.Visible = 'on';            
         
     case 'Custom'
-        handles.sinusoidPanel.Visible = 'off';
+        handles.sinusoidPanel.Visible = 'on';
         handles.customSignal.Visible = 'on';
-        handles.electrodePanel.Visible = 'off';
-        handles.fermiPanel.Visible = 'off';
+        handles.electrodePanel.Visible = 'on';
+        handles.fermiPanel.Visible = 'on';
     
     case 'Electrode'
-        handles.sinusoidPanel.Visible = 'off';
-        handles.customSignal.Visible = 'off';
+        handles.sinusoidPanel.Visible = 'on';
+        handles.customSignal.Visible = 'on';
         handles.electrodePanel.Visible = 'on';
-        handles.fermiPanel.Visible = 'off';
+        handles.fermiPanel.Visible = 'on';
         
     
 end

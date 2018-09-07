@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 03-Aug-2018 12:55:40
+% Last Modified by GUIDE v2.5 07-Sep-2018 11:14:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,7 @@ handles.output = hObject;
 guidata(hObject, handles)
 
 % set(handlesButton.figure1,'Name','QCA Layout Demo');
-
+axes(handles.MainAxes);
 
 myCircuit = QCACircuit();
 myCircuit.CircuitDraw(gca);
@@ -437,6 +437,28 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+function changeMeanValue_Callback(hObject, eventdata, handles)
+% hObject    handle to changeMeanValue (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of changeMeanValue as text
+%        str2double(get(hObject,'String')) returns contents of changeMeanValue as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function changeMeanValue_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to changeMeanValue (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
 
 % --- Executes on selection change in signalType.
 function signalType_Callback(hObject, eventdata, handles)
@@ -618,7 +640,7 @@ function changeInputField_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of changeInputField as text
 %        str2double(get(hObject,'String')) returns contents of changeInputField as a double
-
+ChangeInputField(handles)
 
 
 
@@ -937,6 +959,44 @@ function nodeTypepopupmenu_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in loadSimResults.
+function loadSimResults_Callback(hObject, eventdata, handles)
+% hObject    handle to loadSimResults (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+LoadSimResults();
+
+
+% --- Executes on button press in vizAtCertainTimeButton.
+function vizAtCertainTimeButton_Callback(hObject, eventdata, handles)
+% hObject    handle to vizAtCertainTimeButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+vizAtCertainTimeButton();
+
+
+function vizAtCertainTimeEditBox_Callback(hObject, eventdata, handles)
+% hObject    handle to vizAtCertainTimeEditBox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of vizAtCertainTimeEditBox as text
+%        str2double(get(hObject,'String')) returns contents of vizAtCertainTimeEditBox as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function vizAtCertainTimeEditBox_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to vizAtCertainTimeEditBox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');

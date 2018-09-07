@@ -42,6 +42,7 @@ if ~isempty(contents)
                 handles.changeWave.String = num2str(mySignal.Wavelength);
                 handles.changePeriod.String = num2str(mySignal.Period);
                 handles.changePhase.String = num2str(mySignal.Phase);
+                handles.changeMeanValue.String = num2str(mySignal.MeanValue);
                 
                 
             case 'Fermi'
