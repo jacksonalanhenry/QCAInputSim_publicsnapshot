@@ -34,6 +34,7 @@ function h = circle(varargin)
 %
 nth=30;
 
+
 x0 = varargin{1};
 y0 = varargin{2};
 R = varargin{3};
@@ -42,6 +43,7 @@ C = varargin{4};
 EdgeColor = [0 0 0];
 LineWidth = 2;
 LineStyle = '-';
+TargetAxes = gca;
 
 
 args = varargin(5:end);
@@ -69,6 +71,9 @@ while length(args) >= 2
         case 'LineStyle'
             LineStyle = val;
             
+        case 'TargetAxes'
+            TargetAxes = val;
+            
         otherwise
             error(['CIRCLE.M: ', prop, ' is an invalid property specifier.']);
     end
@@ -79,7 +84,7 @@ dx=R*cos(thetas);
 dy=R*sin(thetas);
 x=x0+dx;
 y=y0+dy;
-h=patch(x,y,C, 'EdgeColor', EdgeColor, 'LineWidth', LineWidth, ...
+h=patch(TargetAxes,x,y,C, 'EdgeColor', EdgeColor, 'LineWidth', LineWidth, ...
     'LineStyle', LineStyle);
 
 %end function circle
