@@ -255,7 +255,6 @@ classdef QCACircuit
             
             
             for CellIndex = 1:length(obj.Device)
-                
                 if( isa(obj.Device{CellIndex}, 'QCASuperCell') )
                     
                     %check to see if there is a color for the SC
@@ -640,9 +639,9 @@ classdef QCACircuit
 %             [m path] = uiputfile('*.mat',file)
 %             cd(path);
             
-            
             save(file, 'signalList', '-v7.3');
             save(file, 'obj', '-append');
+            
             m.pols = [];%zeros(nt,length(obj.Device));
             m.acts = [];%zeros(nt,length(obj.Device));
             m.efields = {};%zeros(nt,length(obj.Device));
@@ -739,6 +738,9 @@ classdef QCACircuit
             disp('Complete!')
             
             obj.Simulating = 'off';
+            
+            
+            
             
             cd(home);
         end

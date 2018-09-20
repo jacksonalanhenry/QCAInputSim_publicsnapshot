@@ -33,7 +33,7 @@ end
 cd(path);
 load(simresults);
 cd(home);
-mycircuit = obj;
+myCircuit = obj;
 
 %get all of the xpositions
 xit = 1;
@@ -109,7 +109,7 @@ Frame(nt) = struct('cdata',[],'colormap',[]);
 v = VideoWriter(vfilename,'MPEG-4');
 open(v);
 
-mycircuit.Simulating = 'on';
+myCircuit.Simulating = 'on';
 
 % f.Pointer = 'watch';
 
@@ -124,7 +124,7 @@ for t = 1:size(pols,1)
 
 
     
-    cla;
+%     cla;
     
     %ef = efplots(t,:); 
 %     efz = zfields(t,:);
@@ -139,7 +139,7 @@ for t = 1:size(pols,1)
     
 
     clockSignal.drawSignal([xmin-1,xmax+1], [ymin-2, ymax+2], tp(t));
-    mycircuit = mycircuit.CircuitDraw(targetaxis, [pols(t,:); acts(t,:)]);
+    myCircuit = myCircuit.CircuitDraw(targetaxis, [pols(t,:); acts(t,:)]);
     
     
     drawnow
@@ -147,8 +147,8 @@ for t = 1:size(pols,1)
 %     gcf
 %     gca
 %     r = getrect(gcf)
-    Frame(t) = getframe(gcf,[0 0 maxwidth*.65 maxheight*.5]);
-% Frame(t) = getframe(gca);
+%     Frame(t) = getframe(gcf,[0 0 maxwidth*.65 maxheight*.5]);
+Frame(t) = getframe(gca);
 % Frame(t) = getframe(gcf);
     
     
@@ -165,7 +165,7 @@ end
 
 
 
-mycircuit.Simulating = 'off';
+myCircuit.Simulating = 'off';
 caxis('auto');
 
 a=gca;

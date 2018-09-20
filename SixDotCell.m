@@ -266,7 +266,12 @@ classdef SixDotCell < QCACell
                 pol = obj.Polarization;
                 radiusfactor = 0.2;
                 
-                
+                if length(varargin)==1
+                    targetAxes = varargin{1};
+                    %axes(targetAxes);
+                    hold off;
+                    
+                end
                 
                 %Tunnel junctions
                 x_dist13 = [dotpos(1,1), dotpos(3,1)];
@@ -277,18 +282,18 @@ classdef SixDotCell < QCACell
                 y_dist64 = [dotpos(6,2), dotpos(4,2)];
                 l64 = line(x_dist64, y_dist64, 'LineWidth', 2, 'Color', [0 0 0]);
                 
-%                 text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center',...
-%                     'FontSize',12);
+                text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center',...
+                    'FontSize',12);
                 
                        
                 
                 %Electron Sites
-                c1 = circle(dotpos(1,1), dotpos(1,2), a*radiusfactor, [1 1 1],'Points',25);
-                c2 = circle(dotpos(2,1), dotpos(2,2), a*radiusfactor, [1 1 1],'Points',25);
-                c3 = circle(dotpos(3,1), dotpos(3,2), a*radiusfactor, [1 1 1],'Points',25);
-                c4 = circle(dotpos(4,1), dotpos(4,2), a*radiusfactor, [1 1 1],'Points',25);
-                c5 = circle(dotpos(5,1), dotpos(5,2), a*radiusfactor, [1 1 1],'Points',25);
-                c6 = circle(dotpos(6,1), dotpos(6,2), a*radiusfactor, [1 1 1],'Points',25);
+                c1 = circle(dotpos(1,1), dotpos(1,2), a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
+                c2 = circle(dotpos(2,1), dotpos(2,2), a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
+                c3 = circle(dotpos(3,1), dotpos(3,2), a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
+                c4 = circle(dotpos(4,1), dotpos(4,2), a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
+                c5 = circle(dotpos(5,1), dotpos(5,2), a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
+                c6 = circle(dotpos(6,1), dotpos(6,2), a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
                 
                 
                 
@@ -309,26 +314,14 @@ classdef SixDotCell < QCACell
                 
                 
                 scalefactor = 0.90;
-                e1 = circle(dotpos(1,1), dotpos(1,2), q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
-                e2 = circle(dotpos(2,1), dotpos(2,2), q2*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25); 
-                e3 = circle(dotpos(3,1), dotpos(3,2), q3*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
-                e4 = circle(dotpos(4,1), dotpos(4,2), q4*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
-                e5 = circle(dotpos(5,1), dotpos(5,2), q5*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
-                e6 = circle(dotpos(6,1), dotpos(6,2), q6*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25);
+                e1 = circle(dotpos(1,1), dotpos(1,2), q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
+                e2 = circle(dotpos(2,1), dotpos(2,2), q2*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes); 
+                e3 = circle(dotpos(3,1), dotpos(3,2), q3*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
+                e4 = circle(dotpos(4,1), dotpos(4,2), q4*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
+                e5 = circle(dotpos(5,1), dotpos(5,2), q5*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
+                e6 = circle(dotpos(6,1), dotpos(6,2), q6*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
                 
 
-                
-                if length(varargin)==1
-                    targetAxes = varargin{1};
-                    axes(targetAxes);
-                    
-                    
-                end
-                
-                if length(varargin)==1
-                    hold off;
-                end
-                
             
                 obj = obj.BoxDraw();
             

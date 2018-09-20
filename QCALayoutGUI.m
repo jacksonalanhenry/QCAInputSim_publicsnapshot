@@ -252,7 +252,6 @@ for i=1:5
     QCALayoutAddNode();
 end
 
-
 % --- Executes on button press in resetButton.
 function resetButton_Callback(hObject, eventdata, handles)
 % hObject    handle to resetButton (see GCBO)
@@ -329,7 +328,7 @@ function circuitPanel_Callback(hObject, eventdata, handles)
 % PanelSwitch(handlesButton);
 
 %switching between the three main panels (circuit, signal, simulation)
-MajorPanelSwitch(handles,'circuit');
+%MajorPanelSwitch(handles,'circuit');
 
 
     
@@ -343,7 +342,7 @@ function signalPanel_Callback(hObject, eventdata, handles)
 % PanelSwitch(handlesButton);
 
 %switching between the three main panels (circuit, signal, simulation)
-MajorPanelSwitch(handles,'signal');
+%MajorPanelSwitch(handles,'signal');
 
 
     
@@ -357,7 +356,7 @@ function simulatePanel_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of simulatePanel   
 
 %switching between the three main panels (circuit, signal, simulation)
-MajorPanelSwitch(handles,'simulate');
+%MajorPanelSwitch(handles,'simulate');
 
 
 
@@ -978,7 +977,7 @@ function vizAtCertainTimeButton_Callback(hObject, eventdata, handles)
 % hObject    handle to vizAtCertainTimeButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-vizAtCertainTimeButton();
+vizAtCertainTimeButton(handles);
 
 
 function vizAtCertainTimeEditBox_Callback(hObject, eventdata, handles)
@@ -989,6 +988,7 @@ function vizAtCertainTimeEditBox_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of vizAtCertainTimeEditBox as text
 %        str2double(get(hObject,'String')) returns contents of vizAtCertainTimeEditBox as a double
 
+    
 
 % --- Executes during object creation, after setting all properties.
 function vizAtCertainTimeEditBox_CreateFcn(hObject, eventdata, handles)

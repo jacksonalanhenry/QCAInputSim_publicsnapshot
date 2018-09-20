@@ -5,7 +5,8 @@ function GetSignalPropsGUI(handles)
 
 contents = cellstr(get(handles.signalList,'String')); %get the signal list from handles
 
-if ~isempty(contents)
+
+if contents{1}~=""
     sigName = contents{get(handles.signalList,'Value')};
     
     SignalsList = getappdata(gcf,'SignalsList'); %get the signal list from the app data that already exists
@@ -74,6 +75,8 @@ if ~isempty(contents)
         
         setappdata(gcf,'SignalsList',SignalsList);
     end
+else
+    disp('No Signals')
 end
 
 end

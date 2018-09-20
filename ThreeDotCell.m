@@ -260,6 +260,14 @@ classdef ThreeDotCell < QCACell
                 pol = obj.Polarization;
                 radiusfactor = 0.2;
                 
+                if length(varargin)==1
+                    targetAxes = varargin{1};
+                    %if (gca ~= targetAxes)
+                    %axes(targetAxes);
+                    %end
+                    hold off;
+                    
+                end
                 
                 
                 %Tunnel junctions
@@ -267,8 +275,8 @@ classdef ThreeDotCell < QCACell
                 y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
                 l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
                 
-%                 text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center',...
-%                     'FontSize',12);
+                text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center',...
+                    'FontSize',12);
                 
                  %extra circle
 %                 c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
@@ -283,9 +291,9 @@ classdef ThreeDotCell < QCACell
                 
                 
                 %Electron Sites
-                c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor, [1 1 1],'Points',25);
-                c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor, [1 1 1],'Points',25);
-                c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor, [1 1 1],'Points',25);
+                c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
+                c2 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
+                c3 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
                 
                 
                 %electron color for driver/node
@@ -301,21 +309,12 @@ classdef ThreeDotCell < QCACell
                 q1 = (act/2)*(1+pol);
                 
                 scalefactor = 0.90;
-                e0 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, q0*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25);
-                eN = circle(obj.CenterPosition(1), obj.CenterPosition(2),      qN*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25);
-                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25);
+                e0 = circle(obj.CenterPosition(1), obj.CenterPosition(2)+a*.5, q0*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25, 'TargetAxes', targetAxes);
+                eN = circle(obj.CenterPosition(1), obj.CenterPosition(2),      qN*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25, 'TargetAxes', targetAxes);
+                e1 = circle(obj.CenterPosition(1), obj.CenterPosition(2)-a*.5, q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25, 'TargetAxes', targetAxes);
                 
                 
-                if length(varargin)==1
-                    targetAxes = varargin{1};
-                    axes(targetAxes);
-                    
-                    
-                end
                 
-                if length(varargin)==1
-                    hold off;
-                end
                 
             
             

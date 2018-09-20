@@ -4,7 +4,9 @@
 localtestBed*.m
 testbed.m
 *.asv #don't look at autosave files
-#test
+*.mat
+*.mp4
+
 
 #Mac stuff
 .DS_Store
