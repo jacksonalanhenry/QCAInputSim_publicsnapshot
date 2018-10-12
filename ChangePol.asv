@@ -13,7 +13,7 @@ else
     elseif pol>1
         pol=1;
     end
-    set(handles.chngPol, 'String', num2str(pol));
+    set(handles.chngPol, 'String', pol);
 end
 
 
