@@ -107,8 +107,8 @@ classdef QCACircuit
                 
                 
                 
-%                 cellIDToplevelnodes(idx);
-%                 max(cellIDToplevelnodes);
+                %                 cellIDToplevelnodes(idx);
+                %                 max(cellIDToplevelnodes);
                 
                 leng = length(obj.Device);
                 
@@ -143,18 +143,18 @@ classdef QCACircuit
                         
                         
                         
-%                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
-
-%                             newNeighbors=[];
-%                             first = neighbors
-%                            for i=1:length(neighbors)
-%                                if neighbors(i) ~= obj.Device{idx}.Device{subnode}.CellID
-%                                     newNeighbors(end+1) = neighbors(i);
-%                                end
-%                            end
-%
-%
-%                            neighbors = newNeighbors
+                        %                         disp(['id: ' num2str(c) ' neighbors: ' num2str(neighbors)])
+                        
+                        %                             newNeighbors=[];
+                        %                             first = neighbors
+                        %                            for i=1:length(neighbors)
+                        %                                if neighbors(i) ~= obj.Device{idx}.Device{subnode}.CellID
+                        %                                     newNeighbors(end+1) = neighbors(i);
+                        %                                end
+                        %                            end
+                        %
+                        %
+                        %                            neighbors = newNeighbors
                         
                         obj.Device{idx}.Device{subnode}.NeighborList = neighbors;
                         cellposit = cellposit+1;
@@ -182,7 +182,7 @@ classdef QCACircuit
                     end
                     
                     
-%                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
+                    %                     disp(['id: ' num2str(id) ' neighbors: ' num2str(neighbors)])
                     obj.Device{idx}.NeighborList = neighbors;
                     cellposit = cellposit+1;
                     
@@ -495,7 +495,7 @@ classdef QCACircuit
                                     %disp(['id: ', num2str(id),' nl: ', num2str(nl)  ,' pol: ', num2str(pol)])
                                     
                                     if length(varargin) == 1
-                                        obj.Device{idx}.Device{subnode}.ElectricField(3) = varargin{1}; 
+                                        obj.Device{idx}.Device{subnode}.ElectricField(3) = varargin{1};
                                     end
                                     
                                     if ~isempty(nl)
@@ -542,7 +542,7 @@ classdef QCACircuit
                         nl = obj.Device{idx}.NeighborList;
                         pol = obj.Device{idx}.Polarization;
                         if length(varargin) == 1
-                            obj.Device{idx}.ElectricField(3) = varargin{1}; 
+                            obj.Device{idx}.ElectricField(3) = varargin{1};
                         end
                         
                         if ~isempty(nl)
@@ -579,7 +579,7 @@ classdef QCACircuit
                                 NewCircuitPols(idx) = obj.Device{idx}.Polarization;
                             end
                             
-%                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
+                            %                             disp(['id: ', num2str(id), ' pol: ', num2str(pol)  ' nl: ', num2str(nl)])
                             
                         end
                         idx = idx+1;
@@ -587,7 +587,7 @@ classdef QCACircuit
                     
                     
                 end
-%                 fprintf('\n');
+                %                 fprintf('\n');
                 deltaCircuitPols = abs(OldCircuitPols) - abs(NewCircuitPols);
                 converganceTolerance = max(abs(deltaCircuitPols));
                 
@@ -597,7 +597,7 @@ classdef QCACircuit
             
         end
         
-        function obj = pipeline(obj, signalList, varargin)
+        function obj = pipeline(obj, clockSignalList, varargin)
             
             home = pwd;
             
@@ -606,8 +606,19 @@ classdef QCACircuit
                 case 2 % normal
                     %disp('2')
                     file = 'simResults.mat';
+                    nt=315;
                 case 3 % signal array and default name
                     file = varargin{1};
+                    inputSignalList = {};
+                    nt=315;
+                case 4
+                    file = varargin{1};
+                    inputSignalList = varargin{2};
+                    nt = 315;
+                case 5
+                    file = varargin{1};
+                    inputSignalList = varargin{2};
+                    nt = varargin{3};
                 otherwise
                     error('Incorrect number of arguments');
             end
@@ -620,13 +631,13 @@ classdef QCACircuit
             
             % find the longest period, create time steps
             
-            maxPeriod = signalList{1}.Period;
-            for signalidx = 1:length(signalList)
-                if(signalList{signalidx}.Period > maxPeriod )
-                    maxPeriod = signalList{signalidx}.Period;
+            maxPeriod = clockSignalList{1}.Period;
+            for signalidx = 1:length(clockSignalList)
+                if(clockSignalList{signalidx}.Period > maxPeriod )
+                    maxPeriod = clockSignalList{signalidx}.Period;
                 end
             end
-            nt=315;
+            
             tperiod = maxPeriod*2;
             %time_array = linspace(0,2,nt); %right now this will do 2 periods
             time_array = linspace(0,tperiod,nt);
@@ -636,10 +647,11 @@ classdef QCACircuit
             
             m = matfile(file, 'Writable', true);
             
-%             [m path] = uiputfile('*.mat',file)
-%             cd(path);
+            %             [m path] = uiputfile('*.mat',file)
+            %             cd(path);
             
-            save(file, 'signalList', '-v7.3');
+            save(file, 'clockSignalList', '-v7.3');
+            save(file, 'inputSignalList', '-append');
             save(file, 'obj', '-append');
             
             m.pols = [];%zeros(nt,length(obj.Device));
@@ -654,35 +666,36 @@ classdef QCACircuit
             
             for t = 1:nt %time step
                 
-                obj = obj.UpdateElectricFields(tc(t), signalList);
+                obj = obj.UpdateClockFields(tc(t), clockSignalList);
+                %obj = obj.UpdateInputFields(tc(t), inputSignalList); %this changes the input E field of cells
                 
-%                 idx=1;
-%                 while idx <= length(obj.Device)
-%                     if( isa(obj.Device{idx}, 'QCASuperCell') )
-%                         
-%                         for subnode = 1:length(obj.Device{idx}.Device)
-%                             %obj.Device{idx}.Device{subnode}.ElectricField = signal.getEField(obj.Device{idx}.Device{subnode}.CenterPosition, time_array(t)); %changes E Field.
-%                             efield = obj.Device{idx}.Device{subnode}.ElectricField;
-% 
-%                             efield(3) = 0;
-%                             efield = efield + signal.getClockField(obj.Device{idx}.Device{subnode}.CenterPosition, tc(t)); %changes E Field.
-%                             obj.Device{idx}.Device{subnode}.ElectricField = efield;
-%                         end
-%                         idx = idx+1;
-%                     else
-%                         %obj.Device{idx}.ElectricField = signal.getEField(obj.Device{idx}.CenterPosition, time_array(t)); %changes E Field.
-%                         efield = obj.Device{idx}.ElectricField;
-%                         efield(3) = 0;
-%                         efield = efield + signal.getClockField(obj.Device{idx}.CenterPosition, tc(t)); %changes E Field.
-%                         
-%                         
-%                         obj.Device{idx}.ElectricField = efield;
-%                         idx = idx+1;
-%                     end
-%                     
-%                 end
+                obj = obj.assignDriverPolarization(tc(t), inputSignalList); %this specifically changes the Polarization of Drivers
                 
-                
+                %                 idx=1;
+                %                 while idx <= length(obj.Device)
+                %                     if( isa(obj.Device{idx}, 'QCASuperCell') )
+                %
+                %                         for subnode = 1:length(obj.Device{idx}.Device)
+                %                             %obj.Device{idx}.Device{subnode}.ElectricField = signal.getEField(obj.Device{idx}.Device{subnode}.CenterPosition, time_array(t)); %changes E Field.
+                %                             efield = obj.Device{idx}.Device{subnode}.ElectricField;
+                %
+                %                             efield(3) = 0;
+                %                             efield = efield + signal.getClockField(obj.Device{idx}.Device{subnode}.CenterPosition, tc(t)); %changes E Field.
+                %                             obj.Device{idx}.Device{subnode}.ElectricField = efield;
+                %                         end
+                %                         idx = idx+1;
+                %                     else
+                %                         %obj.Device{idx}.ElectricField = signal.getEField(obj.Device{idx}.CenterPosition, time_array(t)); %changes E Field.
+                %                         efield = obj.Device{idx}.ElectricField;
+                %                         efield(3) = 0;
+                %                         efield = efield + signal.getClockField(obj.Device{idx}.CenterPosition, tc(t)); %changes E Field.
+                %
+                %
+                %                         obj.Device{idx}.ElectricField = efield;
+                %                         idx = idx+1;
+                %                     end
+                %
+                %                 end
                 
                 
                 
@@ -699,7 +712,7 @@ classdef QCACircuit
                         
                         for sub=1:length(obj.Device{idx}.Device)
                             
-                          
+                            
                             pols(t,it) = obj.Device{idx}.Device{sub}.Polarization;
                             acts(t,it) = obj.Device{idx}.Device{sub}.Activation;
                             efields{t,it} = obj.Device{idx}.Device{sub}.ElectricField;
@@ -710,8 +723,8 @@ classdef QCACircuit
                         
                     else
                         
-%                         ef = obj.Device{idx}.ElectricField;
-%                         efz = ef(3);
+                        %                         ef = obj.Device{idx}.ElectricField;
+                        %                         efz = ef(3);
                         
                         pols(t,it) = obj.Device{idx}.Polarization;
                         acts(t,it) = obj.Device{idx}.Activation;
@@ -722,13 +735,13 @@ classdef QCACircuit
                 
                 
                 disp(['t: ', num2str(t)]);
-
+                
                 
             end %time step loop
             
-%           waitbar(1, w8bar , 'Simulation Complete');
-%           pause(.5);
-%           close(w8bar);
+            %           waitbar(1, w8bar , 'Simulation Complete');
+            %           pause(.5);
+            %           close(w8bar);
             
             m.pols = pols;
             m.acts = acts;
@@ -745,13 +758,13 @@ classdef QCACircuit
             cd(home);
         end
         
-        function obj = UpdateElectricFields(obj, time, signalList)
+        function obj = UpdateClockFields(obj, time, clockSignalList)
             
-            if( iscell(signalList) && isa(signalList{1}, 'Signal') )
+            if( iscell(clockSignalList) && isa(clockSignalList{1}, 'Signal') ) %still need to check if all clock signals are a Signal()
                 
                 
                 
-                % then assign electric fields
+                % then assign clock fields
                 CircuitIdx = 1;
                 while CircuitIdx <= length(obj.Device)
                     if( isa(obj.Device{CircuitIdx}, 'QCASuperCell') )
@@ -759,12 +772,12 @@ classdef QCACircuit
                             efield = obj.Device{CircuitIdx}.Device{subnode}.ElectricField; % for this node, set the z-efield to zero
                             efield(3) = 0;
                             
-                            for signalidx = 1:length(signalList)
+                            for signalidx = 1:length(clockSignalList)
                                 %step through each signal and accumulate
                                 %the efield
-                                efield = efield + signalList{signalidx}.getClockField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, signalList{signalidx}.Period )); %changes E Field.
+                                efield = efield + clockSignalList{signalidx}.getClockField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
                                 obj.Device{CircuitIdx}.Device{subnode}.ElectricField = efield;
-                            
+                                
                             end %signalList
                             
                         end
@@ -774,27 +787,48 @@ classdef QCACircuit
                         efield = obj.Device{CircuitIdx}.ElectricField; % for this node, set the z-efield to zero
                         efield(3) = 0;
                         
-                        for signalidx = 1:length(signalList)
+                        for signalidx = 1:length(clockSignalList)
                             %step through each signal and accumulate
                             %the efield
-                            efield = efield + signalList{signalidx}.getClockField(obj.Device{CircuitIdx}.CenterPosition, mod(time, signalList{signalidx}.Period )); %changes E Field.
+                            efield = efield + clockSignalList{signalidx}.getClockField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
                             obj.Device{CircuitIdx}.ElectricField = efield;
                             
                         end% signalList
-
+                        
                         CircuitIdx = CircuitIdx+1;
                     end
                     
                 end
-            
-            
-            
+                
+                
+                
+                
+                
             else
                 error('Input must be Cell Array of Signals')
             end % if is a cell array of signals (kinda works as a check)
             
         end
         
+        function obj = assignDriverPolarization(obj, time, driverSignalList)
+            for signumber = 1:length(driverSignalList) %step through input signals
+                driverSignal = driverSignalList{signumber}; 
+                
+                driversArray = obj.getCellArray(driverSignal.CellIds);
+                
+                
+                for idx = 1:length(driversArray) %step through CellId's associated with inputSignal
+                    
+                    driversArray{idx}.Polarization = 0.7;
+%                             field = driverSignal.getClockField(obj.Device{CircuitIdx}.CenterPosition, mod(time, driverSignal.Period ));
+%                             obj.Device{CircuitIdx}.Polarization = field(2);
+                            
+
+                end %end for id
+            end %end for signumber
+
+            
+        end
         
         function cell_obj = getCellArray(obj, CellIDArray)
             %this function returns an array of QCACell objects given a list
