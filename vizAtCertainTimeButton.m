@@ -60,8 +60,8 @@ if Sim
         xq = linspace(xmin-1, xmax+1, nx);
         yq = linspace(ymin-2, ymax+2, nt);
         
-        if (length(signalList) == 1)
-            clockSignal = signalList{1};
+        if (length(clockSignalList) == 1)
+            clockSignal = clockSignalList{1};
         else
             error('Too many signals')
         end

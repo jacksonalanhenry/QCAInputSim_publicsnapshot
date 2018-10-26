@@ -16,8 +16,10 @@ classdef Signal
         Wavelength = 1;
         Period = 1;
         Phase = pi/2;
-        MeanValue=0;
+        MeanValue = 0;
         Sharpness = .05;
+        
+        CellIds = []; %used to associate certain signals with certain cells. Most commonly driver polarizations
         
         
         %Electrode Properties
@@ -121,7 +123,7 @@ classdef Signal
         end
         
         function obj = set.Type(obj,value)
-            if (~isequal(value, 'Sinusoidal') && ~isequal(value,'Fermi') && ~isequal(value,'Custom') && ~isequal(value,'Electrode') )%edit this to add more types
+            if (~isequal(value, 'Sinusoidal') && ~isequal(value,'Fermi') && ~isequal(value,'Custom') && ~isequal(value,'Electrode') && ~isequal(value,'Driver') )%edit this to add more types
                 error('Invalid Type. Must be Standard signal Type')
             else
                 obj.Type = value;
@@ -197,7 +199,9 @@ classdef Signal
                             
                         case 'Fermi'
                             EField(3) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
-                            
+                        
+                        case 'Driver'
+                            EField(2) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
                             
                             
                         otherwise
