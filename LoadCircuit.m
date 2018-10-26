@@ -6,7 +6,7 @@ function LoadCircuit(handles)
 Path = getappdata(gcf,'Path');
 
 myCircuit = getappdata(gcf,'myCircuit'); %going to replace this current circuit
-SignalsList = getappdata(gcf,'SignalsList'); %same with this SignalsList
+clockSignalsList = getappdata(gcf,'clockSignalsList'); %same with this SignalsList
 
 
 %We use paths to move between the folders where we use the gui and where we
@@ -36,13 +36,13 @@ else
     
     %replacing the old circuit and signals list with the loaded data
     myCircuit = loader.Circuit;
-    SignalsList = loader.SignalsList;
+    clockSignalsList = loader.SignalsList;
     
-    for i=1:length(SignalsList)
-        handles.signalList.String{end+1,1} = SignalsList{i}.Name;
+    for i=1:length(clockSignalsList)
+        handles.signalList.String{end+1,1} = clockSignalsList{i}.Name;
     end
     
-    setappdata(gcf,'SignalsList',SignalsList);
+    setappdata(gcf,'clockSignalsList',clockSignalsList);
     myCircuit = myCircuit.CircuitDraw(gca);
     
     

@@ -6,7 +6,7 @@ f=gcf;
 
 a=gca;
 myCircuit = getappdata(f,'myCircuit');
-SignalsList = getappdata(f,'SignalsList');
+clockSignalsList = getappdata(f,'clockSignalsList');
 cla;%clear the axes
 
 plot(handles.plotAxes,0,0);
@@ -15,7 +15,7 @@ copies = getappdata(f,'Copies');
 
 copies={};
 
-SignalsList = {};
+clockSignalsList = {};
 handles.signalList.String = '';
 handles.signalList.Value = 1;
 handles.signalEditor.String = '' ;
@@ -25,7 +25,7 @@ handles.signalType.Value = 1;
         handles.customSignal.Visible = 'off';
         handles.electrodePanel.Visible = 'off';
 
-setappdata(f,'SignalsList',SignalsList);
+setappdata(f,'clockSignalsList',clockSignalsList);
 
 
 myCircuit.Device{1}={};%empty first node

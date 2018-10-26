@@ -8,9 +8,9 @@ myCircuit = getappdata(gcf,'myCircuit');
 
 
 inputfield = str2num(get(handles.changeInputField,'String'));
-SignalsList = getappdata(gcf,'SignalsList');
+clockSignalsList = getappdata(gcf,'clockSignalsList');
 
-for k=1:length(SignalsList)
+for k=1:length(clockSignalsList)
     for i=1:length(myCircuit.Device)
         if isa (myCircuit.Device{i},'QCASuperCell') %if any of the cells in a supercell are selected, the whole thing will be deleted
             

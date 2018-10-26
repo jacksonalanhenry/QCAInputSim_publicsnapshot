@@ -9,7 +9,7 @@ myCircuit = getappdata(gcf,'myCircuit');
 
 %     handles.layoutchange.Value=0;
 
-SignalsList = getappdata(gcf,'SignalsList');
+clockSignalsList = getappdata(gcf,'clockSignalsList');
 
 
 inputfield = str2num(get(handles.changeInputField,'String'));

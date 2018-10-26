@@ -4,7 +4,7 @@ f=gcf;
 
 a=gca;
 myCircuit = getappdata(f,'myCircuit');
-SignalsList = getappdata(f,'SignalsList');
+clockSignalsList = getappdata(f,'clockSignalsList');
 cla;%clear the axes
 plot(handles.plotAxes,0,0);
 
@@ -13,7 +13,7 @@ copies = getappdata(f,'Copies');
 
 copies={};
 
-SignalsList = {}; %reset all the visual aspects of the gui
+clockSignalsList = {}; %reset all the visual aspects of the gui
 handles.signalList.String = '';
 handles.signalList.Value = 1;
 handles.signalEditor.String = '' ;
@@ -25,7 +25,7 @@ handles.signalType.Value = 1;
         handles.electrodePanel.Visible = 'off';
 
 
-setappdata(f,'SignalsList',SignalsList); %must set app data before CircuitDraw() happens
+setappdata(f,'clockSignalsList',clockSignalsList); %must set app data before CircuitDraw() happens
 
 
 myCircuit.Device{1}={};%empty first node

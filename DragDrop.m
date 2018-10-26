@@ -14,7 +14,6 @@ a=gca;
 
 
 myCircuit = getappdata(f,'myCircuit');
-SignalsList = getappdata(f,'SignalsList');
 
 
 

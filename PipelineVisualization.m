@@ -69,8 +69,8 @@ nx = 125;
 xq = linspace(xmin-1, xmax+1, nx);
 yq = linspace(ymin-2, ymax+2, nt);
 
-if (length(clockSignalList) == 1)
-    clockSignal = clockSignalList{1};
+if (length(clockSignalsList) == 1)
+    clockSignal = clockSignalsList{1};
 else
     error('Too many signals')
 end

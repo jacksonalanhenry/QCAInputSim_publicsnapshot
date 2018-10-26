@@ -5,10 +5,13 @@ function CreateSimulationFile(handles)
 
 
 myCircuit = getappdata(gcf,'myCircuit');
-SignalsList = getappdata(gcf,'SignalsList');
+clockSignalsList = getappdata(gcf,'clockSignalsList');
+inputSignalsList = getappdata(gcf,'inputSignalsList');
 myCircuit = myCircuit.GenerateNeighborList();
 
 name = num2str(handles.nameSim.String);
+nt = num2str(handles.numberOfTimeSteps.String);
+numOfPeriods = num2str(handles.numberOfPeriods.String);
 
 
 % f=gcf;
@@ -17,23 +20,28 @@ name = num2str(handles.nameSim.String);
 
 
 
-if length(SignalsList)==1 %pipeline will run
+if length(clockSignalsList)==1 %pipeline will run
+    
+%     if isempty(name)
+%         %myCircuit = myCircuit.pipeline(SignalsList);
+%         myCircuit.pipeline(clockSignalsList, 'Filename', name,'inputSignalsList', inputSignalsList, 'TimeSteps', nt);
+% 
+%     else
+%         myCircuit = myCircuit.pipeline(clockSignalsList,name);    
+%     end
+    
+    
+    myCircuit.pipeline(clockSignalsList, 'Filename', name,'inputSignalsList', inputSignalsList, 'TimeSteps', nt, 'numOfPeriods', numOfPeriods);
+    
+elseif length(clockSignalsList) > 1
+    
+    %no functionality for multiple Signals yet kinda broken rn
     
     if isempty(name)
-        myCircuit = myCircuit.pipeline(SignalsList);
-    else
-        myCircuit = myCircuit.pipeline(SignalsList,name);    
-    end
-    
-elseif length(SignalsList) > 1
-    
-    %no functionality for multiple Signals yet
-    
-    if isempty(name)
-        myCircuit = myCircuit.pipeline(SignalsList);
+        myCircuit = myCircuit.pipeline(clockSignalsList);
         
     else
-        myCircuit = myCircuit.pipeline(SignalsList,name);  
+        myCircuit = myCircuit.pipeline(clockSignalsList,name);  
         
     end
     
@@ -61,7 +69,7 @@ end
 myCircuit = myCircuit.CircuitDraw(gca);
 
 setappdata(gcf,'myCircuit',myCircuit);
-setappdata(gcf,'SignalsList',SignalsList);
+setappdata(gcf,'clockSignalsList',clockSignalsList);
 
 
 % f.Pointer = 'arrow';

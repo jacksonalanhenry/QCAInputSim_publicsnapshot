@@ -7,7 +7,7 @@ Path = getappdata(gcf,'Path');
 
 
 Circuit=getappdata(gcf, 'myCircuit'); %attain the circuit we want to save
-SignalsList = getappdata(gcf,'SignalsList');
+clockSignalsList = getappdata(gcf,'clockSignalsList');
 
 [File , pathname] = uiputfile('*.mat');
 
@@ -26,6 +26,6 @@ end
 
 
 setappdata(gcf,'myCircuit',Circuit);
-setappdata(gcf,'SignalsList',SignalsList);
+setappdata(gcf,'clockSignalsList',clockSignalsList);
 
 end

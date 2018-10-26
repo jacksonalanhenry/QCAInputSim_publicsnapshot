@@ -6,7 +6,7 @@ function SaveEditedSignal(handles)
 contents = cellstr(get(handles.signalList,'String')); %get the list of signals from handles
 
 
-SignalsList = getappdata(gcf,'SignalsList'); %retrieve the signals from appdata
+clockSignalsList = getappdata(gcf,'clockSignalsList'); %retrieve the signals from appdata
 myCircuit = getappdata(gcf,'myCircuit');
 
 %find which signal to save
@@ -16,9 +16,9 @@ if ~isempty(contents)
     sigName = contents{spot}; %this is the signal we selected
     
     
-    for i=1:length(SignalsList)
-        if strcmp(sigName,SignalsList{i}.Name)
-            mySignal = SignalsList{i};  %this is the signal with the same name (they are the same)
+    for i=1:length(clockSignalsList)
+        if strcmp(sigName,clockSignalsList{i}.Name)
+            mySignal = clockSignalsList{i};  %this is the signal with the same name (they are the same)
             pick = i;
         end
     end
@@ -66,10 +66,10 @@ if ~isempty(contents)
         contents{spot} = mySignal.Name;
         handles.signalList.String = contents;
         
-        SignalsList{pick} = mySignal;%replace the signal with the edited one
+        clockSignalsList{pick} = mySignal;%replace the signal with the edited one
         
         
-        setappdata(gcf,'SignalsList',SignalsList);
+        setappdata(gcf,'clockSignalsList',clockSignalsList);
         myCircuit = myCircuit.CircuitDraw(gca);
         setappdata(gcf,'myCircuit',myCircuit);
         

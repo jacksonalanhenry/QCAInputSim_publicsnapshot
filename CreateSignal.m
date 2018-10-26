@@ -8,7 +8,7 @@ function CreateSignal(handles)
 
 
 if ~isempty(handles.signalName.String) %the signal must get a name in order to be created
-    SignalsList = getappdata(gcf,'SignalsList');
+    clockSignalsList = getappdata(gcf,'clockSignalsList');
     
     Names = cellstr(get(handles.signalList,'String'));
     
@@ -69,9 +69,9 @@ if ~isempty(handles.signalName.String) %the signal must get a name in order to b
         handles.signalList.String{end+1,1} = handles.signalName.String;
     end
     
-    SignalsList{end+1} = mySignal;
+    clockSignalsList{end+1} = mySignal;
     
-    setappdata(gcf,'SignalsList',SignalsList);
+    setappdata(gcf,'clockSignalsList',clockSignalsList);
     handles.signalName.String = 'Input Name';
     handles.signalName.ForegroundColor = 'black';
     handles.signalName.Value = 1;

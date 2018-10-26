@@ -597,31 +597,67 @@ classdef QCACircuit
             
         end
         
-        function obj = pipeline(obj, clockSignalList, varargin)
+        function obj = pipeline(obj, clockSignalsList, varargin)
             
             home = pwd;
             
-            switch nargin
-                
-                case 2 % normal
-                    %disp('2')
-                    file = 'simResults.mat';
-                    nt=315;
-                case 3 % signal array and default name
-                    file = varargin{1};
-                    inputSignalList = {};
-                    nt=315;
-                case 4
-                    file = varargin{1};
-                    inputSignalList = varargin{2};
-                    nt = 315;
-                case 5
-                    file = varargin{1};
-                    inputSignalList = varargin{2};
-                    nt = varargin{3};
-                otherwise
-                    error('Incorrect number of arguments');
+            %default values
+            file = 'simResults.mat';
+            nt=315;
+            inputSignalsList = {};
+            numOfPeriods = 2;
+            
+            
+            %optional changes
+            args = varargin(1:end);
+            while length(args) >= 2
+                prop = args{1};
+                val = args{2};
+                args = args(3:end);
+                switch prop
+                    case 'Filename'
+                        file = val;
+                        
+                    case 'TimeSteps'
+                        if ischar(val)
+                            nt = str2num(val);
+                        else
+                            nt = val;
+                        end
+                        
+                    case 'inputSignalsList'
+                        inputSignalsList = val;
+                        
+                    case 'numOfPeriods'
+                        numOfPeriods = val;
+                    otherwise
+                        error(['QCACircuit.pipeline ', prop, ' is an invalid property specifier.']);
+                end
             end
+            
+            
+            
+%             switch nargin
+%                 
+%                 case 2 % normal
+%                     %disp('2')
+%                     file = 'simResults.mat';
+%                     nt=315;
+%                 case 3 %given name, clock signal array, default timesteps
+%                     file = varargin{1};
+%                     inputSignalList = {};
+%                     nt=315;
+%                 case 4 %given name, clock signal array, input signal array, default timesteps
+%                     file = varargin{1};
+%                     inputSignalList = varargin{2};
+%                     nt = 315;
+%                 case 5 %given name, clock signal array, input signal array, given timesteps
+%                     file = varargin{1};
+%                     inputSignalList = varargin{2};
+%                     nt = varargin{3};
+%                 otherwise
+%                     error('Incorrect number of arguments');
+%             end
             
             obj.Simulating = 'on';
             
@@ -631,10 +667,10 @@ classdef QCACircuit
             
             % find the longest period, create time steps
             
-            maxPeriod = clockSignalList{1}.Period;
-            for signalidx = 1:length(clockSignalList)
-                if(clockSignalList{signalidx}.Period > maxPeriod )
-                    maxPeriod = clockSignalList{signalidx}.Period;
+            maxPeriod = clockSignalsList{1}.Period;
+            for signalidx = 1:length(clockSignalsList)
+                if(clockSignalsList{signalidx}.Period > maxPeriod )
+                    maxPeriod = clockSignalsList{signalidx}.Period;
                 end
             end
             
@@ -650,8 +686,9 @@ classdef QCACircuit
             %             [m path] = uiputfile('*.mat',file)
             %             cd(path);
             
-            save(file, 'clockSignalList', '-v7.3');
-            save(file, 'inputSignalList', '-append');
+            save(file, 'clockSignalsList', '-v7.3');
+            save(file, 'inputSignalsList', '-append');
+            save(file, 'numOfPeriods', '-append');
             save(file, 'obj', '-append');
             
             m.pols = [];%zeros(nt,length(obj.Device));
@@ -666,10 +703,10 @@ classdef QCACircuit
             
             for t = 1:nt %time step
                 
-                obj = obj.UpdateClockFields(tc(t), clockSignalList);
+                obj = obj.UpdateClockFields(tc(t), clockSignalsList);
                 %obj = obj.UpdateInputFields(tc(t), inputSignalList); %this changes the input E field of cells
                 
-                obj = obj.assignDriverPolarization(tc(t), inputSignalList); %this specifically changes the Polarization of Drivers
+                obj = obj.assignDriverPolarization(tc(t), inputSignalsList); %this specifically changes the Polarization of Drivers
                 
                 %                 idx=1;
                 %                 while idx <= length(obj.Device)

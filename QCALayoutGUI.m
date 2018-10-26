@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 07-Sep-2018 11:14:06
+% Last Modified by GUIDE v2.5 26-Oct-2018 10:36:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -67,9 +67,13 @@ RightClickThings();
 nodeTypepopupmenu_Callback(hObject, eventdata, handles);
 
 
-SignalsList = {};
+clockSignalsList = {};
+inputSignalsList = {};
 
-setappdata(gcf,'SignalsList',SignalsList);
+
+setappdata(gcf,'clockSignalsList',clockSignalsList);
+setappdata(gcf,'inputSignalsList',inputSignalsList);
+
 setappdata(gcf, 'myCircuit', myCircuit);
 Path.home = pwd;
 
@@ -478,14 +482,14 @@ sigType = signalTypes{get(handles.signalType,'Value')}; %find which one is selec
 SignalTypePanelSwitch(handles, sigType);
 
 if ~isempty(handles.signalEditor.String) %changing the signal type and replotting if a signal is being edited
-    SignalsList = getappdata(gcf,'SignalsList');
+    clockSignalsList = getappdata(gcf,'clockSignalsList');
     
-    for i=1:length(SignalsList)
-        if strcmp(SignalsList{i}.Name,handles.signalEditor.String)
-            SignalsList{i}.Type = sigType;
+    for i=1:length(clockSignalsList)
+        if strcmp(clockSignalsList{i}.Name,handles.signalEditor.String)
+            clockSignalsList{i}.Type = sigType;
         end
     end
-    setappdata(gcf,'SignalsList',SignalsList);
+    setappdata(gcf,'clockSignalsList',clockSignalsList);
     
     RePlotSignal(handles);
 end
@@ -789,7 +793,7 @@ function getAppInfo_Callback(hObject, eventdata, handles)
 %as said above, only getting the app data for debugging purposes
 AppInfo = getappdata(gcf)
 circuit = AppInfo.myCircuit
-signals = AppInfo.SignalsList
+signals = AppInfo.clockSignalsList
 
 
 function changeWaveFermi_Callback(hObject, eventdata, handles)
@@ -993,6 +997,53 @@ function vizAtCertainTimeEditBox_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function vizAtCertainTimeEditBox_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to vizAtCertainTimeEditBox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function numberOfTimeSteps_Callback(hObject, eventdata, handles)
+% hObject    handle to numberOfTimeSteps (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of numberOfTimeSteps as text
+%        str2double(get(hObject,'String')) returns contents of numberOfTimeSteps as a double
+
+
+
+% --- Executes during object creation, after setting all properties.
+function numberOfTimeSteps_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to numberOfTimeSteps (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function numberOfPeriods_Callback(hObject, eventdata, handles)
+% hObject    handle to numberOfPeriods (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of numberOfPeriods as text
+%        str2double(get(hObject,'String')) returns contents of numberOfPeriods as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function numberOfPeriods_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to numberOfPeriods (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

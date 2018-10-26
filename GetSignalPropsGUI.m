@@ -9,16 +9,16 @@ contents = cellstr(get(handles.signalList,'String')); %get the signal list from 
 if contents{1}~=""
     sigName = contents{get(handles.signalList,'Value')};
     
-    SignalsList = getappdata(gcf,'SignalsList'); %get the signal list from the app data that already exists
+    clockSignalsList = getappdata(gcf,'clockSignalsList'); %get the signal list from the app data that already exists
     
     
     
-    if ~isempty(SignalsList)
+    if ~isempty(clockSignalsList)
         
-        for i=1:length(SignalsList)
-            SignalsList{i}.Name;
-            if strcmp(sigName,SignalsList{i}.Name)
-                mySignal = SignalsList{i};
+        for i=1:length(clockSignalsList)
+            clockSignalsList{i}.Name;
+            if strcmp(sigName,clockSignalsList{i}.Name)
+                mySignal = clockSignalsList{i};
                 pick = i;
             end
         end
@@ -27,7 +27,7 @@ if contents{1}~=""
         handles.signalEditType.String = mySignal.Type;
         handles.signalName.String = sigName;
         
-        SignalsList{pick} = mySignal;
+        clockSignalsList{pick} = mySignal;
         
         Type = mySignal.Type;
         
@@ -73,7 +73,7 @@ if contents{1}~=""
         PlotSignal(handles, mySignal);
         
         
-        setappdata(gcf,'SignalsList',SignalsList);
+        setappdata(gcf,'clockSignalsList',clockSignalsList);
     end
 else
     disp('No Signals')
