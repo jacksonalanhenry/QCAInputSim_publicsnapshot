@@ -698,10 +698,12 @@ classdef QCACircuit
             pols = [];
             acts = [];
             efields = {};
-            
-            
+            percentage = 0;
+            wb = waitbar(0, 'Simulating');
+            set(wb,'Name','Simulations');
             for t = 1:nt %time step
-                
+                percentage = t/nt;
+                waitbar(percentage);
                 obj = obj.UpdateClockFields(tc(t), clockSignalsList);
                 %obj = obj.UpdateInputFields(tc(t), inputSignalList); %this changes the input E field of cells
                 
@@ -774,6 +776,7 @@ classdef QCACircuit
                 
                 
             end %time step loop
+            delete(wb);
             
             %           waitbar(1, w8bar , 'Simulation Complete');
             %           pause(.5);
