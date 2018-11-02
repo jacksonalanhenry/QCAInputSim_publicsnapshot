@@ -36,7 +36,7 @@ else
     
     %replacing the old circuit and signals list with the loaded data
     myCircuit = loader.Circuit;
-    clockSignalsList = loader.SignalsList;
+    clockSignalsList = loader.clockSignalsList;
     
     for i=1:length(clockSignalsList)
         handles.signalList.String{end+1,1} = clockSignalsList{i}.Name;

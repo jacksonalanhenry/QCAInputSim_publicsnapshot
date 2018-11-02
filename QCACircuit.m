@@ -605,7 +605,7 @@ classdef QCACircuit
             file = 'simResults.mat';
             nt=315;
             inputSignalsList = {};
-            numOfPeriods = 2;
+            numOfPeriods = 1;
             
             
             %optional changes
@@ -674,7 +674,7 @@ classdef QCACircuit
                 end
             end
             
-            tperiod = maxPeriod*2;
+            tperiod = maxPeriod*numOfPeriods;
             %time_array = linspace(0,2,nt); %right now this will do 2 periods
             time_array = linspace(0,tperiod,nt);
             tc = mod(time_array, tperiod);

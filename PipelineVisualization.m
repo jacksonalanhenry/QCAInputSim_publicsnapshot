@@ -21,8 +21,15 @@ switch nargin
     
     case 3
         vfilename = 'CircuitVideo.mp4';
+        downsamplerate = 2;
+
         
     case 4
+        vfilename = varargin{1};
+        downsamplerate = 2;
+        
+    case 5
+        downsamplerate = varargin{2};
         vfilename = varargin{1};
         
     otherwise 
@@ -74,7 +81,7 @@ if (length(clockSignalsList) == 1)
 else
     error('Too many signals')
 end
-tperiod = clockSignal.Period*2;
+tperiod = clockSignal.Period;
 time_array = linspace(0,tperiod,nt);
 
 tp = mod(time_array, tperiod);
@@ -120,7 +127,9 @@ f=gcf;
 maxheight=f.Position(4);
 maxwidth=f.Position(3);
 
-for t = 1:size(pols,1)
+sizePol = size(pols,1);
+
+for t = downsample(1:sizePol,downsamplerate);
 
 
     

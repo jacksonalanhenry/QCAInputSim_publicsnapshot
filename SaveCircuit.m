@@ -19,7 +19,7 @@ else%they don't cancel the save operation
     cd(pathname)
     
     
-    save(File,'Circuit','SignalsList');
+    save(File,'Circuit','clockSignalsList');
     
     cd(Path.home);
 end
