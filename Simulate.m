@@ -30,8 +30,11 @@ clk= str2num(get(handles.chngClock,'String'));
 
 
 
-
+wb = waitbar(0,'Simulating Circuit: Setting Clock Fields for all Cells');
+set(wb,'Name','Simulation (1 of 2)');
 for i=1:length(myCircuit.Device)%set clock field for all cells
+   percentage = i/length(myCircuit.Device);
+   waitbar(percentage);
     if isa(myCircuit.Device{i},'QCASuperCell')
         for j=1:length(myCircuit.Device{i}.Device)
             myCircuit.Device{i}.Device{j};
@@ -64,6 +67,7 @@ for i=1:length(myCircuit.Device)%set clock field for all cells
 %         end
         myCircuit.Device{i};
     end
+    delete(wb);
     
 end
 

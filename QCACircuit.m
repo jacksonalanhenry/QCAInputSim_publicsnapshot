@@ -441,9 +441,10 @@ classdef QCACircuit
         end
         
         function obj = Relax2GroundState(obj, varargin)
-            
+            percentage = 0;
             %Iterate to Self consistency
-            
+            wb = waitbar(percentage,'Relaxing To Ground State');
+            set(wb,'Name','Simulation (2 of 2)');
             
             %disp('ORDER OF RELAXING')
             %for i=1:length(obj.Device)
@@ -461,7 +462,7 @@ classdef QCACircuit
             chi = 0.8;
             it=1;
             while (converganceTolerance > 0.000001)
-                
+                waitbar(.000001/coverganceTolerance);
                 OldCircuitPols = NewCircuitPols;
                 
                 idx = 1;
@@ -594,7 +595,7 @@ classdef QCACircuit
                 sub=sub+1;
                 it=it+1;
             end
-            
+            delete(wb);
         end
         
         function obj = pipeline(obj, clockSignalsList, varargin)
