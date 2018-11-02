@@ -29,9 +29,8 @@ E0 = q^2 * (1.602e-19) / (4*pi*eps0*a)* (1-1/sqrt(2));
 clk= str2num(get(handles.chngClock,'String'));
 
 
-
-
 for i=1:length(myCircuit.Device)%set clock field for all cells
+
     if isa(myCircuit.Device{i},'QCASuperCell')
         for j=1:length(myCircuit.Device{i}.Device)
             myCircuit.Device{i}.Device{j};

@@ -46,8 +46,13 @@ myCircuit = obj;
 xit = 1;
 
 % waitbar(0, w8bar , 'Processing Simulation');
+percentage = 0;
+wb = waitbar(percentage,'Loading Simulation');
+
 
 for i=1:length(obj.Device)
+    percentage = i/obj.Device;
+    waitbar(percentage);
 %     waitbar(i/length(obj.Device), w8bar , 'Retrieving Circuit and Signal data...');
     
     if isa(obj.Device{i},'QCASuperCell')
@@ -64,6 +69,8 @@ for i=1:length(obj.Device)
         xit = xit + 1;
     end
 end
+
+delete(wb);
 
 xmax = max(xpos);
 xmin = min(xpos);
