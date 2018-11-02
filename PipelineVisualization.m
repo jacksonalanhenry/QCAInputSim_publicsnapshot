@@ -48,9 +48,9 @@ xit = 1;
 % waitbar(0, w8bar , 'Processing Simulation');
 
 
-
 for i=1:length(obj.Device)
 %     waitbar(i/length(obj.Device), w8bar , 'Retrieving Circuit and Signal data...');
+
     
     if isa(obj.Device{i},'QCASuperCell')
         for j=1:length(obj.Device{i}.Device)
@@ -67,7 +67,7 @@ for i=1:length(obj.Device)
     end
 end
 
-delete(wb);
+%delete(wb);
 
 xmax = max(xpos);
 xmin = min(xpos);
