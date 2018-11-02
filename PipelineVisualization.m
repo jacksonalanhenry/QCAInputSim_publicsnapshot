@@ -67,7 +67,7 @@ for i=1:length(obj.Device)
     end
 end
 
-delete(wb);
+
 
 xmax = max(xpos);
 xmin = min(xpos);
