@@ -1,0 +1,71 @@
+GUI
+ AlignHoriz.m
+ AlignVert.m
+ AutoSnap.m
+ choosedialog.m
+ ClearAll.m
+ CopyCells.m
+ DragDrop.m
+ DrawElectrodes.m
+ DrawThreeDot.m
+ ElectrodeDrawer.m
+ ElectrodeEraser.m
+ GenerateSimulationVideo.m
+ GetBoxTraits.m
+ GetSignalPropsGUI.m
+ HotKeysFuncList.m
+ LoadCircuit.m
+ MajorPanelSwitch.m
+ MakeSuperCellGUI.m
+ NewCircuit.m
+ PasteCells.m
+ PipelineVisualization.m
+ PlotSignal.m
+ QCAHelp.m
+ QCALayoutAddDriver.m
+ QCALayoutAddNode.m
+ QCALayoutGUI.m
+ RectangleSelect.m
+ RemoveNode.m
+ RePlotSignal.m
+ RightClickThings.m
+ SaveCircuit.m
+ SaveEditedSignal.m
+ Select.m
+ SignalTypePanelSwitch.m
+ textborder.m
+ vizAtCertainTimeButton.m
+ 
+ 
+ 
+
+
+
+
+
+Back End
+ ChangeClockField.m
+ ChangeInputField.m
+ ChangePol.m
+ ChangeCellPos.m
+ CreateSignal.m
+ CreateSimulationFile.m
+ DeleteSignal.m
+ DisbandSuperCell.m
+ FermiTransition.m
+ LoadSimResults.m
+ normalize_psi_1D.m
+ PeriodicFermi.m
+ ResetCells.m
+ Simulate.m
+ 
+ 
+
+
+
+
+Shapes Drawn
+ arrow.m
+ circle.m
+ 
+
