@@ -59,19 +59,31 @@ classdef ThreeDotCell < QCACell
         end
         
         function obj = set.Polarization(obj,value)
-            if (~isnumeric(value) || value < -1 || value > 1) %value must be numeric in between -1 and 1
-%                 error('Invalid Polarization. Must be a number inbetween -1 and 1')
+            if ( (isnumeric(value) && value >= -1 && value <= 1) || isa(value, 'Signal')) %value must be numeric in between -1 and 1 or a signal class             
                 
-                obj.Polarization = 1;
-
+                obj.Polarization = value;
 
             else
-                obj.Polarization = value;
+                error('Invalid Polarization. Must be a number inbetween -1 and 1')
                 
             end
         end
         
-        function pot = Potential(obj, obsvPoint )
+        function pol = getPolarization(obj, time)
+            if isnumeric(obj.Polarization)
+                pol = obj.Polarization;
+                %disp([num2str(obj.CellID), ': ', num2str(obj.Polarization)])
+            else
+                temppol = obj.Polarization.getClockField([0,0,0], time);
+                pol = temppol(2);
+                %disp([ num2str(obj.CellID), ' has a signal obj'])
+                
+                
+            end
+        end
+        
+        
+        function pot = Potential(obj, obsvPoint, time )
             import QCALayoutPack.*
             qe = QCA_Constants.qe;
             epsilon_0 = QCA_Constants.epsilon_0;
@@ -80,8 +92,7 @@ classdef ThreeDotCell < QCACell
             selfDotPos = getDotPosition(obj);
             numberofDots = size(selfDotPos, 1);
             
-            
-            charge = qe*obj.Activation*[(1/2)*(1-obj.Polarization);-1;(1/2)*(obj.Polarization+1)]; %[eV]
+            charge = qe*obj.Activation*[(1/2)*(1-obj.getPolarization(time));-1;(1/2)*(obj.getPolarization(time)+1)]; %[eV]
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
@@ -91,7 +102,7 @@ classdef ThreeDotCell < QCACell
 %             disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
         end
         
-        function V_neighbors = neighborPotential(obj, obj2) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
+        function V_neighbors = neighborPotential(obj, obj2, time) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
             %returns the potential of a neighborCell
             
             %find out who the neighbors are (decide between giving this func the list of all neighbors or having this func figure that out. for now just 1 neighbor)
@@ -103,14 +114,14 @@ classdef ThreeDotCell < QCACell
             V_neighbors = zeros(size(objDotPosition,1),1);
             
             for x = 1:length(objDotPosition)
-                V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:) );
+                V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:), time );
             end
             
             
             
         end
         
-        function hamiltonian = GetHamiltonian(obj, neighborList)
+        function hamiltonian = GetHamiltonian(obj, neighborList, time)
             
             objDotpotential = zeros(size(obj.DotPosition,1),1);
             
@@ -118,7 +129,7 @@ classdef ThreeDotCell < QCACell
             for x = 1:length(neighborList)
                 
 %                 disp([num2str(obj.CellID) '---' num2str(neighborList{x}.CellID)])
-                objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x});
+                objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x}, time);
             end
             
             gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];
@@ -207,12 +218,11 @@ classdef ThreeDotCell < QCACell
             
             if length(varargin)==1
                 targetAxes = varargin{1};
-                axes(targetAxes);
-            end
-            
-            if length(varargin)==1
+                %axes(targetAxes);
                 hold off;
             end
+            
+           
             
         end
         
@@ -251,20 +261,18 @@ classdef ThreeDotCell < QCACell
         end
         
         
-        function obj = ElectronDraw(obj, varargin)
+        function obj = ElectronDraw(obj, time, varargin)
             
                 targetAxes = [];
                 a= obj.CharacteristicLength;
                 r= obj.CenterPosition;
                 act = obj.Activation;
-                pol = obj.Polarization;
+                pol = obj.getPolarization(time);
                 radiusfactor = 0.2;
+                
                 
                 if length(varargin)==1
                     targetAxes = varargin{1};
-                    %if (gca ~= targetAxes)
-                    %axes(targetAxes);
-                    %end
                     hold off;
                     
                 end
@@ -275,8 +283,7 @@ classdef ThreeDotCell < QCACell
                 y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
                 l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
                 
-                text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center',...
-                    'FontSize',12);
+                %text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center','FontSize',12);
                 
                  %extra circle
 %                 c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);

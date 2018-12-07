@@ -201,8 +201,8 @@ classdef Signal
                             EField(3) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
                         
                         case 'Driver'
-                            EField(2) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
-                            
+                            %EField(2) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
+                            EField(2) = ( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude+ obj.MeanValue;
                             
                         otherwise
                             error(['ClockType = ''', obj.Type, ...
@@ -264,7 +264,24 @@ classdef Signal
                     
                     Eplot = repmat(efield,[nx,1]);
                     pcolor(xq' * ones(1, nx), ones(nx, 1)* yq, Eplot');
-                    colormap cool;
+                    
+                    
+                    
+                    
+                    % Red column
+                    temp7(:,1) = [ linspace(1,0,51) zeros(1,50) ]';
+                    % Green column
+                    temp7(:,2) = [ linspace(1,0,51) zeros(1,50)]';
+                    % Blue column
+                    temp7(:,3) = [ linspace(1, 0.5625, 51) 0.5625*ones(1, 50)]';
+                    BlueWhite = temp7;
+                    clear temp7
+                    
+                    
+                    
+                    
+                    
+                    colormap(BlueWhite);
                     shading interp;
                     colorbar;
                     caxis([-obj.Amplitude obj.Amplitude])

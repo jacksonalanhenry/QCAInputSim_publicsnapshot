@@ -73,7 +73,7 @@ myCircuit = myCircuit.addNode(node);
 
 
 
-myCircuit = myCircuit.CircuitDraw(gca);
+myCircuit = myCircuit.CircuitDraw(0,gca);
 %         handles.layoutchange.Value=0;
 
 

@@ -77,7 +77,7 @@ myCircuit = myCircuit.addNode(node);
 mode = myCircuit.Mode;
 
 
-myCircuit = myCircuit.CircuitDraw(gca);
+myCircuit = myCircuit.CircuitDraw(0,gca);
 
 
 

@@ -133,6 +133,26 @@ maxwidth=f.Position(3);
 
 sizePol = size(pols,1);
 
+
+
+epsilon_0 = 8.854E-12;
+a=1e-9;%[m]
+q=1;%[eV]
+Eo = q^2*(1.602e-19)/(4*pi*epsilon_0*a)*(1-1/sqrt(2));
+
+inputfield = 0.85*Eo;
+
+centerpos = [0,0,0];
+amp = 2*inputfield;
+period = 400;
+phase = period/4;
+sharpness = 3;
+mv = amp/2;
+time_array = linspace(1, period, nt);
+tp = mod(time_array, period);
+
+
+
 for t = downsample(1:sizePol,downsamplerate);
 
 
@@ -151,18 +171,33 @@ for t = downsample(1:sizePol,downsamplerate);
 %     caxis([zmin zmax])
     
 
-    clockSignal.drawSignal([xmin-1,xmax+1], [ymin-2, ymax+2], tp(t));
-    myCircuit = myCircuit.CircuitDraw(targetaxis, [pols(t,:); acts(t,:)]);
+    clockSignal.drawSignal([xmin-1,xmax+1], [ymin-2.5, ymax+2.5], tp(t));
     
+    myCircuit = myCircuit.CircuitDraw(t, targetaxis, [pols(t,:); acts(t,:)]);
+    
+
+    
+    %%%%%%%%arrowmod = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
+    
+    %arrowtext = strcat('E_y=',num2str(arrowmod/Eo),'E_o');
+    %%%%%%%%textborder(xmin-3, 0, '$E_{y}$', [0,0,0],[1,1,1], 'FontSize', 28, 'Interpreter', 'latex')
+    %rectangle('Position',[xmin-3.1 -0.5 1.3 1],'Curvature',0.2,'FaceColor',[1,1,1]);
+    %text(xmin-3, 0, '$E_{in}$', 'Color', [0,0,0], 'FontSize', 28, ...
+    %    'Interpreter', 'latex')
+    
+    
+    %%%%%%%arrow([xmin-1 -10*arrowmod], [xmin-1 10*arrowmod],'Width',2,'EdgeColor',[1,1,1],'FaceColor',[0,0,0]);
     
     drawnow
+    axis equal
+    axis off
     %save it
-%     gcf
-%     gca
-%     r = getrect(gcf)
-%     Frame(t) = getframe(gcf,[0 0 maxwidth*.65 maxheight*.5]);
-Frame(t) = getframe(gca);
-% Frame(t) = getframe(gcf);
+    %gcf
+    %gca
+    %r = getrect(gcf)
+    %Frame(t) = getframe(gcf,[0 0 maxwidth*.65 maxheight*.5]);
+    Frame(t) = getframe(gca);
+    % Frame(t) = getframe(gcf);
     
     
     writeVideo(v,Frame(t));
@@ -172,9 +207,6 @@ Frame(t) = getframe(gca);
 end
 
 
-% waitbar(1, w8bar , 'Simulation Video Complete');
-% pause(.25);
-% close(w8bar);
 
 
 

@@ -55,7 +55,7 @@ end
 myCircuit.Device;
 
 
-myCircuit=myCircuit.CircuitDraw(gca);
+myCircuit=myCircuit.CircuitDraw(0,gca);
 
 
 
