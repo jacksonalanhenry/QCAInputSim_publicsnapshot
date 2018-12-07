@@ -74,7 +74,23 @@ classdef SixDotCell < QCACell
             end
         end
         
-        function pot = Potential(obj, obsvPoint )
+        
+        function pol = getPolarization(obj, time)
+            if isnumeric(obj.Polarization)
+                pol = obj.Polarization;
+                %disp([num2str(obj.CellID), ': ', num2str(obj.Polarization)])
+            else
+                temppol = obj.Polarization.getClockField([0,0,0], time);
+                pol = temppol(2);
+                %disp([ num2str(obj.CellID), ' has a signal obj'])
+                
+                
+            end
+        end
+        
+        
+        
+        function pot = Potential(obj, obsvPoint, time )
             import QCALayoutPack.*
             qe = QCA_Constants.qe;
             epsilon_0 = QCA_Constants.epsilon_0;
@@ -94,7 +110,7 @@ classdef SixDotCell < QCACell
 %             disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
         end
         
-        function V_neighbors = neighborPotential(obj, obj2) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
+        function V_neighbors = neighborPotential(obj, obj2, time) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
             %returns the potential of a neighborCell
             
             %find out who the neighbors are (decide between giving this func the list of all neighbors or having this func figure that out. for now just 1 neighbor)
@@ -106,21 +122,21 @@ classdef SixDotCell < QCACell
             V_neighbors = zeros(size(objDotPosition,1),1);
             
             for x = 1:length(objDotPosition)
-                V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:) );
+                V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:), time );
             end
             
             
             
         end
         
-        function hamiltonian = GetHamiltonian(obj, neighborList)
+        function hamiltonian = GetHamiltonian(obj, neighborList, time)
             
             objDotpotential = zeros(size(obj.DotPosition,1),1);
             
             
             for x = 1:length(neighborList)
 %                 disp([num2str(obj.CellID) '---' num2str(neighborList{x}.CellID)])
-                objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x});
+                objDotpotential = objDotpotential + obj.neighborPotential(neighborList{x},time);
             end
             
             gammaMatrix = -obj.Gamma*[0,1,0;1,0,1;0,1,0];
@@ -213,12 +229,11 @@ classdef SixDotCell < QCACell
             
             if length(varargin)==1
                 targetAxes = varargin{1};
-                axes(targetAxes);
-            end
-            
-            if length(varargin)==1
+                %axes(targetAxes);
                 hold off;
             end
+            
+            
             
         end
         
@@ -255,7 +270,7 @@ classdef SixDotCell < QCACell
             obj.SelectBox.UserData = obj.CellID;            
         end
         
-        function obj = ElectronDraw(obj, varargin)
+        function obj = ElectronDraw(obj, time, varargin)
             
                 targetAxes = [];
                 a= obj.CharacteristicLength;

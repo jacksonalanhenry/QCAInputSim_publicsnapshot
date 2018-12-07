@@ -43,7 +43,7 @@ cells2del=[];%cells we will delete
         
         myCircuit.Device = newCircuit;
         
-        myCircuit = myCircuit.CircuitDraw(gca);
+        myCircuit = myCircuit.CircuitDraw(0,gca);
         
 
 

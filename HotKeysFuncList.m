@@ -252,7 +252,7 @@ if strcmp(eventdata.Key,'uparrow') || strcmp(eventdata.Key,'rightarrow') || strc
             
             
     end
-    myCircuit = myCircuit.CircuitDraw(gca);
+    myCircuit = myCircuit.CircuitDraw(0,gca);
     
 end
 

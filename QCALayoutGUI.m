@@ -315,7 +315,7 @@ myCircuit = getappdata(gcf,'myCircuit');
 % f=gcf;
 % f.Pointer = 'arrow';
 
-myCircuit = myCircuit.CircuitDraw(gca);
+myCircuit = myCircuit.CircuitDraw(0,gca);
 
 setappdata(gcf,'myCircuit',myCircuit);
 

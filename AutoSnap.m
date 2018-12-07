@@ -13,7 +13,7 @@ switch snap
     case  1 %clear, draw, set app data
         
         myCircuit.SnapToGrid='on';
-        myCircuit = myCircuit.CircuitDraw(gca);
+        myCircuit = myCircuit.CircuitDraw(0,gca);
         set(handles.autoSnap,'BackgroundColor',[.8 .8 .8],...
             'ForegroundColor',[.1 .8 0]);
         

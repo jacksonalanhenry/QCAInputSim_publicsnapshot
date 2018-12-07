@@ -43,7 +43,7 @@ else
     end
     
     setappdata(gcf,'clockSignalsList',clockSignalsList);
-    myCircuit = myCircuit.CircuitDraw(gca);
+    myCircuit = myCircuit.CircuitDraw(0,gca);
     
     
     %the file stays in the folder we put it originally

@@ -186,7 +186,7 @@ end
             
 
             
-            myCircuit = myCircuit.CircuitDraw(gca); %redraw, Select() will get called automatically upon being redrawn
+            myCircuit = myCircuit.CircuitDraw(0,gca); %redraw, Select() will get called automatically upon being redrawn
             
 
             
