@@ -866,9 +866,9 @@ classdef QCACircuit
             cd(home);
         end
         %%
-        function obj = UpdateClockFields(obj, time, clockSignalList, inputSignalsList)
+        function obj = UpdateClockFields(obj, time, clockSignalList, inputSignalList)
             
-            if( iscell(clockSignalList) && isa(clockSignalList{1}, 'Signal') && iscell(inputSignalsList) && isa(inputSignalsList{1}, 'Signal') ) %still need to check if all clock signals are a Signal()
+            if( iscell(clockSignalList) && isa(clockSignalList{1}, 'Signal') && iscell(inputSignalList) && isa(inputSignalList{1}, 'Signal') ) %still need to check if all clock signals are a Signal()
 
                 % then assign clock fields
                 CircuitIdx = 1;
@@ -876,12 +876,14 @@ classdef QCACircuit
                     if( isa(obj.Device{CircuitIdx}, 'QCASuperCell') )
                         for subnode = 1:length(obj.Device{CircuitIdx}.Device)
                             efield = obj.Device{CircuitIdx}.Device{subnode}.ElectricField; % for this node, set the z-efield to zero
-                            efield(3) = 0;
+                            %efield(3) = 0;
+                            efield = [efield(1), 0, 0];
                             
                             for signalidx = 1:length(clockSignalList)
                                 %step through each signal and accumulate
                                 %the efield
                                 efield = efield + clockSignalList{signalidx}.getClockField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
+                                efield = efield + inputSignalList{signalidx}.getInputField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
                                 obj.Device{CircuitIdx}.Device{subnode}.ElectricField = efield;
                                 
                             end %signalList
@@ -891,14 +893,14 @@ classdef QCACircuit
                     else
                         
                         efield = obj.Device{CircuitIdx}.ElectricField; % for this node, set the z-efield to zero
-%                         efield(3) = 0;
+                        %efield(3) = 0;
                         efield = [efield(1), 0, 0];
                         
                         for signalidx = 1:length(clockSignalList)
                             %step through each signal and accumulate
                             %the efield
                             efield = efield + clockSignalList{signalidx}.getClockField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
-                            efield = efield + inputSignalsList{signalidx}.getInputField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
+                            efield = efield + inputSignalList{signalidx}.getInputField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
                             obj.Device{CircuitIdx}.ElectricField = efield;
                             
                         end% signalList
@@ -907,9 +909,7 @@ classdef QCACircuit
                     end
                     
                 end
-                
-                % crude implementation, but now deal with input signals
-                
+                                
                 
                 
                 
