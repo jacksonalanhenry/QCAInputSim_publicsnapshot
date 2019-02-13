@@ -223,11 +223,27 @@ classdef Signal
             
         end
         
-        function EField = getInputField(obj, centerposition)
+        function EField = getInputField(obj, centerposition, time)
             if( isnumeric(centerposition) && isequal(size(centerposition), [1, 3]))
                 
+                centerposition = [0, 0, 0]; % force input signals to use same position for all nodes;
                 EField = [0,0,0];
-                
+                switch obj.Type
+                    case 'Sinusoidal'
+                        %EField(2)=( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude+ obj.MeanValue;
+                        
+                        
+                    case 'Fermi'
+                        EField(2) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
+                    case 'Driver'
+                        %EField(2) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
+                        %EField(2) = ( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude+ obj.MeanValue;
+                        
+                    otherwise
+                        error(['ClockType = ''', obj.Type, ...
+                            ''' is invalid.'])
+                        
+                end % END [ switch obj.Type ]
                 
                 
             else

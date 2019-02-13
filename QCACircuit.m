@@ -735,7 +735,7 @@ classdef QCACircuit
                 end
             end
             
-            tperiod = numOfPeriods; %maxPeriod*numOfPeriods;
+            tperiod = maxPeriod*numOfPeriods; %numOfPeriods;
             time_array = linspace(0,tperiod,nt);
             tc = mod(time_array, tperiod);
             
@@ -761,37 +761,37 @@ classdef QCACircuit
             %wb = waitbar(0, 'Simulating');
             %set(wb,'Name','Simulations');
             
-            epsilon_0 = 8.854E-12;
-            a=1e-9;%[m]
-            q=1;%[eV]
-            Eo = q^2*(1.602e-19)/(4*pi*epsilon_0*a)*(1-1/sqrt(2));
-            
-            inputfield = -0.85*Eo;
-            
-            centerpos = [0,0,0];
-            amp = 2*inputfield;
-            period = 400;
-            phase = period/4;
-            sharpness = 3;
-            mv = amp/2;
-            time_array = linspace(1, period, nt);
-            tp = mod(time_array, period);
-            
-            driverpolamp = 2;
-            driverpolmv = driverpolamp/2;
+%             epsilon_0 = 8.854E-12;
+%             a=1e-9;%[m]
+%             q=1;%[eV]
+%             Eo = q^2*(1.602e-19)/(4*pi*epsilon_0*a)*(1-1/sqrt(2));
+%             
+%             inputfield = -0.85*Eo;
+%             
+%             centerpos = [0,0,0];
+%             amp = 2*inputfield;
+%             period = 400;
+%             phase = period/4;
+%             sharpness = 3;
+%             mv = amp/2;
+%             time_array = linspace(1, period, nt);
+%             tp = mod(time_array, period);
+%             
+%             driverpolamp = 2;
+%             driverpolmv = driverpolamp/2;
             
             for t = 1:nt %time step
                 percentage = t/nt;
                 %waitbar(percentage); annoying right now...
                 disp(['t: ', num2str(t)]);
                 
-                obj = obj.UpdateClockFields(tp(t), clockSignalsList);
+                obj = obj.UpdateClockFields(tc(t), clockSignalsList, inputSignalsList);
                 
                 %obj = obj.assignDriverPolarization(tc(t)); %this specifically changes the Polarization of Drivers
                 
-                for nodeidx = 1:length(obj)
-                    obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
-                end
+%                 for nodeidx = 1:length(obj)
+%                     obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
+%                 end
 %                 for nodeidx = 1:2
 %                     obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
 %                 end
@@ -808,11 +808,11 @@ classdef QCACircuit
                 
                 %relax2Groundstate
                 if parallelFlag == 0
-                    obj = obj.Relax2GroundState(tp(t));
+                    obj = obj.Relax2GroundState(tc(t)); %tp(t)
                 elseif parallelFlag == 1
-                    obj = Relax2GroundState_parallel(obj, tp(t));
+                    obj = Relax2GroundState_parallel(obj, tc(t)); %tp(t)
                 elseif parallelFlag == 2    
-                    obj = obj.Relax2GroundState_serial(tp(t)); %, 'inverse'
+                    obj = obj.Relax2GroundState_serial(tc(t)); %, 'inverse' tp(t)
                 end  
                 
                 %data output
@@ -824,7 +824,7 @@ classdef QCACircuit
                         for sub=1:length(obj.Device{idx}.Device)
                             
                             
-                            pols(t,it) = obj.Device{idx}.Device{sub}.getPolarization(tp(t));
+                            pols(t,it) = obj.Device{idx}.Device{sub}.getPolarization(tc(t));
                             acts(t,it) = obj.Device{idx}.Device{sub}.Activation;
                             efields{t,it} = obj.Device{idx}.Device{sub}.ElectricField;
                             
@@ -835,7 +835,7 @@ classdef QCACircuit
                     else
 
                         
-                        pols(t,it) = obj.Device{idx}.getPolarization(tp(t));
+                        pols(t,it) = obj.Device{idx}.getPolarization(tc(t));
                         acts(t,it) = obj.Device{idx}.Activation;
                         efields{t,it} = obj.Device{idx}.ElectricField;
                         it = it + 1;
@@ -866,12 +866,10 @@ classdef QCACircuit
             cd(home);
         end
         %%
-        function obj = UpdateClockFields(obj, time, clockSignalList)
+        function obj = UpdateClockFields(obj, time, clockSignalList, inputSignalsList)
             
-            if( iscell(clockSignalList) && isa(clockSignalList{1}, 'Signal') ) %still need to check if all clock signals are a Signal()
-                
-                
-                
+            if( iscell(clockSignalList) && isa(clockSignalList{1}, 'Signal') && iscell(inputSignalsList) && isa(inputSignalsList{1}, 'Signal') ) %still need to check if all clock signals are a Signal()
+
                 % then assign clock fields
                 CircuitIdx = 1;
                 while CircuitIdx <= length(obj.Device)
@@ -893,12 +891,14 @@ classdef QCACircuit
                     else
                         
                         efield = obj.Device{CircuitIdx}.ElectricField; % for this node, set the z-efield to zero
-                        efield(3) = 0;
+%                         efield(3) = 0;
+                        efield = [efield(1), 0, 0];
                         
                         for signalidx = 1:length(clockSignalList)
                             %step through each signal and accumulate
                             %the efield
                             efield = efield + clockSignalList{signalidx}.getClockField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
+                            efield = efield + inputSignalsList{signalidx}.getInputField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
                             obj.Device{CircuitIdx}.ElectricField = efield;
                             
                         end% signalList
@@ -908,6 +908,7 @@ classdef QCACircuit
                     
                 end
                 
+                % crude implementation, but now deal with input signals
                 
                 
                 
