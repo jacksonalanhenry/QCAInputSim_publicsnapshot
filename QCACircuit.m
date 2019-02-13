@@ -587,7 +587,7 @@ classdef QCACircuit
                 end
                 %                 fprintf('\n');
                 deltaCircuitPols = abs(OldCircuitPols) - abs(NewCircuitPols);
-                converganceTolerance = max(abs(deltaCircuitPols));
+                [converganceTolerance, cellindex] = max(abs(deltaCircuitPols));
                 
                 sub=sub+1;
                 it=it+1;
@@ -736,7 +736,6 @@ classdef QCACircuit
             end
             
             tperiod = numOfPeriods; %maxPeriod*numOfPeriods;
-            %time_array = linspace(0,2,nt); %right now this will do 2 periods
             time_array = linspace(0,tperiod,nt);
             tc = mod(time_array, tperiod);
             
@@ -767,7 +766,7 @@ classdef QCACircuit
             q=1;%[eV]
             Eo = q^2*(1.602e-19)/(4*pi*epsilon_0*a)*(1-1/sqrt(2));
             
-            inputfield = 0.85*Eo;
+            inputfield = -0.85*Eo;
             
             centerpos = [0,0,0];
             amp = 2*inputfield;
@@ -790,10 +789,10 @@ classdef QCACircuit
                 
                 %obj = obj.assignDriverPolarization(tc(t)); %this specifically changes the Polarization of Drivers
                 
-%                 for nodeidx = 1:length(obj)
-%                     obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
-%                 end
-%                 for nodeidx = 1:3
+                for nodeidx = 1:length(obj)
+                    obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
+                end
+%                 for nodeidx = 1:2
 %                     obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
 %                 end
 %                 for nodeidx = 4:6

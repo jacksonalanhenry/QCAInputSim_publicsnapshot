@@ -283,17 +283,12 @@ classdef ThreeDotCell < QCACell
                 y_dist13 = [obj.CenterPosition(2)+a*.5, obj.CenterPosition(2)-a*.4];
                 l13 = line(x_dist, y_dist13, 'LineWidth', 2, 'Color', [0 0 0]);
                 
-                %text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center','FontSize',12);
+                %Print CellID
+                text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center','FontSize',12);
                 
-                 %extra circle
-%                 c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
-% 
-%                 if obj.CellID == 6
-%                 th = 0:pi/50:2*pi;
-%                 xunit = 2.25 * cos(th) + obj.CenterPosition(1);
-%                 yunit = 2.25 * sin(th) + obj.CenterPosition(2);
-%                 h = plot(xunit, yunit);
-%                 end
+                %extra circle
+                %c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
+
                 
                 
                 
