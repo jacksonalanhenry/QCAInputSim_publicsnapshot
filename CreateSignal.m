@@ -1,21 +1,21 @@
-function CreateSignal(handles)
+function CreateSignal(handles, signalCategory)
 %This function creates the signal. It can be sinusoidal, electrode, fermi,
 %or custom, and will be saved as such.  The user can decide which of the 4
 %they want to have their signal to be, and assign the corresponding values
 %before creating
 
 
-
-
 if ~isempty(handles.signalName.String) %the signal must get a name in order to be created
     clockSignalsList = getappdata(gcf,'clockSignalsList');
+    inputSignalsList = getappdata(gcf,'inputSignalsList');
     
-    Names = cellstr(get(handles.signalList,'String'));
+    
+    clockNames = cellstr(get(handles.signalList,'String'));
+    inputNames = cellstr(get(handles.inputSignalList,'String'));
+
     
     contents = cellstr(get(handles.signalType,'String'));
-    sigType = contents{get(handles.signalType,'Value')} ;
-    
-    
+    sigType = contents{get(handles.signalType,'Value')};
     transitions = cellstr(get(handles.transitionType,'String'));
     transType = transitions{get(handles.transitionType,'Value')};
     
@@ -55,23 +55,56 @@ if ~isempty(handles.signalName.String) %the signal must get a name in order to b
     
     
     copy=0;
-    for i=1:length(Names)
-        if strcmp(Names{i},handles.signalName.String)
-            copy=copy+1;
-        end
-    end
-    if copy~=0
-        newName = strcat(handles.signalName.String,'(copy)');
-        mySignal.Name = newName;
-        handles.signalList.String{end+1,1} = newName;
-    else       
-        mySignal.Name = handles.signalName.String;
-        handles.signalList.String{end+1,1} = handles.signalName.String;
+    switch signalCategory
+        case 'clockSignal'
+            for i=1:length(clockNames)
+                if strcmp(clockNames{i},handles.signalName.String)
+                    copy=copy+1;
+                end
+            end
+            
+            if copy~=0
+                newName = strcat(handles.signalName.String,'(copy)');
+                mySignal.Name = newName;
+                handles.signalList.String{end+1,1} = newName;
+            else
+                mySignal.Name = handles.signalName.String;
+                handles.signalList.String{end+1,1} = handles.signalName.String;
+            end
+            
+            clockSignalsList{end+1} = mySignal;
+            setappdata(gcf,'clockSignalsList',clockSignalsList);
+            
+        case 'inputSignal'
+            for i=1:length(inputNames)
+                if strcmp(inputNames{i},handles.signalName.String)
+                    copy=copy+1;
+                end
+            end
+            
+            if copy~=0
+                newName = strcat(handles.signalName.String,'(copy)');
+                mySignal.Name = newName;
+                handles.inputSignalList.String{end+1,1} = newName;
+            else
+                mySignal.Name = handles.signalName.String;
+                handles.inputSignalList.String{end+1,1} = handles.signalName.String;
+            end
+            
+            inputSignalsList{end+1} = mySignal;
+            setappdata(gcf,'inputSignalsList',inputSignalsList);
+           
+        otherwise
+            disp('Not currently implemented')
     end
     
-    clockSignalsList{end+1} = mySignal;
     
-    setappdata(gcf,'clockSignalsList',clockSignalsList);
+    
+    
+    
+    
+    
+
     handles.signalName.String = 'Input Name';
     handles.signalName.ForegroundColor = 'black';
     handles.signalName.Value = 1;

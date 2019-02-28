@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 26-Oct-2018 10:36:54
+% Last Modified by GUIDE v2.5 14-Feb-2019 17:21:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -533,7 +533,7 @@ function createSignal_Callback(hObject, eventdata, handles)
 % handlesButton    structure with handlesButton and user data (see GUIDATA)
 
 %create a signal of a designated type
-CreateSignal(handles);
+CreateSignal(handles, 'clockSignal');
 
 
 
@@ -1052,3 +1052,34 @@ function numberOfPeriods_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on selection change in inputSignalList.
+function inputSignalList_Callback(hObject, eventdata, handles)
+% hObject    handle to inputSignalList (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns inputSignalList contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from inputSignalList
+
+
+% --- Executes during object creation, after setting all properties.
+function inputSignalList_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to inputSignalList (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in inputSignalButton.
+function inputSignalButton_Callback(hObject, eventdata, handles)
+% hObject    handle to inputSignalButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+CreateSignal(handles, 'inputSignal');
