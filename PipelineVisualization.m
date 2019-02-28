@@ -85,8 +85,8 @@ if (length(clockSignalsList) == 1)
 else
     error('Too many signals')
 end
-tperiod = clockSignal.Period;
-time_array = linspace(0,tperiod,nt);
+tperiod = clockSignal.Period*numOfPeriods;
+time_array = linspace(1,tperiod,nt);
 
 tp = mod(time_array, tperiod);
 % xp = mod(xq, signal.Period);
@@ -135,21 +135,21 @@ sizePol = size(pols,1);
 
 
 
-epsilon_0 = 8.854E-12;
-a=1e-9;%[m]
-q=1;%[eV]
-Eo = q^2*(1.602e-19)/(4*pi*epsilon_0*a)*(1-1/sqrt(2));
-
-inputfield = 0.85*Eo;
-
-centerpos = [0,0,0];
-amp = 2*inputfield;
-period = 400;
-phase = period/4;
-sharpness = 3;
-mv = amp/2;
-time_array = linspace(1, period, nt);
-tp = mod(time_array, period);
+% epsilon_0 = 8.854E-12;
+% a=1e-9;%[m]
+% q=1;%[eV]
+% Eo = q^2*(1.602e-19)/(4*pi*epsilon_0*a)*(1-1/sqrt(2));
+% 
+% inputfield = 0.85*Eo;
+% 
+% centerpos = [0,0,0];
+% amp = 2*inputfield;
+% period = 400;
+% phase = period/4;
+% sharpness = 3;
+% mv = amp/2;
+%time_array = linspace(1, period, nt);
+%tp = mod(time_array, period);
 
 
 
