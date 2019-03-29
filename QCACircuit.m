@@ -456,7 +456,22 @@ classdef QCACircuit
             sub = 1;
             chi = 0.6;
             it=1;
-            while (converganceTolerance > 0.1)
+            oldmit = 5;
+            while (converganceTolerance > 0.1 ) %&& it < 600
+                if(it > 500)
+                    
+                    newmit = fix(it/100);
+                    if newmit > oldmit
+                        chi = chi - 0.1 % or multiply by 0.9
+                    end
+                    
+                    if chi <= 0
+                        chi = 0.1
+                    end
+                    oldmit = newmit;
+                end
+                
+                
                 OldCircuitPols = NewCircuitPols;
                 
                 idx = 1;
@@ -592,7 +607,7 @@ classdef QCACircuit
                 sub=sub+1;
                 it=it+1;
             end
-           
+            %disp(['it:', num2str(it)]);
         end
 
         %%
@@ -768,17 +783,17 @@ classdef QCACircuit
 %             
 %             inputfield = -0.85*Eo;
 %             
-%             centerpos = [0,0,0];
-%             amp = 2*inputfield;
+             centerpos = [0,0,0];
+%             amp = 2;
 %             period = 400;
-%             phase = period/4;
-%             sharpness = 3;
+             phase = tperiod/4;
+             sharpness = 3;
 %             mv = amp/2;
 %             time_array = linspace(1, period, nt);
 %             tp = mod(time_array, period);
-%             
-%             driverpolamp = 2;
-%             driverpolmv = driverpolamp/2;
+            
+            driverpolamp = 2;
+            driverpolmv = driverpolamp/2;
             
             for t = 1:nt %time step
                 percentage = t/nt;
@@ -792,8 +807,8 @@ classdef QCACircuit
 %                 for nodeidx = 1:length(obj)
 %                     obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
 %                 end
-%                 for nodeidx = 1:2
-%                     obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
+%                 for nodeidx = 1:3
+%                     obj.Device{nodeidx}.Polarization = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + mv;
 %                 end
 %                 for nodeidx = 4:6
 %                     obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase/2 , period/2), period/2, sharpness) + mv;
@@ -801,9 +816,9 @@ classdef QCACircuit
 %                 for nodeidx = 7:9
 %                     obj.Device{nodeidx}.ElectricField(2) = amp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase/4 , period/4), period/4, sharpness) + mv;
 %                 end
-%                 obj.Device{1}.Polarization = driverpolamp * PeriodicFermi(mod(centerpos(1) - tp(t) - phase , period), period, sharpness) + driverpolmv;
-%                 obj.Device{2}.Polarization = driverpolamp * PeriodicFermi(mod(centerpos(1) - tp(t) - (phase/2), period/2), period/2, sharpness) + driverpolmv;
-%                 obj.Device{3}.Polarization = driverpolamp * PeriodicFermi(mod(centerpos(1) - tp(t) - (phase/4), period/4), period/4, sharpness) + driverpolmv;
+%                 obj.Device{1}.Polarization = driverpolamp * PeriodicFermi(mod(centerpos(1) - tc(t) - phase , tperiod), tperiod, sharpness) + driverpolmv;
+%                 obj.Device{2}.Polarization = driverpolamp * PeriodicFermi(mod(centerpos(1) - tc(t) - (phase/2), tperiod/2), tperiod/2, sharpness) + driverpolmv;
+%                 obj.Device{3}.Polarization = driverpolamp * PeriodicFermi(mod(centerpos(1) - tc(t) - (phase/4), tperiod/4), tperiod/4, sharpness) + driverpolmv;
                 
                 
                 %relax2Groundstate
@@ -900,7 +915,11 @@ classdef QCACircuit
                             %step through each signal and accumulate
                             %the efield
                             efield = efield + clockSignalList{signalidx}.getClockField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
+                            
+                            %if (CircuitIdx < 11)
                             efield = efield + inputSignalList{signalidx}.getInputField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
+                            %end
+                            
                             obj.Device{CircuitIdx}.ElectricField = efield;
                             
                         end% signalList
