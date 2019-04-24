@@ -201,8 +201,8 @@ classdef Signal
                             EField(3) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
                         
                         case 'Driver'
-                            %EField(2) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
-                            EField(2) = ( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude+ obj.MeanValue;
+                            EField(2) = obj.Amplitude * PeriodicFermi(mod(centerposition(1) - time - obj.Phase , obj.Period), obj.Period, obj.Sharpness) + obj.MeanValue;
+                            %EField(2) = ( cos((2*pi*(centerposition(1)/obj.Wavelength - time/obj.Period ) )+ obj.Phase ) )*obj.Amplitude+ obj.MeanValue;
                             
                         otherwise
                             error(['ClockType = ''', obj.Type, ...
