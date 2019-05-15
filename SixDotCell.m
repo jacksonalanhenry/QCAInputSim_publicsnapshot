@@ -82,13 +82,19 @@ classdef SixDotCell < QCACell
             else
                 temppol = obj.Polarization.getClockField([0,0,0], time);
                 pol = temppol(2);
-                %disp([ num2str(obj.CellID), ' has a signal obj'])
+                disp([ num2str(obj.CellID), ' has a signal obj'])
                 
                 
             end
         end
         
-        
+        function mobileCharge = getMobileCharge(obj, time)
+            import QCALayoutPack.*
+            qe = QCA_Constants.qe;
+            
+            mobileCharge = [qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time));qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time))];
+
+        end
         
         function pot = Potential(obj, obsvPoint, time )
             import QCALayoutPack.*
@@ -100,7 +106,16 @@ classdef SixDotCell < QCACell
             numberofDots = size(selfDotPos, 1);
             
             
-            charge = qe*obj.Activation*[(1/2)*(obj.Polarization+1);-1;(1/2)*(1-obj.Polarization);(1/2)*(obj.Polarization+1);-1;(1/2)*(1-obj.Polarization)]; %[eV]
+            %charge = qe*obj.Activation*[(1/2)*(obj.Polarization+1);-1;(1/2)*(1-obj.Polarization);(1/2)*(obj.Polarization+1);-1;(1/2)*(1-obj.Polarization)]; %[eV]
+            %charge = qe*obj.Activation*[(1/2)*(obj.Polarization+1);
+                                         %-1;
+                                         %(1/2)*(1-obj.Polarization);
+                                         %(1/2)*(obj.Polarization+1);
+                                         %-1;
+                                         %(1/2)*(1-obj.Polarization)]; %[eV]
+
+            charge = [qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time));qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time))];
+
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
@@ -278,7 +293,7 @@ classdef SixDotCell < QCACell
                 reldotpos = obj.DotPosition;
                 dotpos = obj.getDotPosition();
                 act = obj.Activation;
-                pol = obj.Polarization;
+                pol = obj.getPolarization(time);
                 radiusfactor = 0.2;
                 
                 if length(varargin)==1
@@ -329,12 +344,12 @@ classdef SixDotCell < QCACell
                 
                 
                 scalefactor = 0.90;
-                e1 = circle(dotpos(1,1), dotpos(1,2), q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
-                e2 = circle(dotpos(2,1), dotpos(2,2), q2*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes); 
-                e3 = circle(dotpos(3,1), dotpos(3,2), q3*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
-                e4 = circle(dotpos(4,1), dotpos(4,2), q4*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
-                e5 = circle(dotpos(5,1), dotpos(5,2), q5*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
-                e6 = circle(dotpos(6,1), dotpos(6,2), q6*a*radiusfactor*scalefactor, electronColor,'EdgeColor', [1,1,1],'Points',25, 'TargetAxes', targetAxes);
+                e1 = circle(dotpos(1,1), dotpos(1,2), q1*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25, 'TargetAxes', targetAxes);
+                e2 = circle(dotpos(2,1), dotpos(2,2), q2*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25, 'TargetAxes', targetAxes); 
+                e3 = circle(dotpos(3,1), dotpos(3,2), q3*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25, 'TargetAxes', targetAxes);
+                e4 = circle(dotpos(4,1), dotpos(4,2), q4*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25, 'TargetAxes', targetAxes);
+                e5 = circle(dotpos(5,1), dotpos(5,2), q5*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25, 'TargetAxes', targetAxes);
+                e6 = circle(dotpos(6,1), dotpos(6,2), q6*a*radiusfactor*scalefactor, electronColor,'EdgeColor', 'None','Points',25, 'TargetAxes', targetAxes);
                 
 
             

@@ -83,6 +83,14 @@ classdef ThreeDotCell < QCACell
         end
         
         
+        function mobileCharge = getMobileCharge(obj, time)
+            import QCALayoutPack.*
+            qe = QCA_Constants.qe;
+            
+            mobileCharge = [qe*obj.Activation*(1/2)*(1-obj.getPolarization(time));1-obj.Activation;qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1)];
+
+        end
+        
         function pot = Potential(obj, obsvPoint, time )
             import QCALayoutPack.*
             qe = QCA_Constants.qe;
@@ -92,21 +100,22 @@ classdef ThreeDotCell < QCACell
             selfDotPos = getDotPosition(obj);
             numberofDots = size(selfDotPos, 1);
             
-            charge = qe*obj.Activation*[(1/2)*(1-obj.getPolarization(time));-1;(1/2)*(obj.getPolarization(time)+1)]; %[eV]
+            %charge = qe*obj.Activation*[(1/2)*(1-obj.getPolarization(time));-1;(1/2)*(obj.getPolarization(time)+1)]; %[eV];
+            
+            charge = [qe*obj.Activation*(1/2)*(1-obj.getPolarization(time));1-obj.Activation;qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1)];
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
             
             
             pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
-%             disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
+            %disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
         end
         
         function V_neighbors = neighborPotential(obj, obj2, time) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
             %returns the potential of a neighborCell
             
-            %find out who the neighbors are (decide between giving this func the list of all neighbors or having this func figure that out. for now just 1 neighbor)
-            %possible option of asking the QCACircuit obj.
+            %find out who the neighbors are. (Neighbor List)
             
             %find the potential at each dot then. self1 + self2 + self3.
             
