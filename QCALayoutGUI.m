@@ -22,7 +22,7 @@ function varargout = QCALayoutGUI(varargin)
 
 % Edit the above text to modify the response to help QCALayoutGUI
 
-% Last Modified by GUIDE v2.5 14-Feb-2019 17:21:25
+% Last Modified by GUIDE v2.5 22-May-2019 12:13:43
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -982,7 +982,7 @@ function vizAtCertainTimeButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 vizAtCertainTimeButton(handles);
-
+DragDrop();
 
 function vizAtCertainTimeEditBox_Callback(hObject, eventdata, handles)
 % hObject    handle to vizAtCertainTimeEditBox (see GCBO)
@@ -1083,3 +1083,30 @@ function inputSignalButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 CreateSignal(handles, 'inputSignal');
+
+
+% --- Executes on button press in circuit_energy_button.
+function circuit_energy_button_Callback(hObject, eventdata, handles)
+% hObject    handle to circuit_energy_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+CalculateEnergyCallback(handles);
+
+
+% --- Executes on button press in flip_pol_button.
+function flip_pol_button_Callback(hObject, eventdata, handles)
+% hObject    handle to flip_pol_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+FlipPol(handles);
+
+
+% --- Executes on button press in Relax_button.
+function Relax_button_Callback(hObject, eventdata, handles)
+% hObject    handle to Relax_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+Simulate(handles);
+
+
+

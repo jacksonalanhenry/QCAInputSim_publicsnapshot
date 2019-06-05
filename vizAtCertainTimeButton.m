@@ -11,17 +11,19 @@ myCircuit = getappdata(gcf,'myCircuit');
 if Sim
     load(Sim);
     
-    myCircuit = obj.CircuitDraw(gca);
+    cla;
+    
+    myCircuit = obj.CircuitDraw(0, gca);
     timestep = str2num( get(handles.vizAtCertainTimeEditBox,'String') );
-    showClockField = str2num( get(handles.showClockFieldRadio,'String') )
+    showClockField = str2num( get(handles.showClockFieldRadio,'String') );
     
     if timestep < 1
         timestep = 1;
-        myCircuit = myCircuit.CircuitDraw(gca, [pols(timestep,:); acts(timestep,:)]);
+        myCircuit = myCircuit.CircuitDraw(timestep, gca, [pols(timestep,:); acts(timestep,:)]);
 
     elseif timestep > size(pols,1)
         timestep = size(pols,1);
-        myCircuit = myCircuit.CircuitDraw(gca, [pols(timestep,:); acts(timestep,:)]);
+        myCircuit = myCircuit.CircuitDraw(timestep, gca, [pols(timestep,:); acts(timestep,:)]);
 
     else
         
@@ -60,8 +62,8 @@ if Sim
         xq = linspace(xmin-1, xmax+1, nx);
         yq = linspace(ymin-2, ymax+2, nt);
         
-        if (length(clockSignalList) == 1)
-            clockSignal = clockSignalList{1};
+        if (length(clockSignalsList) == 1)
+            clockSignal = clockSignalsList{1};
         else
             error('Too many signals')
         end
@@ -70,7 +72,7 @@ if Sim
         
         tp = mod(time_array, tperiod);
         
-        clockSignal.drawSignal([xmin-1,xmax+1], [ymin-2, ymax+2], tp(timestep));
+        %clockSignal.drawSignal([xmin-1,xmax+1], [ymin-2, ymax+2], tp(timestep));
 
         
         
@@ -80,8 +82,10 @@ if Sim
         
         
         
-        myCircuit = myCircuit.CircuitDraw(gca, [pols(timestep,:); acts(timestep,:)]);
+        myCircuit = myCircuit.CircuitDraw(timestep, gca, [pols(timestep,:); acts(timestep,:)]);
+        setappdata(gcf,'myCircuit',myCircuit);
 
+        DragDrop();
         
     end
     

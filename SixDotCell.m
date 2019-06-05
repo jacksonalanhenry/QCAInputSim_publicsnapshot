@@ -62,14 +62,14 @@ classdef SixDotCell < QCACell
         end
         
         function obj = set.Polarization(obj,value)
-            if (~isnumeric(value) || value < -1 || value > 1) %value must be numeric in between -1 and 1
+            if ( (isnumeric(value) && value >= -1 && value <= 1) || isa(value, 'Signal')) %value must be numeric in between -1 and 1
 %                 error('Invalid Polarization. Must be a number inbetween -1 and 1')
                 
-                obj.Polarization = 1;
+                obj.Polarization = value;
 
 
             else
-                obj.Polarization = value;
+                error('Invalid Polarization. Must be a number inbetween -1 and 1')
                 
             end
         end
@@ -82,7 +82,7 @@ classdef SixDotCell < QCACell
             else
                 temppol = obj.Polarization.getClockField([0,0,0], time);
                 pol = temppol(2);
-                disp([ num2str(obj.CellID), ' has a signal obj'])
+                %disp([ num2str(obj.CellID), ' has a signal obj'])
                 
                 
             end
@@ -92,11 +92,11 @@ classdef SixDotCell < QCACell
             import QCALayoutPack.*
             qe = QCA_Constants.qe;
             
-            mobileCharge = [qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time));qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time))];
+            mobileCharge = -1*[qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time));qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time))];
 
         end
         
-        function pot = Potential(obj, obsvPoint, time )
+        function pot_energy = Potential(obj, obsvPoint, time )
             import QCALayoutPack.*
             qe = QCA_Constants.qe;
             epsilon_0 = QCA_Constants.epsilon_0;
@@ -121,9 +121,12 @@ classdef SixDotCell < QCACell
             distance = sqrt( sum(displacementVector.^2, 2) );
             
             
-            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
-%             disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
+            pot_energy = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
+            %disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
         end
+        
+        
+
         
         function V_neighbors = neighborPotential(obj, obj2, time) %obj2 should have a potential function(ie, a QCACell or QCASuperCell. Each will call potential at spots)
             %returns the potential of a neighborCell
@@ -221,7 +224,7 @@ classdef SixDotCell < QCACell
             end
         end
         
-        function obj = ColorDraw(obj, varargin)%NOT FUNCTIONAL
+        function obj = ColorDraw(obj, time, varargin)
             targetAxes = [];
             a= obj.CharacteristicLength;
             
@@ -232,7 +235,7 @@ classdef SixDotCell < QCACell
             
             
             cell_patch = patch(x,y,'r');
-            faceColor = getFaceColor(obj);
+            faceColor = getFaceColor(obj, time);
             cell_patch.FaceColor = faceColor;
             
 %             c1 = circle(obj.CenterPosition(1), obj.CenterPosition(2), a*.125*abs(obj.Polarization), [1 1 1]);
@@ -252,8 +255,8 @@ classdef SixDotCell < QCACell
             
         end
         
-        function color = getFaceColor(obj)
-            pol = obj.Polarization;
+        function color = getFaceColor(obj, time)
+            pol = obj.getPolarization(time);
             if(pol < 0)
                 %color = [abs(pol) 0 0];
                 color = [1-abs(pol) 1 1-abs(pol)];

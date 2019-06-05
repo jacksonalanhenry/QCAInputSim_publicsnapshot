@@ -49,7 +49,7 @@ end
     
     
     
-    myCircuit = myCircuit.CircuitDraw(gca);
+    myCircuit = myCircuit.CircuitDraw(0, gca);
     
     
     setappdata(gcf,'myCircuit',myCircuit);
