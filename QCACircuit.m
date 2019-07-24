@@ -290,18 +290,18 @@ classdef QCACircuit
                     
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
                         
-                        %obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw(time,targetaxis);
-                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ColorDraw(targetaxis);
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw(time,targetaxis);
+                        %obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ColorDraw(targetaxis);
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
-                        %obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor; %turns on and off the supercell color
+                        obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor; %turns on and off the supercell color
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.LineWidth = 3;
                         Select(obj.Device{CellIndex}.Device{subnode}.SelectBox);
                     end
                 else
                     
-                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(targetaxis);
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
+                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(targetaxis);
                     obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                     obj.Device{CellIndex}.SelectBox.Selected = 'off';
                     %obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
@@ -919,87 +919,7 @@ classdef QCACircuit
                 
              
                 
-                
-                
-                
-                OldMobileCharges = NewMobileCharges;
- 
-                %get all hamiltonians
-                for idx = 1:length(obj.Device)
-                    if ~isa(obj.Device{circuit_idx_random(idx)}, 'QCASuperCell')
-                        
-                        nl = obj.Device{circuit_idx_random(idx)}.NeighborList;
-                        if ~isempty(nl)
-                            %get Neighbor Objects
-                            nl_obj = obj.getCellArray(nl);
-                            
-                            %get hamiltonian for current cell
-                            hamiltonian = obj.Device{circuit_idx_random(idx)}.GetHamiltonian(nl_obj,time);
-                            obj.Device{circuit_idx_random(idx)}.Hamiltonian = hamiltonian;
-                            
-                        end
-                    end
-                end
-                
-                %get all groundstates
-                groundstate = cell(1,length(obj.Device));
-                for idx = 1:length(obj.Device)
-                    if ~isa(obj.Device{circuit_idx_random(idx)}, 'QCASuperCell')
-                        
-                        hamiltonian = obj.Device{circuit_idx_random(idx)}.Hamiltonian;
-                        wavefunction = obj.Device{circuit_idx_random(idx)}.Wavefunction;
-                        %get the new groundstate, average and normalize
-                        %the current groundstate and the new
-                        %groundstate then calculate pol with that psi
-                        [V, EE] = eig(hamiltonian);
-                        newpsi = V(:,1);
-                        
-                        normpsi = (1-chi)*wavefunction + chi*newpsi;
-                        normpsi = normalize_psi_1D(normpsi');
-                        groundstate{circuit_idx_random(idx)} = normpsi;
-                    end
-                end
-                
-                %update pols and acts and then get all the charges
-                for idx = 1:length(obj.Device)
-                    
-                    if ~isa(obj.Device{idx}, 'QCASuperCell')
-                        obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation(groundstate{idx}');
-                        
-                        if(isa(obj.Device{idx},'SixDotCell'))
-                            NewMobileCharges(:,idx) = obj.Device{circuit_idx_random(idx)}.getMobileCharge(time);
-                        else
-                            NewMobileCharges(1:3,idx) = obj.Device{circuit_idx_random(idx)}.getMobileCharge(time);
-                        end
-                        
-                    else
-                        NewMobileCharges(:,idx) = [0;0;0;0;0;0];
-
-                    end
-                    
-                    
-                end
-                    
-                
-                
-                
-                
-                    
-                    
-                
-                
-                deltaMobileCharges = OldMobileCharges - NewMobileCharges;
-                
-                [converganceTolerance, cellindex] = max(max(abs(deltaMobileCharges)));
-                %                 disp(num2str(converganceTolerance));
-                
-                it=it+1;
-                
-                
-                
-                
-                
-                
+                %%%%%%%%%%%%%%%%%%%%%SUBNODE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 
                  %deal with super cells first
@@ -1018,7 +938,7 @@ classdef QCACircuit
                                
                                subnewmit = fix(subit/100);
                                if subnewmit > suboldmit
-                                   subchi = subchi * 0.9; % or multiply by 0.9
+                                   subchi = subchi * 0.9 % or multiply by 0.9
                                end
                                
                                if subchi <= 0
@@ -1090,8 +1010,95 @@ classdef QCACircuit
                     end
                 end
                 
+ 
+                
+               %%%%%%%%%%%%%%%%%%%SUBNODE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 
+                
+                OldMobileCharges = NewMobileCharges;
+ 
+                %get all hamiltonians
+                for idx = 1:length(obj.Device)
+                    if ~isa(obj.Device{circuit_idx_random(idx)}, 'QCASuperCell')
+                        
+                        nl = obj.Device{circuit_idx_random(idx)}.NeighborList;
+                        if ~isempty(nl)
+                            %get Neighbor Objects
+                            nl_obj = obj.getCellArray(nl);
+                            
+                            %get hamiltonian for current cell
+                            hamiltonian = obj.Device{circuit_idx_random(idx)}.GetHamiltonian(nl_obj,time);
+                            obj.Device{circuit_idx_random(idx)}.Hamiltonian = hamiltonian;
+                            
+                        end
+                    end
+                end
+                
+                %get all groundstates
+                groundstate = cell(1,length(obj.Device));
+                for idx = 1:length(obj.Device)
+                    if ~isa(obj.Device{circuit_idx_random(idx)}, 'QCASuperCell')
+                        
+                        hamiltonian = obj.Device{circuit_idx_random(idx)}.Hamiltonian;
+                        wavefunction = obj.Device{circuit_idx_random(idx)}.Wavefunction;
+                        %get the new groundstate, average and normalize
+                        %the current groundstate and the new
+                        %groundstate then calculate pol with that psi
+                        [V, EE] = eig(hamiltonian);
+                        newpsi = V(:,1);
+                        
+                        normpsi = (1-chi)*wavefunction + chi*newpsi;
+                        normpsi = normalize_psi_1D(normpsi');
+                        groundstate{circuit_idx_random(idx)} = normpsi;
+                    end
+                end
+                
+                %update pols and acts and then get all the charges
+                for idx = 1:length(obj.Device)
+                    
+                    if ~isa(obj.Device{idx}, 'QCASuperCell')
+                        obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation(groundstate{idx}');
+                        
+                        if(isa(obj.Device{idx},'SixDotCell'))
+                            NewMobileCharges(:,idx) = obj.Device{circuit_idx_random(idx)}.getMobileCharge(time);
+                        else
+                            NewMobileCharges(1:3,idx) = obj.Device{circuit_idx_random(idx)}.getMobileCharge(time);
+                        end
+                        
+                    else
+                        NewMobileCharges(:,idx) = [0;0;0;0;0;0];
+
+                    end
+                    
+                    
+                end
+                    
+                
+                %%%%%%%%%%%%%%%%%%%%%%SUBNODE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                %or here
+                %%%%%%%%%%%%%%%%%%%%%%SUBNODE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
+                
+                    
+                    
+                
+                
+                deltaMobileCharges = OldMobileCharges - NewMobileCharges;
+                
+                [converganceTolerance, cellindex] = max(max(abs(deltaMobileCharges)));
+                %                 disp(num2str(converganceTolerance));
+                
+                it=it+1;
+                
+                
+                
+                
+                
+                
+                
+                
+               
                 
                 
                 

@@ -16,7 +16,9 @@ classdef QCACell
         CharacteristicLength = 1; % [nm]
         
 
-        Gamma = 0.03; % [eV]
+        Gamma = 0.05; % [eV] from Henry, Blair 2017: 0 < gamma < 0.3*Ek 
+                      % for now, 0 <--> 0.1265 for characteristic length
+                      % 1nm
 
         
         ElectricField = [0, 0, 0]; %Electric Field [V/nm]
