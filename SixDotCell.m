@@ -28,6 +28,9 @@ classdef SixDotCell < QCACell
         SelectBox;
         Overlapping='off';
         
+        radiusOfEffect = 4.1;
+
+        
     end
     
     
@@ -120,8 +123,12 @@ classdef SixDotCell < QCACell
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
             
+            if distance < (obj.radiusOfEffect+2)
+                pot_energy = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
+            else
+                pot_energy = 0
+            end
             
-            pot_energy = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
             %disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
         end
         
@@ -328,7 +335,9 @@ classdef SixDotCell < QCACell
                 c5 = circle(dotpos(5,1), dotpos(5,2), a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
                 c6 = circle(dotpos(6,1), dotpos(6,2), a*radiusfactor, [1 1 1],'Points',25, 'TargetAxes', targetAxes);
                 
-                
+                %extra circle
+%                 c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), obj.radiusOfEffect, [1 1 1], 'EdgeColor', [0 0 0], 'Points',25);
+%                 c123.FaceColor = 'None';
                 
                 %electron color for driver/node
                 if strcmp(obj.Type,'Node')

@@ -138,7 +138,7 @@ classdef QCACircuit
                             case 'ThreeDotCell'
                                 neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1); %or 2.25
                             case 'SixDotCell'
-                                neighbors = cellIDArray(shifted < 4.1 & shifted > 0.1); %or 2.25
+                                neighbors = cellIDArray(shifted < 3.1 & shifted > 0.1); %or 2.25
                         end
                         
                         
@@ -180,7 +180,7 @@ classdef QCACircuit
                         case 'ThreeDotCell'
                             neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1); %or 2.25
                         case 'SixDotCell'
-                            neighbors = cellIDArray(shifted < 4.1 & shifted > 0.1); %or 2.25
+                            neighbors = cellIDArray(shifted < 3 & shifted > 0.1); %or 2.25
                     end
                     
                     
@@ -300,8 +300,8 @@ classdef QCACircuit
                     end
                 else
                     
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
-                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(targetaxis);
+                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(time, targetaxis);
                     obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                     obj.Device{CellIndex}.SelectBox.Selected = 'off';
                     %obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
@@ -448,6 +448,44 @@ classdef QCACircuit
         function all_energy = calculateEnergy( obj, time, varargin )
             
             % use varargin to add in Clock Field Biases
+            
+            
+            
+% %             format for iterating through circuit
+% %             for nodeIdx=1:length(obj.Device)
+% %                 if isa(obj.Device{nodeIdx},'QCASuperCell')
+% %                     
+% %                     for subnode=1:length(obj.Device{nodeIdx}.Device)
+% %                         nl = obj.GenerateNeighborList();
+% %                         
+% %                         subnode = obj.Device{nodeIdx}.Device{subnodeIdx};
+% %                 
+% %                 sub_objDotpotential = zeros(size(subnode.DotPosition,1),1);
+% %                 sub_objDotPosition = subnode.getDotPosition();
+% %                 sub_mobileCharges = subnode.getMobileCharge(time);
+% %                 subnode_energy = zeros(length(nl_obj),1);
+% %                 
+% %                 for neighborIdx = 1:length(nl_obj)
+% %                     for x = 1:length(objDotPosition)
+% %                         V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:), time );
+% %                         potential_energy = nl_obj{neighborIdx}.Potential( objDotPosition(x,:), time );
+% %                         
+% %                         node_energy(neighborIdx) = node_energy(neighborIdx) + potential_energy*mobileCharges(x);
+% %                     end
+% %                     
+% %                     
+% %                 end
+% %                         
+% %                         
+% %                     end
+% % 
+% %                 else
+% %                     do a thing
+% %                     
+% %                 end
+% %             end
+            
+            
             
             all_energy = zeros(length(obj.Device),1);
             for nodeIdx = 1:length(obj.Device)

@@ -28,6 +28,8 @@ classdef ThreeDotCell < QCACell
         SelectBox;
         Overlapping='off';
         
+        radiusOfEffect = 2.5
+        
     end
     
     
@@ -107,8 +109,12 @@ classdef ThreeDotCell < QCACell
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
             
+            if distance < obj.radiusOfEffect
+                pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
+            else
+                pot = 0;
+            end
             
-            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
             %disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
         end
         
@@ -296,8 +302,8 @@ classdef ThreeDotCell < QCACell
                 text(obj.CenterPosition(1), obj.CenterPosition(2)+.8*a, num2str(obj.CellID), 'HorizontalAlignment', 'center','FontSize',12);
                 
                 %extra circle
-                %c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), 2.25, [1 1 1],'Points',25);
-
+                %c123 = circle(obj.CenterPosition(1), obj.CenterPosition(2), obj.radiusOfEffect, [1 1 1], 'EdgeColor', [0 0 0], 'Points',25);
+                %c123.FaceColor = 'None';
                 
                 
                 
