@@ -6,7 +6,6 @@ function CalculateEnergyCallback(handles)
 
 myCircuit = getappdata(gcf,'myCircuit');
 
-
 %time = 0;
 time = get(handles.vizAtCertainTimeEditBox,'String');
 myCircuit = myCircuit.GenerateNeighborList();

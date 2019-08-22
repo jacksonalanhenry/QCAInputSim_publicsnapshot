@@ -28,7 +28,7 @@ classdef ThreeDotCell < QCACell
         SelectBox;
         Overlapping='off';
         
-        radiusOfEffect = 2.5
+        radiusOfEffect = 3.1;
         
     end
     

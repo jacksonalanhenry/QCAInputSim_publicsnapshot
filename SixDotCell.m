@@ -28,7 +28,7 @@ classdef SixDotCell < QCACell
         SelectBox;
         Overlapping='off';
         
-        radiusOfEffect = 4.1;
+        radiusOfEffect = 3.1;
 
         
     end
@@ -123,11 +123,11 @@ classdef SixDotCell < QCACell
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
             
-            if distance < (obj.radiusOfEffect+2)
+%             if distance < (obj.radiusOfEffect+10)
                 pot_energy = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
-            else
-                pot_energy = 0
-            end
+%             else
+%                 pot_energy = 0
+%             end
             
             %disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
         end

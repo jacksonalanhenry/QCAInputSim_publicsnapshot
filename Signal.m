@@ -189,6 +189,8 @@ classdef Signal
         function EField = getClockField(obj, centerposition, time)
             %THIS FUNCTION ONLY ASSIGNS z Field RIGHT NOW
             
+            %centerposition = [0,0,0]; %uncomment this line if you want uniform clock field
+            
             if( isnumeric(centerposition) )
                 if(size(centerposition) == [1, 3])
                     EField = [0,0,0];

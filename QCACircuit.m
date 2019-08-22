@@ -136,7 +136,7 @@ classdef QCACircuit
                         %limit. Limit depends on object type
                         switch class(obj.Device{idx}.Device{subnode})
                             case 'ThreeDotCell'
-                                neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1); %or 2.25
+                                neighbors = cellIDArray(shifted < 3.1 & shifted > 0.1); %or 2.25
                             case 'SixDotCell'
                                 neighbors = cellIDArray(shifted < 3.1 & shifted > 0.1); %or 2.25
                         end
@@ -178,9 +178,9 @@ classdef QCACircuit
                     
                     switch class(obj.Device{idx})
                         case 'ThreeDotCell'
-                            neighbors = cellIDArray(shifted < 2.25 & shifted > 0.1); %or 2.25
+                            neighbors = cellIDArray(shifted < 3.1 & shifted > 0.1); %or 2.25
                         case 'SixDotCell'
-                            neighbors = cellIDArray(shifted < 3 & shifted > 0.1); %or 2.25
+                            neighbors = cellIDArray(shifted < 3.1 & shifted > 0.1); %or 2.25
                     end
                     
                     
@@ -300,8 +300,8 @@ classdef QCACircuit
                     end
                 else
                     
-                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(time, targetaxis);
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
+                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(time, targetaxis);
                     obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                     obj.Device{CellIndex}.SelectBox.Selected = 'off';
                     %obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
@@ -900,6 +900,8 @@ classdef QCACircuit
         function obj = Relax2GroundState_mobilecharge_serial(obj, time, varargin)
             
             
+            
+            
             %optional changes
             args = varargin(1:end);
             while length(args) >= 2
@@ -938,8 +940,15 @@ classdef QCACircuit
             circuit_idx_random = circuit_idx(s);
             
             
+%             old = obj;
+%             old_energy = sum(old.calculateEnergy(time));
             
             while (converganceTolerance > 0.001 ) %&& it < 600
+                
+                 
+         
+                
+                
                 if(it > 500)
                     
                     newmit = fix(it/100);
@@ -1052,6 +1061,7 @@ classdef QCACircuit
                 
                %%%%%%%%%%%%%%%%%%%SUBNODE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
+            
                 
                 
                 OldMobileCharges = NewMobileCharges;
@@ -1121,6 +1131,7 @@ classdef QCACircuit
                     
                     
                 
+               
                 
                 deltaMobileCharges = OldMobileCharges - NewMobileCharges;
                 
@@ -1133,18 +1144,19 @@ classdef QCACircuit
                 
                 
                 
-                
-                
-                
-               
-                
-                
-                
-                
-                
-                
             end
+            
+            
+%             new = obj;
+%             new_energy = sum(new.calculateEnergy(time));
+%             if(new_energy > old_energy)
+%                     disp(['**************************************************************************: ' num2str(new_energy-old_energy) ' : ' num2str(converganceTolerance)])
+%             end
             disp(['-------------it:', num2str(it)]);
+            
+            
+           
+            
         end
         
         
@@ -1231,6 +1243,7 @@ classdef QCACircuit
             numOfPeriods = 1;
             parallelFlag = 0;
             
+
             
             %optional changes
             args = varargin(1:end);
@@ -1324,6 +1337,7 @@ classdef QCACircuit
           
             
             for t = 1:nt %time step
+
                 percentage = t/nt;
                 %waitbar(percentage); annoying right now...
                 disp(['t: ', num2str(t)]);
@@ -1340,8 +1354,12 @@ classdef QCACircuit
                     if randomizedFlag == 1 && t ~= 1
                         obj = obj.Relax2GroundState_mobilecharge_serial(tc(t), 'randomizedRelaxation', 1); %tp(t)
                     else
+                       
                         obj = obj.Relax2GroundState_mobilecharge_serial(tc(t), 'randomizedRelaxation', 0); %tp(t)
                         %obj = obj.Relax2GroundState_mobilecharge(tc(t)); %tp(t)
+                        
+                       
+                        
                     end
                 elseif parallelFlag == 1
                     obj = Relax2GroundState_parallel(obj, tc(t)); %tp(t)
@@ -1375,8 +1393,6 @@ classdef QCACircuit
                         it = it + 1;
                     end
                 end
-                
-                
                 
                 
                 
@@ -1417,7 +1433,7 @@ classdef QCACircuit
                                 %step through each signal and accumulate
                                 %the efield
                                 efield = efield + clockSignalList{signalidx}.getClockField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
-                                efield = efield + inputSignalList{signalidx}.getInputField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
+                                %efield = efield + inputSignalList{signalidx}.getInputField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
                                 obj.Device{CircuitIdx}.Device{subnode}.ElectricField = efield;
                                 
                             end %signalList
@@ -1427,8 +1443,8 @@ classdef QCACircuit
                     else
                         
                         efield = obj.Device{CircuitIdx}.ElectricField; % for this node, set the z-efield to zero
-                        %efield(3) = 0;
-                        efield = [efield(1), 0, 0];
+                        efield(3) = 0;
+                        %efield = [efield(1), 0, 0];
                         
                         for signalidx = 1:length(clockSignalList)
                             %step through each signal and accumulate
