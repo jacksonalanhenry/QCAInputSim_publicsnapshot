@@ -109,11 +109,11 @@ classdef ThreeDotCell < QCACell
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
             
-            if distance < obj.radiusOfEffect
-                pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
-            else
-                pot = 0;
-            end
+%             if distance < obj.radiusOfEffect
+            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
+%             else
+%                 pot = 0;
+%             end
             
             %disp(['potential of ' num2str(obj.CellID) ' is ' num2str(pot)])
         end

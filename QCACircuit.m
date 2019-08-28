@@ -290,8 +290,8 @@ classdef QCACircuit
                     
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
                         
-                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw(time,targetaxis);
-                        %obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ColorDraw(targetaxis);
+                        %obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw(time,targetaxis);
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ColorDraw(targetaxis);
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor; %turns on and off the supercell color
@@ -300,8 +300,8 @@ classdef QCACircuit
                     end
                 else
                     
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
-                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(time, targetaxis);
+                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(time, targetaxis);
                     obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                     obj.Device{CellIndex}.SelectBox.Selected = 'off';
                     %obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
@@ -451,76 +451,92 @@ classdef QCACircuit
             
             
             
-% %             format for iterating through circuit
-% %             for nodeIdx=1:length(obj.Device)
-% %                 if isa(obj.Device{nodeIdx},'QCASuperCell')
-% %                     
-% %                     for subnode=1:length(obj.Device{nodeIdx}.Device)
-% %                         nl = obj.GenerateNeighborList();
-% %                         
-% %                         subnode = obj.Device{nodeIdx}.Device{subnodeIdx};
-% %                 
-% %                 sub_objDotpotential = zeros(size(subnode.DotPosition,1),1);
-% %                 sub_objDotPosition = subnode.getDotPosition();
-% %                 sub_mobileCharges = subnode.getMobileCharge(time);
-% %                 subnode_energy = zeros(length(nl_obj),1);
-% %                 
-% %                 for neighborIdx = 1:length(nl_obj)
-% %                     for x = 1:length(objDotPosition)
-% %                         V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:), time );
-% %                         potential_energy = nl_obj{neighborIdx}.Potential( objDotPosition(x,:), time );
-% %                         
-% %                         node_energy(neighborIdx) = node_energy(neighborIdx) + potential_energy*mobileCharges(x);
-% %                     end
-% %                     
-% %                     
-% %                 end
-% %                         
-% %                         
-% %                     end
-% % 
-% %                 else
-% %                     do a thing
-% %                     
-% %                 end
-% %             end
-            
-            
-            
-            all_energy = zeros(length(obj.Device),1);
-            for nodeIdx = 1:length(obj.Device)
-                
-                nl = obj.Device{nodeIdx}.NeighborList;
-                nl_obj = obj.getCellArray(nl);
-                
-                node = obj.Device{nodeIdx};
-                
-                objDotpotential = zeros(size(node.DotPosition,1),1);
-                objDotPosition = node.getDotPosition();
-                mobileCharges = node.getMobileCharge(time);
-                node_energy = zeros(length(nl_obj),1);
-                
-                for neighborIdx = 1:length(nl_obj)
-                    for x = 1:length(objDotPosition)
-                        %V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:), time );
-                        potential_energy = nl_obj{neighborIdx}.Potential( objDotPosition(x,:), time );
+            for nodeIdx=1:length(obj.Device)
+                if isa(obj.Device{nodeIdx},'QCASuperCell')
+                    
+                    for subnodeIdx=1:length(obj.Device{nodeIdx}.Device)
+                        sub_nl = obj.Device{nodeIdx}.Device{subnodeIdx}.NeighborList;
+                        sub_nl_obj = obj.getCellArray(sub_nl);
+                        subnode = obj.Device{nodeIdx}.Device{subnodeIdx};                        
                         
-                        node_energy(neighborIdx) = node_energy(neighborIdx) + potential_energy*mobileCharges(x);
+                        sub_objDotPosition = subnode.getDotPosition();
+                        sub_mobileCharges = subnode.getMobileCharge(time);
+                        subnode_energy = zeros(length(sub_nl_obj),1);
+                        
+                        for sub_neighborIdx = 1:length(sub_nl_obj)
+                            for x = 1:length(sub_objDotPosition)
+                                potential_energy = sub_nl_obj{sub_neighborIdx}.Potential( sub_objDotPosition(x,:), time );
+                                
+                                subnode_energy(sub_neighborIdx) = subnode_energy(sub_neighborIdx) + potential_energy*sub_mobileCharges(x);
+                            end
+                        end
+                        
+                        all_subnode_energy(subnodeIdx) = sum(subnode_energy);
+                        
+                    end %end subnode
+                    
+                    %all_subnode_energy = sum(subnode_energy);
+                    all_energy(nodeIdx) = sum(all_subnode_energy);
+                    
+                else %start non-supercell
+                    nl = obj.Device{nodeIdx}.NeighborList;
+                    nl_obj = obj.getCellArray(nl);
+                    node = obj.Device{nodeIdx};
+                    
+                    objDotPosition = node.getDotPosition();
+                    mobileCharges = node.getMobileCharge(time);
+                    node_energy = zeros(length(nl_obj),1);
+                    
+                    for neighborIdx = 1:length(nl_obj)
+                        for x = 1:length(objDotPosition)
+                            potential_energy = nl_obj{neighborIdx}.Potential( objDotPosition(x,:), time );
+                            
+                            node_energy(neighborIdx) = node_energy(neighborIdx) + potential_energy*mobileCharges(x);
+                        end
                     end
                     
+                    all_energy(nodeIdx) = sum(node_energy);
                     
-                end
-                
-                all_energy(nodeIdx) = sum(node_energy);
-                
-                
-                
-            end
+
+                end %end non-supercell
+            end %end stepping through circuit
             
             
+            
+%             all_energy = zeros(length(obj.Device),1);
+%             for nodeIdx = 1:length(obj.Device)
+%                 
+%                 nl = obj.Device{nodeIdx}.NeighborList;
+%                 nl_obj = obj.getCellArray(nl);
+%                 
+%                 node = obj.Device{nodeIdx};
+%                 
+%                 objDotpotential = zeros(size(node.DotPosition,1),1);
+%                 objDotPosition = node.getDotPosition();
+%                 mobileCharges = node.getMobileCharge(time);
+%                 node_energy = zeros(length(nl_obj),1);
+%                 
+%                 for neighborIdx = 1:length(nl_obj)
+%                     for x = 1:length(objDotPosition)
+%                         %V_neighbors(x,:) = obj2.Potential( objDotPosition(x,:), time );
+%                         potential_energy = nl_obj{neighborIdx}.Potential( objDotPosition(x,:), time );
+%                         
+%                         node_energy(neighborIdx) = node_energy(neighborIdx) + potential_energy*mobileCharges(x);
+%                     end
+%                     
+%                     
+%                 end
+%                 
+%                 all_energy(nodeIdx) = sum(node_energy);
+%                 
+%                 
+%                 
+%             end
+%             
+%             
+%         end
+        
         end
-        
-        
         
         %%
         function obj = Relax2GroundState(obj, time, varargin)

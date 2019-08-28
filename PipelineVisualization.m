@@ -196,8 +196,8 @@ for t = downsample(1:sizePol,downsamplerate);
     %gca
     %r = getrect(gcf)
     %Frame(t) = getframe(gcf,[0 0 maxwidth*.65 maxheight*.5]);
-    Frame(t) = getframe(gca);
-    % Frame(t) = getframe(gcf);
+    %Frame(t) = getframe(gca);
+    Frame(t) = getframe(gcf);
     
     
     writeVideo(v,Frame(t));

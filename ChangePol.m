@@ -4,6 +4,8 @@ myCircuit = getappdata(gcf,'myCircuit');
 
 
 pol = str2num(get(handles.chngPol,'String'));
+act = str2num(get(handles.chngAct,'String'));
+
 
 if isempty(pol)
     pol = -1;
@@ -36,6 +38,8 @@ end
                 if strcmp(myCircuit.Device{i}.Device{j}.Type,'Driver') && (strcmp(myCircuit.Device{i}.Device{j}.SelectBox.Selected,'on'))%check for device being on
                     
                     myCircuit.Device{i}.Device{j}.Polarization=pol;
+                    myCircuit.Device{i}.Device{j}.Activation=act;
+                    
                     %if it's on, change polarization to whatever the user inputs
                     
                 end
@@ -43,6 +47,8 @@ end
         else
             if strcmp(myCircuit.Device{i}.Type,'Driver') && (strcmp(myCircuit.Device{i}.SelectBox.Selected,'on'))%check for device being on
                 myCircuit.Device{i}.Polarization=pol;
+                myCircuit.Device{i}.Activation=act;
+
             end
         end
     end

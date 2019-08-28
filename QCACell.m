@@ -74,6 +74,11 @@ classdef QCACell
             end
         end
         
+        
+        function p = getCharacteristicLength(obj)
+            p = obj.CharacteristicLength;
+        end
+        
         function obj = translateCell(obj,TranslationVect)
             % Q = Q.translateCell( TranslationVect )
             %
