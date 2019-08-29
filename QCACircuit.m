@@ -959,7 +959,7 @@ classdef QCACircuit
 %             old = obj;
 %             old_energy = sum(old.calculateEnergy(time));
             
-            while (converganceTolerance > 0.001 ) %&& it < 600
+            while (converganceTolerance > 0.001 && it < 4000) %&& it < 600
                 
                  
          
@@ -1028,7 +1028,7 @@ classdef QCACircuit
                            
                            
                            %get all groundstates
-                           sub_groundstates = cell(1,length(obj.Device{idx}.Device));
+                           sub_groundstates = cell(1,length(obj.Device{circuit_idx_random(idx)}.Device));
                            for sub = 1:length(obj.Device{circuit_idx_random(idx)}.Device)
                                hamiltonian = obj.Device{circuit_idx_random(idx)}.Device{sub}.Hamiltonian;
                                wavefunction = obj.Device{circuit_idx_random(idx)}.Device{sub}.Wavefunction;
@@ -1125,9 +1125,9 @@ classdef QCACircuit
                         obj.Device{idx} = obj.Device{idx}.Calc_Polarization_Activation(groundstate{idx}');
                         
                         if(isa(obj.Device{idx},'SixDotCell'))
-                            NewMobileCharges(:,idx) = obj.Device{circuit_idx_random(idx)}.getMobileCharge(time);
+                            NewMobileCharges(:,idx) = obj.Device{idx}.getMobileCharge(time);
                         else
-                            NewMobileCharges(1:3,idx) = obj.Device{circuit_idx_random(idx)}.getMobileCharge(time);
+                            NewMobileCharges(1:3,idx) = obj.Device{idx}.getMobileCharge(time);
                         end
                         
                     else
