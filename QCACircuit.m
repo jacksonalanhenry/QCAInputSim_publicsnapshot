@@ -290,8 +290,8 @@ classdef QCACircuit
                     
                     for subnode = 1:length(obj.Device{CellIndex}.Device)
                         
-                        %obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw(time,targetaxis);
-                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ColorDraw(targetaxis);
+                        obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ElectronDraw(time,targetaxis);
+                        %obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.ColorDraw(targetaxis);
                         obj.Device{CellIndex}.Device{subnode} = obj.Device{CellIndex}.Device{subnode}.BoxDraw();
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.Selected = 'off';
                         obj.Device{CellIndex}.Device{subnode}.SelectBox.EdgeColor = obj.Device{CellIndex}.BoxColor; %turns on and off the supercell color
@@ -300,8 +300,8 @@ classdef QCACircuit
                     end
                 else
                     
-                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
-                    obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(time, targetaxis);
+                    obj.Device{CellIndex} = obj.Device{CellIndex}.ElectronDraw(time,targetaxis);
+                    %obj.Device{CellIndex} = obj.Device{CellIndex}.ColorDraw(time, targetaxis);
                     obj.Device{CellIndex} = obj.Device{CellIndex}.BoxDraw();
                     obj.Device{CellIndex}.SelectBox.Selected = 'off';
                     %obj.Device{CellIndex}.SelectBox.FaceAlpha = .01;
@@ -1449,7 +1449,7 @@ classdef QCACircuit
                                 %step through each signal and accumulate
                                 %the efield
                                 efield = efield + clockSignalList{signalidx}.getClockField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
-                                %efield = efield + inputSignalList{signalidx}.getInputField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
+                                efield = efield + inputSignalList{signalidx}.getInputField(obj.Device{CircuitIdx}.Device{subnode}.CenterPosition, mod(time, inputSignalList{signalidx}.Period )); %changes E Field.
                                 obj.Device{CircuitIdx}.Device{subnode}.ElectricField = efield;
                                 
                             end %signalList
@@ -1459,16 +1459,16 @@ classdef QCACircuit
                     else
                         
                         efield = obj.Device{CircuitIdx}.ElectricField; % for this node, set the z-efield to zero
-                        efield(3) = 0;
-                        %efield = [efield(1), 0, 0];
+                        %efield(3) = 0;
+                        efield = [efield(1), 0, 0];
                         
                         for signalidx = 1:length(clockSignalList)
                             %step through each signal and accumulate
                             %the efield
                             efield = efield + clockSignalList{signalidx}.getClockField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
                             
-                            %if (CircuitIdx < 11)
-                            %efield = efield + inputSignalList{signalidx}.getInputField(obj.Device{CircuitIdx}.CenterPosition, mod(time, clockSignalList{signalidx}.Period )); %changes E Field.
+                            %if (CircuitIdx < 4)
+                                efield = efield + inputSignalList{signalidx}.getInputField(obj.Device{CircuitIdx}.CenterPosition, mod(time, inputSignalList{signalidx}.Period )); %changes E Field.
                             %end
                             
                             obj.Device{CircuitIdx}.ElectricField = efield;
