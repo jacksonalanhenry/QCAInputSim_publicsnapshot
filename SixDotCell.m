@@ -29,6 +29,14 @@ classdef SixDotCell < QCACell
         Overlapping='off';
         
         radiusOfEffect = 3.1;
+        
+        fixedChargeLocation = 0.5*[ 1, 1,1; ...
+                            1, 0,0; ...
+                            1,-1,1; ... 
+                           -1,-1,1; ...
+                           -1, 0,0; ...
+                           -1, 1,1];
+        fixedCharge = -1/3;               
 
         
     end
@@ -106,8 +114,15 @@ classdef SixDotCell < QCACell
             qeC2e = QCA_Constants.qeC2e;
             
             selfDotPos = obj.getDotPosition();
+            
             numberofDots = size(selfDotPos, 1);
             
+            numberofFixedCharge = size(obj.fixedChargeLocation, 1);
+            
+            totalnumofDots = numberofDots+numberofFixedCharge;
+            
+            
+            allDots = [selfDotPos; obj.fixedChargeLocation];
             
             %charge = qe*obj.Activation*[(1/2)*(obj.Polarization+1);-1;(1/2)*(1-obj.Polarization);(1/2)*(obj.Polarization+1);-1;(1/2)*(1-obj.Polarization)]; %[eV]
             %charge = qe*obj.Activation*[(1/2)*(obj.Polarization+1);
@@ -118,13 +133,16 @@ classdef SixDotCell < QCACell
                                          %(1/2)*(1-obj.Polarization)]; %[eV]
 
             charge = [qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time));qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1);1-obj.Activation;qe*obj.Activation*(1/2)*(1-obj.getPolarization(time))];
-
+            allcharge = [charge; obj.fixedCharge*ones(numberofFixedCharge,1)];
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
-            distance = sqrt( sum(displacementVector.^2, 2) );
+            %distance = sqrt( sum(displacementVector.^2, 2) )
+            d=sqrt(displacementVector(:,1).^2+displacementVector(:,2).^2+displacementVector(:,3).^2);
             
+            temp = (1/(4*pi*epsilon_0)*qeC2e)*(allcharge(1:6,:)+allcharge(7:12,:));
+            pot_energy = sum(temp./(d*1e-9));
 %             if distance < (obj.radiusOfEffect+10)
-                pot_energy = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
+%                pot_energy = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9))
 %             else
 %                 pot_energy = 0
 %             end
