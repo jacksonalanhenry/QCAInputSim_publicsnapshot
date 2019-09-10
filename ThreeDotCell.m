@@ -105,12 +105,13 @@ classdef ThreeDotCell < QCACell
             %charge = qe*obj.Activation*[(1/2)*(1-obj.getPolarization(time));-1;(1/2)*(obj.getPolarization(time)+1)]; %[eV];
             
             charge = [qe*obj.Activation*(1/2)*(1-obj.getPolarization(time));1-obj.Activation;qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1)];
+            allcharge = charge + ones(3,1)*(-1/3);
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
             
 %             if distance < obj.radiusOfEffect
-            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(charge./(distance*1E-9));
+            pot = (1/(4*pi*epsilon_0)*qeC2e)*sum(allcharge./(distance*1E-9));
 %             else
 %                 pot = 0;
 %             end
