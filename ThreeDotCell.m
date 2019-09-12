@@ -105,7 +105,8 @@ classdef ThreeDotCell < QCACell
             %charge = qe*obj.Activation*[(1/2)*(1-obj.getPolarization(time));-1;(1/2)*(obj.getPolarization(time)+1)]; %[eV];
             
             charge = [qe*obj.Activation*(1/2)*(1-obj.getPolarization(time));1-obj.Activation;qe*obj.Activation*(1/2)*(obj.getPolarization(time)+1)];
-            allcharge = charge + ones(3,1)*(-1/3);
+            %allcharge = charge + ones(3,1)*(-1/3);
+            allcharge = charge + [0; -1; 0];
             
             displacementVector = ones(numberofDots,1)*obsvPoint - selfDotPos;
             distance = sqrt( sum(displacementVector.^2, 2) );
