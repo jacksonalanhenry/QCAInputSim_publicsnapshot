@@ -240,9 +240,9 @@ classdef SixDotCell < QCACell
                     
                     % Polarization is the expectation value of sigma_z
                     obj.Polarization = psi' * obj.Z * psi;
-                    disp(['P of cell ' num2str(obj.CellID) ' is ' num2str(obj.Polarization)])
+                    %disp(['P of cell ' num2str(obj.CellID) ' is ' num2str(obj.Polarization)])
                     obj.Activation = 1 - psi' * obj.Pnn * psi;
-                    disp(['A of cell ' num2str(obj.CellID) ' is ' num2str(obj.Activation)])
+                    %disp(['A of cell ' num2str(obj.CellID) ' is ' num2str(obj.Activation)])
                 end
                 
                 
