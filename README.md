@@ -1,7 +1,7 @@
 # QCAInputSim
 
 QCAInputSim is a Simulator for Molecular Quantum-dot Cellular Automata Circuits.
-This simulator is able to simulate the operation 3-dot or 6-dot QCA Cells in electric fields. With the ultimate goal of exploring the possibilities of molecular QCA for classical computing.
+This simulator is able to simulate the operation of 3-dot or 6-dot QCA Cells in electric fields. With the ultimate goal of exploring the possibilities of molecular QCA for classical computing.
 
 ## Usage
 
